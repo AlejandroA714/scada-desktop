@@ -3,6 +3,7 @@ from PyQt5.QtWidgets import QMainWindow, QApplication
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QIcon
 from forms.LoginForm import UILogin
+from forms.MainForm import UIMainWindow
 from resources.resources import *
 
 class MainWindow(QMainWindow,UILogin):

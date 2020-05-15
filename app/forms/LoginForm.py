@@ -5,12 +5,17 @@ from PyQt5.QtWidgets import QDesktopWidget,QMessageBox, QApplication
 from resources.resources import *
 from classes.logica import Logica
 from classes.worker import Worker
+from forms.MainForm import UIMainWindow
 
+#
+from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import QMainWindow
 class UILogin(object):
     
     threadpool = QThreadPool()
 
     def setupUi(self, Login):
+        #self.setWindowFlags(Qt.FramelessWindowHint)
         Login.setObjectName("Login")
         Login.resize(406, 528)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Maximum)
@@ -132,6 +137,7 @@ class UILogin(object):
 
         self.retranslateUi(Login)
         self.center()
+        
         QtCore.QMetaObject.connectSlotsByName(Login)
 
 
@@ -161,12 +167,7 @@ class UILogin(object):
             pass
     
     def btnAceptar_Click(self):
-        if(self.txtUsuario.text() == ""):
-            QMessageBox.warning(self,"¡Advertencia!","Rellene los campos solicitados")
-            self.lblmovie.hide()
-            self.btnAceptar.show()
-            return
-        if(self.txtPassword.text() == ""):
+        if(self.txtUsuario.text() == "" or self.txtPassword.text() == ""):
             QMessageBox.warning(self,"¡Advertencia!","Rellene los campos solicitados")
             self.lblmovie.hide()
             self.btnAceptar.show()
@@ -187,27 +188,22 @@ class UILogin(object):
             self.btnAceptar.show()
             QMessageBox.information(self,"¡Error!", "¡Error! %s" % str(s))
             return
-        if(s["Id"] is None):
+        self.lblmovie.hide()
+        self.btnAceptar.show()
+        if(s["Id"] is None): # If returns None, API is online, but mongodb isnt
             QMessageBox.warning(self,"¡Error!", "No se pudo iniciar sesion")
-            self.lblmovie.hide()
-            self.btnAceptar.show()
             return
-        if(s["Id"] == ""):
+        if(s["Id"] == ""): # If returns an empty string, credentials are bad
             QMessageBox.warning(self,"¡Error!", "Usuario y/o contraseña incorrectos")
-            self.lblmovie.hide()
-            self.btnAceptar.show()
             return
-        if(s["Enabled"] == False):
+        if(s["Id"] != "" and s["Enabled"] == False): # If Enabled is false, then cannot login
             QMessageBox.warning(self,"¡Advertencia!", "Usuario no tiene permitido iniciar sesion")
-            self.lblmovie.hide()
-            self.btnAceptar.show()
             return
-        QMessageBox.information(self,"¡Info!","Iniciando sesion...")
-
-
-    def IsNumeric(_x:str):
-        pass        
         
+        main = UIMainWindow()
+        main.setupUi(self)
+    
+           
     def retranslateUi(self, Login):
         _translate = QtCore.QCoreApplication.translate
         Login.setWindowTitle(_translate("Login", "Sistema SCADA"))
@@ -222,4 +218,3 @@ class UILogin(object):
         cp = QDesktopWidget().availableGeometry().center()
         qr.moveCenter(cp)
         self.move(qr.topLeft())
-
