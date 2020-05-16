@@ -1,5 +1,6 @@
 <RCC>
   <qresource prefix="source">
+    <file>img/close.png</file>
     <file>img/Abrir.png</file>
     <file>img/Agregar.png</file>
     <file>img/allow.png</file>
@@ -26,6 +27,8 @@
     <file>img/OK.png</file>
     <file>img/Password.png</file>
     <file>img/Reportes-SM.png</file>
+    <file>img/max.png</file>
+    <file>img/min.png</file>
     <file>img/Reportes.png</file>
     <file>img/retry.png</file>
     <file>img/Usuario.png</file>
