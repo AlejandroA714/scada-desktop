@@ -1,13 +1,14 @@
 <RCC>
   <qresource prefix="source">
-    <file>img/close.png</file>
     <file>img/Abrir.png</file>
     <file>img/Agregar.png</file>
     <file>img/allow.png</file>
     <file>img/Cancelar.png</file>
     <file>img/Cargando.gif</file>
     <file>img/changepass.png</file>
+    <file>img/close.png</file>
     <file>img/Copiar.png</file>
+    <file>img/min.png</file>
     <file>img/deluser.png</file>
     <file>img/denied.png</file>
     <file>img/Editar-SM.png</file>
@@ -28,7 +29,6 @@
     <file>img/Password.png</file>
     <file>img/Reportes-SM.png</file>
     <file>img/max.png</file>
-    <file>img/min.png</file>
     <file>img/Reportes.png</file>
     <file>img/retry.png</file>
     <file>img/Usuario.png</file>

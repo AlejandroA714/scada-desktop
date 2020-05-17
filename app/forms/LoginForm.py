@@ -1,7 +1,7 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtCore import QThreadPool
+from PyQt5.QtCore import QThreadPool, Qt
 from PyQt5.QtGui import QMovie, QPainter, QPixmap
-from PyQt5.QtWidgets import QDesktopWidget,QMessageBox, QApplication, QGraphicsDropShadowEffect
+from PyQt5.QtWidgets import QDesktopWidget,QMessageBox, QApplication, QGraphicsDropShadowEffect, QMainWindow
 from resources.resources import *
 from classes.logica import Logica
 from classes.worker import Worker
@@ -211,7 +211,7 @@ class UILogin(object):
         if(s["Id"] != "" and s["Enabled"] == False): # If Enabled is false, then cannot login
             QMessageBox.warning(self,"¡Advertencia!", "Usuario no tiene permitido iniciar sesion")
             return
-        
+        #QMainWindow.setWindowFlag(self,~Qt.FramelessWindowHint )
         main = UIMainWindow()
         main.setupUi(self)
         
