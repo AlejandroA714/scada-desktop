@@ -1,22 +1,17 @@
-# -*- coding: utf-8 -*-
-
-# Form implementation generated from reading ui file 'MainForm.ui'
-#
-# Created by: PyQt5 UI code generator 5.14.1
-#
-# WARNING! All changes made in this file will be lost!
-
-
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtWidgets import QMainWindow
+from PyQt5.QtWidgets import QMainWindow, QAction, QMenu
 from PyQt5.QtCore import Qt
 from resources.resources import *
 
 class UIMainWindow(object):
-    def setupUi(self, MainWindow):
-        MainWindow.setObjectName("Software SCADA")
+
+    def setupUi(self,MainWindow):
+        MainWindow.setObjectName("MainWindow")
         MainWindow.resize(820, 720)
         MainWindow.setMinimumSize(QtCore.QSize(820, 680))
+        icon = QtGui.QIcon()
+        icon.addPixmap(QtGui.QPixmap(":/source/img/if_16_1751363.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        MainWindow.setWindowIcon(icon)
         MainWindow.setDockOptions(QtWidgets.QMainWindow.AllowTabbedDocks|QtWidgets.QMainWindow.AnimatedDocks)
         self.MainFrame = QtWidgets.QWidget(MainWindow)
         self.MainFrame.setStyleSheet("")
@@ -27,7 +22,7 @@ class UIMainWindow(object):
         self.verticalLayout.setObjectName("verticalLayout")
         self.frame = QtWidgets.QFrame(self.MainFrame)
         self.frame.setStyleSheet("background-color: rgb(255, 255, 255);\n"
-"")
+        "")
         self.frame.setFrameShape(QtWidgets.QFrame.StyledPanel)
         self.frame.setFrameShadow(QtWidgets.QFrame.Raised)
         self.frame.setObjectName("frame")
@@ -38,36 +33,6 @@ class UIMainWindow(object):
         self.gridLayout = QtWidgets.QGridLayout()
         self.gridLayout.setSpacing(0)
         self.gridLayout.setObjectName("gridLayout")
-        self.frame_2 = QtWidgets.QFrame(self.frame)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Maximum, QtWidgets.QSizePolicy.Maximum)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.frame_2.sizePolicy().hasHeightForWidth())
-        self.frame_2.setSizePolicy(sizePolicy)
-        self.frame_2.setStyleSheet("color: rgb(255, 255, 0);background-color: rgb(65, 105, 225);\n"
-"margin:0px;")
-        self.frame_2.setFrameShape(QtWidgets.QFrame.NoFrame)
-        self.frame_2.setLineWidth(0)
-        self.frame_2.setObjectName("frame_2")
-        self.verticalLayout_4 = QtWidgets.QVBoxLayout(self.frame_2)
-        self.verticalLayout_4.setContentsMargins(0, 0, 0, 0)
-        self.verticalLayout_4.setSpacing(0)
-        self.verticalLayout_4.setObjectName("verticalLayout_4")
-        self.label = QtWidgets.QLabel(self.frame_2)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Maximum, QtWidgets.QSizePolicy.Preferred)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.label.sizePolicy().hasHeightForWidth())
-        self.label.setSizePolicy(sizePolicy)
-        self.label.setStyleSheet("background-color: rgb(65, 105, 225);\n"
-"margin:0px;")
-        self.label.setFrameShape(QtWidgets.QFrame.NoFrame)
-        self.label.setText("")
-        self.label.setPixmap(QtGui.QPixmap(":/source/img/logo.png"))
-        self.label.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
-        self.label.setObjectName("label")
-        self.verticalLayout_4.addWidget(self.label)
-        self.gridLayout.addWidget(self.frame_2, 0, 2, 1, 1)
         self.label_5 = QtWidgets.QLabel(self.frame)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Preferred)
         sizePolicy.setHorizontalStretch(0)
@@ -82,9 +47,40 @@ class UIMainWindow(object):
         self.label_5.setFont(font)
         self.label_5.setAutoFillBackground(False)
         self.label_5.setStyleSheet("color: rgb(255, 255, 0);background-color: rgb(65, 105, 225);\n"
-"margin:0px;")
+        "margin:0px;")
         self.label_5.setObjectName("label_5")
         self.gridLayout.addWidget(self.label_5, 0, 1, 1, 1)
+        self.frame_2 = QtWidgets.QFrame(self.frame)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Maximum, QtWidgets.QSizePolicy.Maximum)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.frame_2.sizePolicy().hasHeightForWidth())
+        self.frame_2.setSizePolicy(sizePolicy)
+        self.frame_2.setMinimumSize(QtCore.QSize(0, 81))
+        self.frame_2.setStyleSheet("color: rgb(255, 255, 0);background-color: rgb(65, 105, 225);\n"
+        "margin:0px;")
+        self.frame_2.setFrameShape(QtWidgets.QFrame.NoFrame)
+        self.frame_2.setLineWidth(0)
+        self.frame_2.setObjectName("frame_2")
+        self.verticalLayout_4 = QtWidgets.QVBoxLayout(self.frame_2)
+        self.verticalLayout_4.setContentsMargins(0, 0, 0, 0)
+        self.verticalLayout_4.setSpacing(0)
+        self.verticalLayout_4.setObjectName("verticalLayout_4")
+        self.label = QtWidgets.QLabel(self.frame_2)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Maximum, QtWidgets.QSizePolicy.Preferred)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.label.sizePolicy().hasHeightForWidth())
+        self.label.setSizePolicy(sizePolicy)
+        self.label.setStyleSheet("background-color: rgb(65, 105, 225);\n"
+        "margin:0px;")
+        self.label.setFrameShape(QtWidgets.QFrame.NoFrame)
+        self.label.setText("")
+        self.label.setPixmap(QtGui.QPixmap(":/source/img/logo.png"))
+        self.label.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
+        self.label.setObjectName("label")
+        self.verticalLayout_4.addWidget(self.label)
+        self.gridLayout.addWidget(self.frame_2, 0, 2, 1, 1)
         self.label_3 = QtWidgets.QLabel(self.frame)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Maximum, QtWidgets.QSizePolicy.Preferred)
         sizePolicy.setHorizontalStretch(0)
@@ -92,7 +88,7 @@ class UIMainWindow(object):
         sizePolicy.setHeightForWidth(self.label_3.sizePolicy().hasHeightForWidth())
         self.label_3.setSizePolicy(sizePolicy)
         self.label_3.setStyleSheet("background-color: rgb(65, 105, 225);\n"
-"margin:0px;")
+        "margin:0px;")
         self.label_3.setText("")
         self.label_3.setPixmap(QtGui.QPixmap(":/source/img/iiie.png"))
         self.label_3.setObjectName("label_3")
@@ -108,27 +104,30 @@ class UIMainWindow(object):
         self.frame_3.setFrameShadow(QtWidgets.QFrame.Plain)
         self.frame_3.setLineWidth(0)
         self.frame_3.setObjectName("frame_3")
-        self.toolButton = QtWidgets.QToolButton(self.frame_3)
-        self.toolButton.setGeometry(QtCore.QRect(0, 0, 71, 24))
-        self.toolButton.setStyleSheet("margin:0px;")
-        self.toolButton.setToolButtonStyle(QtCore.Qt.ToolButtonTextBesideIcon)
-        self.toolButton.setAutoRaise(True)
-        self.toolButton.setArrowType(QtCore.Qt.DownArrow)
-        self.toolButton.setObjectName("toolButton")
-        self.toolButton_2 = QtWidgets.QToolButton(self.frame_3)
-        self.toolButton_2.setGeometry(QtCore.QRect(70, 0, 121, 24))
-        self.toolButton_2.setStyleSheet("margin:0px;")
-        self.toolButton_2.setToolButtonStyle(QtCore.Qt.ToolButtonTextBesideIcon)
-        self.toolButton_2.setAutoRaise(True)
-        self.toolButton_2.setArrowType(QtCore.Qt.DownArrow)
-        self.toolButton_2.setObjectName("toolButton_2")
-        self.toolButton_3 = QtWidgets.QToolButton(self.frame_3)
-        self.toolButton_3.setGeometry(QtCore.QRect(190, 0, 91, 24))
-        self.toolButton_3.setStyleSheet("margin:0px;")
-        self.toolButton_3.setToolButtonStyle(QtCore.Qt.ToolButtonTextBesideIcon)
-        self.toolButton_3.setAutoRaise(True)
-        self.toolButton_3.setArrowType(QtCore.Qt.DownArrow)
-        self.toolButton_3.setObjectName("toolButton_3")
+        self.MenuArchivo = QtWidgets.QToolButton(self.frame_3)
+        self.MenuArchivo.setGeometry(QtCore.QRect(0, 0, 71, 24))
+        self.MenuArchivo.setStyleSheet("margin:0px;")
+        self.MenuArchivo.setPopupMode(QtWidgets.QToolButton.MenuButtonPopup)
+        self.MenuArchivo.setToolButtonStyle(QtCore.Qt.ToolButtonTextBesideIcon)
+        self.MenuArchivo.setAutoRaise(True)
+        self.MenuArchivo.setArrowType(QtCore.Qt.NoArrow)
+        self.MenuArchivo.setObjectName("MenuArchivo")
+        self.MenuConfiguraciones = QtWidgets.QToolButton(self.frame_3)
+        self.MenuConfiguraciones.setGeometry(QtCore.QRect(70, 0, 121, 24))
+        self.MenuConfiguraciones.setStyleSheet("margin:0px;")
+        self.MenuConfiguraciones.setPopupMode(QtWidgets.QToolButton.MenuButtonPopup)
+        self.MenuConfiguraciones.setToolButtonStyle(QtCore.Qt.ToolButtonTextBesideIcon)
+        self.MenuConfiguraciones.setAutoRaise(True)
+        self.MenuConfiguraciones.setArrowType(QtCore.Qt.NoArrow)
+        self.MenuConfiguraciones.setObjectName("MenuConfiguraciones")
+        self.MenuReportes = QtWidgets.QToolButton(self.frame_3)
+        self.MenuReportes.setGeometry(QtCore.QRect(190, 0, 91, 24))
+        self.MenuReportes.setStyleSheet("margin:0px;")
+        self.MenuReportes.setPopupMode(QtWidgets.QToolButton.MenuButtonPopup)
+        self.MenuReportes.setToolButtonStyle(QtCore.Qt.ToolButtonTextBesideIcon)
+        self.MenuReportes.setAutoRaise(True)
+        self.MenuReportes.setArrowType(QtCore.Qt.NoArrow)
+        self.MenuReportes.setObjectName("MenuReportes")
         self.verticalLayout_3.addWidget(self.frame_3)
         self.tabWidget = QtWidgets.QTabWidget(self.frame)
         self.tabWidget.setObjectName("tabWidget")
@@ -145,11 +144,11 @@ class UIMainWindow(object):
         self.btnMax_2.setMaximumSize(QtCore.QSize(64, 32))
         self.btnMax_2.setAutoFillBackground(False)
         self.btnMax_2.setStyleSheet("background-color: rgb(65, 105, 225);\n"
-"margin:0px;")
+        "margin:0px;")
         self.btnMax_2.setText("")
-        icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap(":/source/img/max.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.btnMax_2.setIcon(icon)
+        icon1 = QtGui.QIcon()
+        icon1.addPixmap(QtGui.QPixmap(":/source/img/max.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.btnMax_2.setIcon(icon1)
         self.btnMax_2.setIconSize(QtCore.QSize(16, 16))
         self.btnMax_2.setFlat(True)
         self.btnMax_2.setObjectName("btnMax_2")
@@ -199,13 +198,96 @@ class UIMainWindow(object):
         QMainWindow.setWindowFlags(MainWindow,Qt.WindowFlags() & ~Qt.FramelessWindowHint )
         QMainWindow.show(MainWindow)
 
+        # Definicion de menus
+        self.defineMenuArchivo()
+        self.defineMenuConfiguraciones()
+        self.defineMenuReportes()
+
+        #action.setshorcut(Qkeysequence(Qt.Key_Ctrl + Qt.Key_A))
+        #connect(nuevo,nuevo.triggered,nuevo_callback)
+
+    def defineMenuArchivo(self):
+        archivoMenu = QMenu()
+        archivoMenu.addAction("{:13s} {:6s}".format("Nuevo","Ctrl+N"),self.new_Callback)
+        archivoMenu.addAction("{:13s} {:6s}".format("Abrir","Ctrl+A"),self.open_Callback)
+        archivoMenu.addAction("{:13s} {:6s}".format("Guardar","Ctrl+S"),self.save_Callback)
+        archivoMenu.addAction("{:13s} {:6s}".format("Guardar Como","Ctrl+G"),self.saveAs_Callback)
+        archivoMenu.addAction("{:13s} {:6s}".format("Cerrar","Ctrl+E"),self.close_Callback)
+        archivoMenu.addAction("{:13s} {:6s}".format("Eliminar","Ctrl+Supr"), self.delete_Callback)
+        archivoMenu.addAction("{:13s} {:6s}".format("Cerrar Sesiòn","Ctrl+X"),self.logout_CallbacK)
+        archivoMenu.addAction("{:13s} {:6s}".format("Sair","Alt+f4"),self.exit_Callback)
+
+        self.MenuArchivo.setMenu(archivoMenu)
+        #self.MenuArchivo.setDefaultAction(QAction("Abrir",self))
+        self.MenuArchivo.triggered.connect(self.archivoMenu_Default)
+
+    def defineMenuConfiguraciones(self):
+        configuracionesMenu = QMenu()
+        configuracionesMenu.addAction("{:15s} {:6s}".format("Configuraciones","Ctrl+C"),self.settings_Callback)
+        configuracionesMenu.addAction("{:15s} {:6s}".format("Dispostivos","Ctrl+D"),self.devices_Callback)
+        configuracionesMenu.addAction("{:15s} {:6s}".format("API Local","Ctrl+H"),self.api_Callback)
+        configuracionesMenu.addAction("{:15s} {:6s}".format("Usuarios","Ctrl+U"),self.users_Callback)
+        configuracionesMenu.addAction("{:15s} {:6s}".format("Cuenta","Ctrl+P"),self.account_Callback)
+        configuracionesMenu.addAction("{:15s} {:6s}".format("Acerca de",""), self.about_Callback)
+
+        self.MenuConfiguraciones.setMenu(configuracionesMenu)
+        #self.MenuArchivo.setDefaultAction(QAction("Abrir",self))
+        self.MenuConfiguraciones.triggered.connect(self.configuracionesMenu_Default)
+
+    def defineMenuReportes(self):
+        ReportesMenu = QMenu()
+        ReportesMenu.addAction("{:15s} {:6s}".format("Reportes","Ctrl+R"),self.settings_Callback)
+        self.MenuReportes.setMenu(ReportesMenu)
+        #self.MenuArchivo.setDefaultAction(QAction("Abrir",self))
+        self.MenuReportes.triggered.connect(self.reports_Callback)
+
+    # methods of reports:menu
+    def reports_Callback(self):
+            pass
+
+    # methods of settings:menu
+    def configuracionesMenu_Default(self):
+            pass
+    def settings_Callback(self):
+            pass
+    def devices_Callback(self):
+            pass
+    def api_Callback(self):
+            pass
+    def users_Callback(self):
+            pass
+    def account_Callback(self):
+            pass
+    def about_Callback(self):
+            pass
+
+    # methods of archive:menu
+    def archivoMenu_Default(self):
+            print("Default")
+    def new_Callback(self):
+            print("nuevo clicked")
+    def open_Callback(self):
+            pass
+    def save_Callback(self):
+            pass
+    def saveAs_Callback(self):
+            pass
+    def close_Callback(self):
+            pass
+    def delete_Callback(self):
+            pass
+    def logout_CallbacK(self):
+            pass
+    def exit_Callback(self):
+            pass
+
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
-        MainWindow.setWindowTitle(_translate("MainWindow", "MainWindow"))
+        MainWindow.setWindowTitle(_translate("MainWindow", "Software SCADA"))
         self.label_5.setText(_translate("MainWindow", "SCADA"))
-        self.toolButton.setText(_translate("MainWindow", "Archivo"))
-        self.toolButton_2.setText(_translate("MainWindow", "Configuraciones"))
-        self.toolButton_3.setText(_translate("MainWindow", "Reportes"))
+        self.MenuArchivo.setText(_translate("MainWindow", "Archivo"))
+        self.MenuConfiguraciones.setText(_translate("MainWindow", "Configuraciones"))
+        self.MenuReportes.setText(_translate("MainWindow", "Reportes"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab), _translate("MainWindow", "Tab 1"))
         self.tabWidget.setTabText(self.tabWidget.indexOf(self.tab_2), _translate("MainWindow", "Tab 2"))
         self.label_2.setText(_translate("MainWindow", "Estado:"))

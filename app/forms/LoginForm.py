@@ -152,6 +152,7 @@ class UILogin(object):
         self.center()
         self.retranslateUi(Login)
         QtCore.QMetaObject.connectSlotsByName(Login)
+        
         # movie
 
         self.movie = QMovie(":/source/img/Cargando.gif") # 80 ,200
@@ -211,11 +212,9 @@ class UILogin(object):
         if(s["Id"] != "" and s["Enabled"] == False): # If Enabled is false, then cannot login
             QMessageBox.warning(self,"¡Advertencia!", "Usuario no tiene permitido iniciar sesion")
             return
-        #QMainWindow.setWindowFlag(self,~Qt.FramelessWindowHint )
         main = UIMainWindow()
         main.setupUi(self)
         
-
     def retranslateUi(self, Login):
         _translate = QtCore.QCoreApplication.translate
         Login.setWindowTitle(_translate("Login", "Sistema SCADA"))
@@ -230,4 +229,8 @@ class UILogin(object):
         cp = QDesktopWidget().availableGeometry().center()
         qr.moveCenter(cp)
         self.move(qr.topLeft())
+
+
+
+
 
