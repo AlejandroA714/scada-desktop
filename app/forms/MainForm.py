@@ -1,8 +1,9 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtWidgets import QMainWindow, QAction, QMenu
-from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import QMainWindow, QAction, QMenu, QDialog
+from PyQt5.QtCore import Qt, pyqtSlot
+from PyQt5.QtGui import QKeySequence, QKeyEvent
 from resources.resources import *
-
+from forms.Modals.AbrirModal import UIAbrir
 class UIMainWindow(object):
 
     def setupUi(self,MainWindow):
@@ -197,16 +198,15 @@ class UIMainWindow(object):
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
         QMainWindow.setWindowFlags(MainWindow,Qt.WindowFlags() & ~Qt.FramelessWindowHint )
         QMainWindow.show(MainWindow)
+        
+        #self.MenuArchivo.setDefaultAction(QAction("Abrir",self))
 
-        # Definicion de menus
         self.defineMenuArchivo()
         self.defineMenuConfiguraciones()
         self.defineMenuReportes()
 
-        #action.setshorcut(Qkeysequence(Qt.Key_Ctrl + Qt.Key_A))
-        #connect(nuevo,nuevo.triggered,nuevo_callback)
-
     def defineMenuArchivo(self):
+        # Definicion de menus
         archivoMenu = QMenu()
         archivoMenu.addAction("{:13s} {:6s}".format("Nuevo","Ctrl+N"),self.new_Callback)
         archivoMenu.addAction("{:13s} {:6s}".format("Abrir","Ctrl+A"),self.open_Callback)
@@ -217,9 +217,16 @@ class UIMainWindow(object):
         archivoMenu.addAction("{:13s} {:6s}".format("Cerrar Sesiòn","Ctrl+X"),self.logout_CallbacK)
         archivoMenu.addAction("{:13s} {:6s}".format("Sair","Alt+f4"),self.exit_Callback)
 
+
+        abrirAction = QAction("Shortcut Ctrl+N")
+        abrirAction.setShortcut("Ctrl+A")
+        abrirAction.triggered.connect(self.new_Callback)
+
+        archivoMenu.addAction(abrirAction)
+
         self.MenuArchivo.setMenu(archivoMenu)
-        #self.MenuArchivo.setDefaultAction(QAction("Abrir",self))
-        self.MenuArchivo.triggered.connect(self.archivoMenu_Default)
+        self.MenuArchivo.setDefaultAction(QAction("Abrir",self.MainFrame))
+        #self.MenuArchivo.triggered.connect(self.archivoMenu_Default)   
 
     def defineMenuConfiguraciones(self):
         configuracionesMenu = QMenu()
@@ -232,18 +239,18 @@ class UIMainWindow(object):
 
         self.MenuConfiguraciones.setMenu(configuracionesMenu)
         #self.MenuArchivo.setDefaultAction(QAction("Abrir",self))
-        self.MenuConfiguraciones.triggered.connect(self.configuracionesMenu_Default)
+        #self.MenuConfiguraciones.triggered.connect(self.configuracionesMenu_Default)
 
     def defineMenuReportes(self):
         ReportesMenu = QMenu()
-        ReportesMenu.addAction("{:15s} {:6s}".format("Reportes","Ctrl+R"),self.settings_Callback)
+        ReportesMenu.addAction("{:15s} {:6s}".format("Reportes","Ctrl+R"),self.reports_Callback)
         self.MenuReportes.setMenu(ReportesMenu)
         #self.MenuArchivo.setDefaultAction(QAction("Abrir",self))
-        self.MenuReportes.triggered.connect(self.reports_Callback)
+        #self.MenuReportes.triggered.connect(self.reports_Callback)
 
     # methods of reports:menu
     def reports_Callback(self):
-            pass
+            print("reportes")
 
     # methods of settings:menu
     def configuracionesMenu_Default(self):
@@ -264,22 +271,24 @@ class UIMainWindow(object):
     # methods of archive:menu
     def archivoMenu_Default(self):
             print("Default")
+    @pyqtSlot()
     def new_Callback(self):
             print("nuevo clicked")
     def open_Callback(self):
-            pass
+        dialog = UIAbrir(self)
+        dialog.show()
     def save_Callback(self):
-            pass
+            print("save")
     def saveAs_Callback(self):
-            pass
+            print("save as")
     def close_Callback(self):
-            pass
+        print("close")
     def delete_Callback(self):
-            pass
+        print("delete")
     def logout_CallbacK(self):
-            pass
+        print("logout")
     def exit_Callback(self):
-            pass
+        print("exiit")
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
