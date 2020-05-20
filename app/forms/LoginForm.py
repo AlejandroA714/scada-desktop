@@ -1,18 +1,24 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import QThreadPool, Qt
 from PyQt5.QtGui import QMovie, QPainter, QPixmap
-from PyQt5.QtWidgets import QDesktopWidget,QMessageBox, QApplication, QGraphicsDropShadowEffect, QMainWindow
-from resources.resources import *
+from PyQt5.QtWidgets import QMessageBox, QApplication, QGraphicsDropShadowEffect, QMainWindow, QApplication, QShortcut
+from PyQt5.QtGui import QKeySequence, QKeyEvent
 from classes.logica import Logica
 from classes.worker import Worker
-from forms.MainForm import UIMainWindow
+from classes.form import form
+from resources.resources import *
 
 
-class UILogin(object):
+class UILogin(form):
 
-    threadpool = QThreadPool()
+    def __init__(self):
+        super(UILogin,self).__init__()
+        self.setWindowFlags(Qt.FramelessWindowHint)
+        self.setAttribute(Qt.WA_TranslucentBackground)  
+        self.setupUi()
 
-    def setupUi(self, Login):
+    def setupUi(self):
+        Login = self
         Login.setObjectName("Login")
         Login.resize(427, 548)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Maximum)
@@ -28,7 +34,7 @@ class UILogin(object):
         Login.setFont(font)
         Login.setContextMenuPolicy(QtCore.Qt.NoContextMenu)
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap("../../../../.designer/if_16_1751363.ico"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon.addPixmap(QtGui.QPixmap(":/source/img/if_16_1751363.ico"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         Login.setWindowIcon(icon)
         Login.setStyleSheet("background-color: rgb(255, 255, 255);")
         Login.setInputMethodHints(QtCore.Qt.ImhSensitiveData)
@@ -152,6 +158,11 @@ class UILogin(object):
         self.center()
         self.retranslateUi(Login)
         QtCore.QMetaObject.connectSlotsByName(Login)
+
+        # shorcut
+        
+        self.shortcut = QShortcut(Qt.Key_Return,self)
+        self.shortcut.activated.connect(self.btnAceptar_Click)
         
         # movie
 
@@ -168,17 +179,6 @@ class UILogin(object):
         self.btnExit.clicked.connect(self.exit)
         
         # end
-    def exit(self):
-        reply = QMessageBox.question(
-            self, "Confirmacion",
-            "¿Seguro que desea salir?",
-            QMessageBox.Yes | QMessageBox.No)
-
-        if reply == QMessageBox.Yes:
-            QApplication.exit()
-        else:
-            pass
-
     def btnAceptar_Click(self):
         if(self.txtUsuario.text() == "" or self.txtPassword.text() == ""):
             QMessageBox.warning(self,"¡Advertencia!","Rellene los campos solicitados")
@@ -192,6 +192,9 @@ class UILogin(object):
         worker.signals.result.connect(self.btnAceptar_CallBack)
         worker.signals.error.connect(self.btnAceptar_CallBack)
         self.threadpool.start(worker)
+
+    def on_open(self):
+        print('Ctrl O has been fired')
 
     def btnAceptar_CallBack(self,s):
         self.lblmovie.hide()
@@ -212,9 +215,11 @@ class UILogin(object):
         if(s["Id"] != "" and s["Enabled"] == False): # If Enabled is false, then cannot login
             QMessageBox.warning(self,"¡Advertencia!", "Usuario no tiene permitido iniciar sesion")
             return
-        main = UIMainWindow()
-        main.setupUi(self)
-        
+        self.txtUsuario.setText("")
+        self.txtPassword.setText("")
+        self.signals.login.emit(s)
+        self.close()
+                
     def retranslateUi(self, Login):
         _translate = QtCore.QCoreApplication.translate
         Login.setWindowTitle(_translate("Login", "Sistema SCADA"))
@@ -223,14 +228,3 @@ class UILogin(object):
         self.label_4.setText(_translate("Login", "Iniciar Sesiòn"))
         self.label_5.setText(_translate("Login", "Credenciales"))
         self.label_2.setText(_translate("Login", "SCADA"))
-
-    def center(self):
-        qr = self.frameGeometry()
-        cp = QDesktopWidget().availableGeometry().center()
-        qr.moveCenter(cp)
-        self.move(qr.topLeft())
-
-
-
-
-

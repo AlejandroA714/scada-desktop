@@ -3,14 +3,14 @@ from PyQt5.QtWidgets import QDialog, QMainWindow, QMessageBox
 from PyQt5.QtCore import Qt,QObject, pyqtSlot, pyqtSignal
 
 
-class ModalSignals(QObject): # A class to emit signals at execution
+class modalSignals(QObject): # A class to emit signals at execution
 
     canceled = pyqtSignal()
     success = pyqtSignal(object)
 
-class Modal(QDialog): # Class to be inherit to convert a window into a modal
+class modal(QDialog): # Class to be inherit to convert a window into a modal
     
-    signals = ModalSignals() # Instance signals to be emited
+    signals = modalSignals() # Instance signals to be emited
 
     def __init__(self,Parent): #Parent must be a QMainWindow
         QDialog.__init__(self,Parent)

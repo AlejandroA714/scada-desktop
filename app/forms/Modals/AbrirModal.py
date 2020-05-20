@@ -1,11 +1,11 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets  import QGraphicsDropShadowEffect
 from resources.resources import *
-from classes.Modal import Modal
+from classes.modal import modal
 
-class UIAbrir(Modal):
+class UIAbrir(modal):
     
-    def __init__(self,MainWindow):
+    def __init__(self,MainWindow): # MainWindow acts like a parent
         super(UIAbrir,self).__init__(MainWindow)
         self.setupUI()
 
@@ -27,7 +27,7 @@ class UIAbrir(Modal):
         Login.setFont(font)
         Login.setContextMenuPolicy(QtCore.Qt.NoContextMenu)
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap("../../../../../.designer/if_16_1751363.ico"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon.addPixmap(QtGui.QPixmap(":/source/img/if_16_1751363.ico"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         Login.setWindowIcon(icon)
         Login.setStyleSheet("background-color: rgb(255, 255, 255);")
         Login.setInputMethodHints(QtCore.Qt.ImhSensitiveData)

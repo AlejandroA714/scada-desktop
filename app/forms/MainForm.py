@@ -1,12 +1,20 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtWidgets import QMainWindow, QAction, QMenu, QDialog
+from PyQt5.QtWidgets import QMainWindow, QAction, QMenu, QMessageBox, QShortcut
 from PyQt5.QtCore import Qt, pyqtSlot
-from PyQt5.QtGui import QKeySequence, QKeyEvent
-from resources.resources import *
+from PyQt5.QtGui import QKeySequence
+from classes.form import form
 from forms.Modals.AbrirModal import UIAbrir
-class UIMainWindow(object):
+from resources.resources import *
 
-    def setupUi(self,MainWindow):
+
+class UIMainWindow(form):
+
+    def __init__(self):
+        super(UIMainWindow,self).__init__()
+        self.setupUi()
+
+    def setupUi(self):
+        MainWindow = self
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(820, 720)
         MainWindow.setMinimumSize(QtCore.QSize(820, 680))
@@ -193,17 +201,52 @@ class UIMainWindow(object):
         self.verticalLayout_2.addWidget(self.frame_4)
         self.verticalLayout.addWidget(self.frame)
         MainWindow.setCentralWidget(self.MainFrame)
-
-        self.retranslateUi(MainWindow)
-        QtCore.QMetaObject.connectSlotsByName(MainWindow)
-        QMainWindow.setWindowFlags(MainWindow,Qt.WindowFlags() & ~Qt.FramelessWindowHint )
-        QMainWindow.show(MainWindow)
-        
-        #self.MenuArchivo.setDefaultAction(QAction("Abrir",self))
-
         self.defineMenuArchivo()
         self.defineMenuConfiguraciones()
         self.defineMenuReportes()
+        self.retranslateUi(MainWindow)
+        QtCore.QMetaObject.connectSlotsByName(MainWindow)
+
+        #shortcut
+
+        self.shortcut_new = QShortcut(QKeySequence(Qt.CTRL+Qt.Key_N),self)
+        self.shortcut_new.activated.connect(self.new_Callback)
+        self.shortcut_open = QShortcut(QKeySequence(Qt.CTRL+Qt.Key_A),self)
+        self.shortcut_open.activated.connect(self.open_Callback)
+        self.shortcut_save = QShortcut(QKeySequence(Qt.CTRL+Qt.Key_S),self)
+        self.shortcut_save.activated.connect(self.save_Callback)
+        self.shortcut_saveAs = QShortcut(QKeySequence(Qt.CTRL+Qt.Key_G),self)
+        self.shortcut_saveAs.activated.connect(self.saveAs_Callback)
+        self.shortcut_close = QShortcut(QKeySequence(Qt.CTRL+Qt.Key_E),self)
+        self.shortcut_close.activated.connect(self.close_Callback)
+        self.shortcut_delete = QShortcut(QKeySequence(Qt.CTRL+Qt.Key_X),self)
+        self.shortcut_delete.activated.connect(self.delete_Callback)
+        self.shortcut_logout = QShortcut(QKeySequence(Qt.CTRL+Qt.Key_Z),self)
+        self.shortcut_logout.activated.connect(self.logout_CallbacK)
+        self.shortcut_exit = QShortcut(QKeySequence(Qt.Key_Alt+Qt.Key_F4),self)
+        self.shortcut_exit.activated.connect(self.close_Callback)
+
+        self.shortcut_settings = QShortcut(QKeySequence(Qt.CTRL+Qt.Key_C),self)
+        self.shortcut_settings.activated.connect(self.settings_Callback)
+        self.shortcut_devices = QShortcut(QKeySequence(Qt.CTRL+Qt.Key_D),self)
+        self.shortcut_devices.activated.connect(self.devices_Callback)
+        self.shortcut_api = QShortcut(QKeySequence(Qt.CTRL+Qt.Key_H),self)
+        self.shortcut_api.activated.connect(self.api_Callback)
+        self.shortcut_users = QShortcut(QKeySequence(Qt.CTRL+Qt.Key_U),self)
+        self.shortcut_users.activated.connect(self.users_Callback)
+        self.shortcut_account = QShortcut(QKeySequence(Qt.CTRL+Qt.Key_P),self)
+        self.shortcut_account.activated.connect(self.account_Callback)
+
+        self.shortcut_reportes = QShortcut(QKeySequence(Qt.CTRL+Qt.Key_R),self)
+        self.shortcut_reportes.activated.connect(self.reports_Callback)
+
+        # listener
+
+    def closeEvent(self,event): # asks if user wants to close application
+        if (event.spontaneous()) == False: 
+            event.accept() 
+            return
+        self.exit(event)
 
     def defineMenuArchivo(self):
         # Definicion de menus
@@ -213,16 +256,9 @@ class UIMainWindow(object):
         archivoMenu.addAction("{:13s} {:6s}".format("Guardar","Ctrl+S"),self.save_Callback)
         archivoMenu.addAction("{:13s} {:6s}".format("Guardar Como","Ctrl+G"),self.saveAs_Callback)
         archivoMenu.addAction("{:13s} {:6s}".format("Cerrar","Ctrl+E"),self.close_Callback)
-        archivoMenu.addAction("{:13s} {:6s}".format("Eliminar","Ctrl+Supr"), self.delete_Callback)
-        archivoMenu.addAction("{:13s} {:6s}".format("Cerrar Sesiòn","Ctrl+X"),self.logout_CallbacK)
+        archivoMenu.addAction("{:13s} {:6s}".format("Eliminar","Ctrl+X"), self.delete_Callback)
+        archivoMenu.addAction("{:13s} {:6s}".format("Cerrar Sesiòn","Ctrl+Z"),self.logout_CallbacK)
         archivoMenu.addAction("{:13s} {:6s}".format("Sair","Alt+f4"),self.exit_Callback)
-
-
-        abrirAction = QAction("Shortcut Ctrl+N")
-        abrirAction.setShortcut("Ctrl+A")
-        abrirAction.triggered.connect(self.new_Callback)
-
-        archivoMenu.addAction(abrirAction)
 
         self.MenuArchivo.setMenu(archivoMenu)
         self.MenuArchivo.setDefaultAction(QAction("Abrir",self.MainFrame))
@@ -254,26 +290,26 @@ class UIMainWindow(object):
 
     # methods of settings:menu
     def configuracionesMenu_Default(self):
-            pass
+        print("settings")
     def settings_Callback(self):
-            pass
+        print("settings")
     def devices_Callback(self):
-            pass
+        print("devices")
     def api_Callback(self):
-            pass
+        print("api")
     def users_Callback(self):
-            pass
+        print("users")
     def account_Callback(self):
-            pass
+        print("account")
     def about_Callback(self):
-            pass
+        print("about")
 
     # methods of archive:menu
     def archivoMenu_Default(self):
             print("Default")
     @pyqtSlot()
     def new_Callback(self):
-            print("nuevo clicked")
+        print("new_callback")
     def open_Callback(self):
         dialog = UIAbrir(self)
         dialog.show()
@@ -283,12 +319,26 @@ class UIMainWindow(object):
             print("save as")
     def close_Callback(self):
         print("close")
+
     def delete_Callback(self):
         print("delete")
+
     def logout_CallbacK(self):
-        print("logout")
+        reply = QMessageBox.question(
+            self, "Confirmacion",
+            "¿Cerrar Sesiòn?",
+            QMessageBox.Yes | QMessageBox.No)
+        if reply == QMessageBox.Yes:
+            self.signals.logout.emit()
+            self.close()
+
     def exit_Callback(self):
-        print("exiit")
+        reply = QMessageBox.question(
+            self, "Confirmacion",
+            "¿Seguro que desea salir?",
+            QMessageBox.Yes | QMessageBox.No)
+        if reply == QMessageBox.Yes:
+            self.close()
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate
