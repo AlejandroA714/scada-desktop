@@ -1,4 +1,3 @@
-import PyQt5
 from PyQt5.QtWidgets import QDialog, QMainWindow, QMessageBox
 from PyQt5.QtCore import Qt,QObject, pyqtSlot, pyqtSignal
 

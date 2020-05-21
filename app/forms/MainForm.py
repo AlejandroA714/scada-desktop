@@ -3,7 +3,7 @@ from PyQt5.QtWidgets import QMainWindow, QAction, QMenu, QMessageBox, QShortcut
 from PyQt5.QtCore import Qt, pyqtSlot
 from PyQt5.QtGui import QKeySequence
 from classes.form import form
-from forms.Modals.AbrirModal import UIAbrir
+from forms.Modals.AbrirModal import UIAbrirModal
 from resources.resources import *
 
 
@@ -311,7 +311,7 @@ class UIMainWindow(form):
     def new_Callback(self):
         print("new_callback")
     def open_Callback(self):
-        dialog = UIAbrir(self)
+        dialog = UIAbrirModal(self)
         dialog.show()
     def save_Callback(self):
             print("save")
