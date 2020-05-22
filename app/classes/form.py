@@ -15,6 +15,7 @@ class form(QMainWindow): # class to be inherit to make a main window
 
     threadpool = QThreadPool()
     signals = formSignals()
+    session = None
 
     def __init__(self):
         QMainWindow.__init__(self)

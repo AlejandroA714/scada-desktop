@@ -193,19 +193,12 @@ class UILogin(form):
         worker.signals.error.connect(self.btnAceptar_CallBack)
         self.threadpool.start(worker)
 
-    def on_open(self):
-        print('Ctrl O has been fired')
-
     def btnAceptar_CallBack(self,s):
         self.lblmovie.hide()
         self.btnAceptar.show()
         if isinstance(s,Exception):
-            self.lblmovie.hide()
-            self.btnAceptar.show()
             QMessageBox.information(self,"¡Error!", "¡Error! %s" % str(s))
             return
-        self.lblmovie.hide()
-        self.btnAceptar.show()
         if(s["Id"] is None): # If returns None, API is online, but mongodb isnt
             QMessageBox.warning(self,"¡Error!", "No se pudo iniciar sesion")
             return

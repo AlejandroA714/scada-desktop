@@ -18,6 +18,11 @@ class Logica():
         return _answer
 
     @staticmethod
+    def ObtenerProyectos(**kwargs):
+        _headers = {'Authorization': 'Bearer ' + kwargs["access_token"]}
+        _answer = (requests.get("http://%s:%s/Controles/MostrarTodos" % (Logica.settings["APISCADA"]["Host"],Logica.settings["APISCADA"]["Port"]), timeout = 45, headers=_headers)).json()
+        return _answer
+    @staticmethod
     def LeerConfiguracion():
         try:
             file =  open("%s/Sistema SCADA/setting.json" % Logica.__program_files,"r")
@@ -33,12 +38,6 @@ class Logica():
             file.write(json.dumps(settings))
             file.close()
             return settings
-
-
-
-
-
-
 
 
 

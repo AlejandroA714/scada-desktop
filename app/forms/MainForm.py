@@ -13,6 +13,7 @@ class UIMainWindow(form):
         super(UIMainWindow,self).__init__()
         self.setupUi()
 
+
     def setupUi(self):
         MainWindow = self
         MainWindow.setObjectName("MainWindow")
@@ -311,7 +312,7 @@ class UIMainWindow(form):
     def new_Callback(self):
         print("new_callback")
     def open_Callback(self):
-        dialog = UIAbrirModal(self)
+        dialog = UIAbrirModal(self,self.session)
         dialog.show()
     def save_Callback(self):
             print("save")

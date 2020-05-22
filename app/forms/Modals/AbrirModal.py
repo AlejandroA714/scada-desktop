@@ -1,15 +1,18 @@
+from PyQt5.QtWidgets import QGraphicsDropShadowEffect, QMessageBox
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtWidgets import QGraphicsDropShadowEffect
+from forms.Widgets.ProyectoWidget import UIWidgetP
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QMovie
 from classes.modal import modal
-from forms.Widgets.ProyectoWidget import UIWidgetP
+from classes.logica import Logica
+from classes.worker import Worker
 from resources.resources import *
+from classes.objects.workSpace import workSpace
 
 class UIAbrirModal(modal):
 
-    def __init__(self,MainWindow):
-        super(UIAbrirModal,self).__init__(MainWindow)
+    def __init__(self,MainWindow,session:object):
+        super(UIAbrirModal,self).__init__(MainWindow,session)
         self.setupUi()
 
     def setupUi(self):
@@ -168,39 +171,116 @@ class UIAbrirModal(modal):
         font.setBold(True)
         font.setWeight(75)
         self.ContentBox.setFont(font)
-        self.ContentBox.setStyleSheet("")
+        self.ContentBox.setStyleSheet("background-color: rgb(255, 255, 255);")
         self.ContentBox.setAlignment(QtCore.Qt.AlignBottom|QtCore.Qt.AlignLeading|QtCore.Qt.AlignLeft)
         self.ContentBox.setFlat(True)
         self.ContentBox.setObjectName("ContentBox")
         self.verticalLayout_3 = QtWidgets.QVBoxLayout(self.ContentBox)
-        self.verticalLayout_3.setContentsMargins(9, 9, 9, 9)
+        self.verticalLayout_3.setContentsMargins(9, 5, -1, 5)
         self.verticalLayout_3.setSpacing(5)
         self.verticalLayout_3.setObjectName("verticalLayout_3")
+        self.UtilsFrame = QtWidgets.QFrame(self.ContentBox)
+        self.UtilsFrame.setMinimumSize(QtCore.QSize(256, 132))
+        self.UtilsFrame.setMaximumSize(QtCore.QSize(128, 128))
+        self.UtilsFrame.setStyleSheet("background-color: rgb(252, 252, 252);")
+        self.UtilsFrame.setFrameShape(QtWidgets.QFrame.NoFrame)
+        self.UtilsFrame.setFrameShadow(QtWidgets.QFrame.Plain)
+        self.UtilsFrame.setLineWidth(0)
+        self.UtilsFrame.setObjectName("UtilsFrame")
+        self.utilsLayout = QtWidgets.QVBoxLayout(self.UtilsFrame)
+        self.utilsLayout.setContentsMargins(0, 0, 0, 0)
+        self.utilsLayout.setSpacing(0)
+        self.utilsLayout.setObjectName("utilsLayout")
+        self.Status = QtWidgets.QLabel(self.UtilsFrame)
+        self.Status.setMaximumSize(QtCore.QSize(64, 64))
+        self.Status.setText("")
+        #self.Status.setPixmap(QtGui.QPixmap(":/source/img/Cargando.gif"))
+        self.Status.setScaledContents(True)
+        self.Status.setObjectName("Status")
+        self.utilsLayout.addWidget(self.Status, 0, QtCore.Qt.AlignHCenter)
+        self.lblStatus = QtWidgets.QLabel(self.UtilsFrame)
+        self.lblStatus.setMaximumSize(QtCore.QSize(16777215, 24))
+        font = QtGui.QFont()
+        font.setFamily("Roboto")
+        font.setPointSize(11)
+        font.setBold(True)
+        font.setWeight(75)
+        self.lblStatus.setFont(font)
+        self.lblStatus.setAlignment(QtCore.Qt.AlignCenter)
+        self.lblStatus.setObjectName("lblStatus")
+        self.utilsLayout.addWidget(self.lblStatus)
+        self.btnReload = QtWidgets.QPushButton(self.UtilsFrame)
+        self.btnReload.setMinimumSize(QtCore.QSize(0, 16))
+        self.btnReload.setMaximumSize(QtCore.QSize(132, 42))
+        font = QtGui.QFont()
+        font.setFamily("Roboto")
+        font.setPointSize(11)
+        font.setBold(True)
+        font.setWeight(75)
+        self.btnReload.setFont(font)
+        self.btnReload.setStyleSheet("border: 1px solid rgb(0, 170, 255);padding:5px;")
+        icon2 = QtGui.QIcon()
+        icon2.addPixmap(QtGui.QPixmap(":/source/img/retry.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.btnReload.setIcon(icon2)
+        self.btnReload.setIconSize(QtCore.QSize(24, 24))
+        self.btnReload.setFlat(True)
+        self.btnReload.setObjectName("btnReload")
+        self.utilsLayout.addWidget(self.btnReload, 0, QtCore.Qt.AlignHCenter)
+        self.verticalLayout_3.addWidget(self.UtilsFrame, 0, QtCore.Qt.AlignHCenter)
         self.verticalLayout_2.addWidget(self.ContentBox, 0, QtCore.Qt.AlignHCenter)
         self.verticalLayout.addWidget(self.MainFrame)
         self.retranslateUi(AbrirModal)
         QtCore.QMetaObject.connectSlotsByName(AbrirModal)
-        
+        self.btnReload.hide()
+
         # lblMovie
-        self.lblmovie = QtWidgets.QLabel(self.ContentBox)
-        self.movie = QMovie(":/source/img/Cargando.gif") # 80 ,20
-        self.lblmovie.setGeometry(QtCore.QRect(0,0,64,64))
-        self.lblmovie.setMovie(self.movie)
-        self.movie.start()
+        self.movie = QMovie(":/source/img/Cargando.gif")
         self.movie.setScaledSize(QtCore.QSize(64,64))
-        self.lblmovie.setAlignment(Qt.AlignCenter)
-        #self.lblmovie.setSizePolicy(QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Maximum, QtWidgets.QSizePolicy.Maximum))
-        self.verticalLayout_3.addWidget(self.lblmovie)
+        self.movie.start()
+        self.Status.setMovie(self.movie)
 
-
-        #test = UIWidgetP(0)
-        #self.verticalLayout_3.addWidget(test)
-        #test2 = UIWidgetP(45)
-        #self.verticalLayout_3.addWidget(test2)
-        #listener
-
+        # listener
         self.btnExit.clicked.connect(self.exit)
+        self.btnReload.clicked.connect(self.btnReload_click)
 
+    def showEvent(self,event):
+        self.obtenerProyectos()
+
+    def obtenerProyectos(self):
+        self.btnReload.hide()
+        self.lblStatus.setText("Cargando...")
+        self.movie = QMovie(":/source/img/Cargando.gif")
+        self.movie.start()
+        self.Status.setMovie(self.movie)
+        worker = Worker(Logica.ObtenerProyectos,**{"access_token":self.getAccessToken()})
+        worker.signals.result.connect(self.showCallback)
+        worker.signals.error.connect(self.showCallback)
+        self.threadpool.start(worker)
+
+
+    def showCallback(self,_data):
+        if isinstance(_data,Exception): # if data returned is a Exception
+            self.btnReload.show()
+            self.lblStatus.setText("¡Error! Ha ocurrido un error")
+            self.movie = QMovie(":/source/img/Error.png")
+            self.movie.start()
+            self.Status.setMovie(self.movie)
+            return
+        if len(_data) == 0:
+            self.btnReload.show()
+            self.lblStatus.setText("¡Vacio! No hay nada")
+            self.movie = QMovie(":/source/img/Empty.png")
+            self.movie.start()
+            self.Status.setMovie(self.movie)
+            return
+        asd = workSpace()
+
+    
+
+
+
+    def btnReload_click(self):
+        self.obtenerProyectos()
 
     def retranslateUi(self, AbrirModal):
         _translate = QtCore.QCoreApplication.translate
@@ -208,4 +288,6 @@ class UIAbrirModal(modal):
         self.lblSCADA.setText(_translate("AbrirModal", "SCADA"))
         self.lblTitle.setText(_translate("AbrirModal", "Abrir"))
         self.ContentBox.setTitle(_translate("AbrirModal", "Proyectos"))
+        self.lblStatus.setText(_translate("AbrirModal", "Cargando..."))
+        self.btnReload.setText(_translate("AbrirModal", "Reintentar"))
 

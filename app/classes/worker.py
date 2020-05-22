@@ -32,8 +32,6 @@ class Worker(QRunnable): # Class to execute a function inside a thread
         except Exception as e:
             Logger.log_error(e)
             traceback.print_exc()
-            #print(sys.exc_info)
-            #exctype, value = sys.exc_info()[:2]
             self.signals.error.emit(e)
         else:
             self.signals.result.emit(result)  # Return the result of the processing

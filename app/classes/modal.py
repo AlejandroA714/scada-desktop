@@ -1,5 +1,5 @@
 from PyQt5.QtWidgets import QDialog, QMainWindow, QMessageBox
-from PyQt5.QtCore import Qt,QObject, pyqtSlot, pyqtSignal
+from PyQt5.QtCore import Qt,QObject, pyqtSlot, pyqtSignal, QThreadPool
 
 
 class modalSignals(QObject): # A class to emit signals at execution
@@ -10,8 +10,12 @@ class modalSignals(QObject): # A class to emit signals at execution
 class modal(QDialog): # Class to be inherit to convert a window into a modal
     
     signals = modalSignals() # Instance signals to be emited
+    threadpool = QThreadPool()
+    __session = None # session object
 
-    def __init__(self,Parent): #Parent must be a QMainWindow
+    def __init__(self,Parent,session = None): #Parent must be a QMainWindow
+        if(session == None): return
+        else: self.__session = session
         QDialog.__init__(self,Parent)
         self.setWindowFlags(Qt.FramelessWindowHint) # removes borders
         self.setAttribute(Qt.WA_TranslucentBackground) # Making it translucent to make a trick with the shadows
@@ -32,6 +36,16 @@ class modal(QDialog): # Class to be inherit to convert a window into a modal
         else:
             pass
     
+    def getAccessToken(self):
+        if self.__session != None:
+            return self.__session["access_token"]
+        else:
+            return None
+
     def success(self,_x:object): # this function is responsible to emit a success signal, if dialog was success
         self.signals.success.emit(_x)
         self.close()
+    
+    def cancel(self):
+        self.signals.canceled.emit()
+        self.close
