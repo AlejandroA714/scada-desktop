@@ -2,22 +2,25 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QWidget
 from classes.widget import widget
 from resources.resources import *
-
+from classes.objects.workSpace import workSpace
 
 class UIWidgetP(widget):
 
-    def __init__(self,y):
-        super(UIWidgetP,self).__init__()
-        self.setupUi(y)
+    __workSpace:workSpace = None
 
-    def setupUi(self,y):
+    def __init__(self, workSpace:workSpace):
+        self.__workSpace = workSpace
+        super(UIWidgetP,self).__init__()
+        self.setupUi()
+
+    def setupUi(self):
         Form = self
         Form.setObjectName("Form")
         Form.setWindowModality(QtCore.Qt.WindowModal)
         Form.resize(376, 88)
         Form.setStyleSheet("background-color: rgb(255, 255, 255);")
         self.ProjectFrame = QtWidgets.QFrame(Form)
-        self.ProjectFrame.setGeometry(QtCore.QRect(0, y, 377, 91))
+        self.ProjectFrame.setGeometry(QtCore.QRect(0, 0, 377, 91))
         self.ProjectFrame.setMaximumSize(QtCore.QSize(16777215, 91))
         self.ProjectFrame.setFrameShape(QtWidgets.QFrame.StyledPanel)
         self.ProjectFrame.setFrameShadow(QtWidgets.QFrame.Raised)
@@ -69,13 +72,15 @@ class UIWidgetP(widget):
         self.retranslateUi(Form)
         QtCore.QMetaObject.connectSlotsByName(Form)
 
+        self.btnAbrir.clicked.connect(lambda : self.sucess(self.__workSpace))
+
     def retranslateUi(self, Form):
         _translate = QtCore.QCoreApplication.translate
         Form.setWindowTitle(_translate("Form", "Form"))
-        self.lblCount.setText(_translate("Form", "Contiene 1 Controlador"))
+        self.lblCount.setText(_translate("Form", "Contiene %s Controladores" % self.__workSpace.devicesCount))
         self.ProjectTitle.setHtml(_translate("Form", "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\" \"http://www.w3.org/TR/REC-html40/strict.dtd\">\n"
 "<html><head><meta name=\"qrichtext\" content=\"1\" /><style type=\"text/css\">\n"
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:\'Roboto\'; font-size:11pt; font-weight:600; font-style:normal;\">\n"
-"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:\'Noto Sans\';\">Proyecto 1</span></p></body></html>"))
+"<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:\'Noto Sans\';\">%s</span></p></body></html>") % self.__workSpace.nombre )
         self.btnAbrir.setText(_translate("Form", "Abrir"))

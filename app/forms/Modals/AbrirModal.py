@@ -6,8 +6,9 @@ from PyQt5.QtGui import QMovie
 from classes.modal import modal
 from classes.logica import Logica
 from classes.worker import Worker
-from resources.resources import *
 from classes.objects.workSpace import workSpace
+from resources.resources import *
+from array import array
 
 class UIAbrirModal(modal):
 
@@ -273,12 +274,13 @@ class UIAbrirModal(modal):
             self.movie.start()
             self.Status.setMovie(self.movie)
             return
-        asd = workSpace()
+        self.UtilsFrame.deleteLater()
 
-    
-
-
-
+        for workSpace in _data:
+            WidgetP = UIWidgetP(workSpace)
+            WidgetP.signals.sucess.connect(self.success)
+            self.verticalLayout_3.addWidget(WidgetP)
+        
     def btnReload_click(self):
         self.obtenerProyectos()
 

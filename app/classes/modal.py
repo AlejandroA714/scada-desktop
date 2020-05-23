@@ -9,11 +9,10 @@ class modalSignals(QObject): # A class to emit signals at execution
 
 class modal(QDialog): # Class to be inherit to convert a window into a modal
     
-    signals = modalSignals() # Instance signals to be emited
-    threadpool = QThreadPool()
-    __session = None # session object
-
     def __init__(self,Parent,session = None): #Parent must be a QMainWindow
+        self.signals = modalSignals() # Instance signals to be emited
+        self.threadpool = QThreadPool()
+        self.__session = None # session object
         if(session == None): return
         else: self.__session = session
         QDialog.__init__(self,Parent)

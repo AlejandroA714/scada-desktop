@@ -7,11 +7,12 @@ class workSpace(object):
     def __init__( self, dict ):
         self.id = dict["Id"]
         self.nombre = dict["Nombre"]
-        if "Drivers" in dict.keys() : self.devices = dict["Drivers"] 
-        else : self.devices = None
+        if "Drivers" in dict.keys() : 
+            self.devices = dict["Drivers"] 
+        else : 
+            self.devices = None
         self.devicesCount = dict["DriversCount"]
-        print(vars(self))
-
+        
     @property
     def id(self):
         return self.__id

@@ -1,0 +1,12 @@
+{
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Scada Debug",
+            "type": "python",
+            "request": "launch",
+            "program": "${workSpaceFolder}app/main.py",
+            "console": "integratedTerminal"
+        }
+    ]
+}

@@ -7,6 +7,10 @@ access_token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE1OTAxODI1MTgsIm5
 
 result = Logica.ObtenerProyectos(**{"access_token":access_token})
 
-json:workSpace = json.loads(json.dumps(result[0]),object_hook=workSpace)
+print(result)
 
-print(json.toJSON())
+
+
+#print(json)
+#print(len(json))
+#print(json.toJSON())

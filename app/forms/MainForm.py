@@ -249,6 +249,9 @@ class UIMainWindow(form):
             return
         self.exit(event)
 
+    def openMenu_Callback(self,workSpace):
+        print(workSpace.__dict__)
+
     def defineMenuArchivo(self):
         # Definicion de menus
         archivoMenu = QMenu()
@@ -307,13 +310,13 @@ class UIMainWindow(form):
 
     # methods of archive:menu
     def archivoMenu_Default(self):
-            print("Default")
-    @pyqtSlot()
+        print("Default")
     def new_Callback(self):
         print("new_callback")
     def open_Callback(self):
         dialog = UIAbrirModal(self,self.session)
         dialog.show()
+        dialog.signals.success.connect(self.openMenu_Callback)
     def save_Callback(self):
             print("save")
     def saveAs_Callback(self):

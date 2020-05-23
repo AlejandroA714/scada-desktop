@@ -1,5 +1,5 @@
 import sys, traceback, logging, os
-from classes.logger import Logger
+#from classes.logger import Logger
 from PyQt5.QtCore import QObject, QRunnable, pyqtSignal, pyqtSlot
 from PyQt5.QtWidgets import QMessageBox
 
@@ -30,7 +30,7 @@ class Worker(QRunnable): # Class to execute a function inside a thread
         try:
             result = self.fn(*self.args, **self.kwargs) #Execute function, passing args and kwargs, always recibe **kwargs as json object
         except Exception as e:
-            Logger.log_error(e)
+            #Logger.log_error(e)
             traceback.print_exc()
             self.signals.error.emit(e)
         else:
