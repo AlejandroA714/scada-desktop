@@ -3,9 +3,9 @@ from PyQt5.QtCore import QThreadPool, Qt
 from PyQt5.QtGui import QMovie, QPainter, QPixmap
 from PyQt5.QtWidgets import QMessageBox, QApplication, QGraphicsDropShadowEffect, QMainWindow, QApplication, QShortcut
 from PyQt5.QtGui import QKeySequence, QKeyEvent
-from classes.logica import Logica
-from classes.worker import Worker
-from classes.form import form
+from classes.utils.logica import Logica
+from classes.utils.worker import Worker
+from classes.inheritables.form import form
 from resources.resources import *
 
 
@@ -213,6 +213,17 @@ class UILogin(form):
         self.signals.login.emit(s)
         self.close()
                 
+    def mousePressEvent(self, event):
+        if event.buttons() == Qt.LeftButton:
+            self.dragPos = event.globalPos()
+            event.accept()
+
+    def mouseMoveEvent(self, event):
+        if event.buttons() == Qt.LeftButton:
+            self.move(self.pos() + event.globalPos() - self.dragPos)
+            self.dragPos = event.globalPos()
+            event.accept()
+            
     def retranslateUi(self, Login):
         _translate = QtCore.QCoreApplication.translate
         Login.setWindowTitle(_translate("Login", "Sistema SCADA"))

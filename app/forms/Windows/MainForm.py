@@ -2,7 +2,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QMainWindow, QAction, QMenu, QMessageBox, QShortcut
 from PyQt5.QtCore import Qt, pyqtSlot
 from PyQt5.QtGui import QKeySequence
-from classes.form import form
+from classes.inheritables.form import form
 from forms.Modals.AbrirModal import UIAbrirModal
 from resources.resources import *
 

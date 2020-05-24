@@ -3,24 +3,24 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from forms.Widgets.ProyectoWidget import UIWidgetP
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QMovie
-from classes.modal import modal
-from classes.logica import Logica
-from classes.worker import Worker
+from classes.inheritables.modal import modal
+from classes.utils.logica import Logica
+from classes.utils.worker import Worker
 from classes.objects.workSpace import workSpace
 from resources.resources import *
-from array import array
 
 class UIAbrirModal(modal):
 
     def __init__(self,MainWindow,session:object):
         super(UIAbrirModal,self).__init__(MainWindow,session)
+        self.__parent = MainWindow
         self.setupUi()
-
+    
     def setupUi(self):
         AbrirModal = self
         AbrirModal.setObjectName("AbrirModal")
         AbrirModal.setWindowModality(QtCore.Qt.WindowModal)
-        AbrirModal.resize(478, 715)
+        AbrirModal.setGeometry(0,0,478,715)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Maximum)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -34,7 +34,7 @@ class UIAbrirModal(modal):
         AbrirModal.setFont(font)
         AbrirModal.setContextMenuPolicy(QtCore.Qt.NoContextMenu)
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap("../../../../../.designer/if_16_1751363.ico"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon.addPixmap(QtGui.QPixmap(":/source/img/if_16_1751363.ico"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         AbrirModal.setWindowIcon(icon)
         AbrirModal.setStyleSheet("background-color: rgb(255, 255, 255);")
         AbrirModal.setInputMethodHints(QtCore.Qt.ImhSensitiveData)
@@ -227,24 +227,27 @@ class UIAbrirModal(modal):
         self.btnReload.setFlat(True)
         self.btnReload.setObjectName("btnReload")
         self.utilsLayout.addWidget(self.btnReload, 0, QtCore.Qt.AlignHCenter)
+        self.verticalLayout_3.setAlignment(Qt.AlignHCenter)
         self.verticalLayout_3.addWidget(self.UtilsFrame, 0, QtCore.Qt.AlignHCenter)
         self.verticalLayout_2.addWidget(self.ContentBox, 0, QtCore.Qt.AlignHCenter)
         self.verticalLayout.addWidget(self.MainFrame)
         self.retranslateUi(AbrirModal)
         QtCore.QMetaObject.connectSlotsByName(AbrirModal)
         self.btnReload.hide()
+        self.__parent.signals.resize.connect(lambda : self.center(self.__parent))
 
         # lblMovie
         self.movie = QMovie(":/source/img/Cargando.gif")
         self.movie.setScaledSize(QtCore.QSize(64,64))
         self.movie.start()
         self.Status.setMovie(self.movie)
-
+        
         # listener
         self.btnExit.clicked.connect(self.exit)
         self.btnReload.clicked.connect(self.btnReload_click)
 
     def showEvent(self,event):
+        self.center(self.__parent)
         self.obtenerProyectos()
 
     def obtenerProyectos(self):
@@ -258,7 +261,6 @@ class UIAbrirModal(modal):
         worker.signals.error.connect(self.showCallback)
         self.threadpool.start(worker)
 
-
     def showCallback(self,_data):
         if isinstance(_data,Exception): # if data returned is a Exception
             self.btnReload.show()
@@ -269,17 +271,17 @@ class UIAbrirModal(modal):
             return
         if len(_data) == 0:
             self.btnReload.show()
-            self.lblStatus.setText("¡Vacio! No hay nada")
+            self.lblStatus.setText("¡Vacio! Aún no hay nada")
             self.movie = QMovie(":/source/img/Empty.png")
             self.movie.start()
             self.Status.setMovie(self.movie)
             return
         self.UtilsFrame.deleteLater()
-
+        self.verticalLayout_3.setAlignment(Qt.AlignTop)
         for workSpace in _data:
             WidgetP = UIWidgetP(workSpace)
             WidgetP.signals.sucess.connect(self.success)
-            self.verticalLayout_3.addWidget(WidgetP)
+            self.verticalLayout_3.addWidget(WidgetP,0,QtCore.Qt.AlignTop)
         
     def btnReload_click(self):
         self.obtenerProyectos()

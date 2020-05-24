@@ -1,6 +1,6 @@
 from PyQt5.QtWidgets import QApplication
-from forms.LoginForm import UILogin
-from forms.MainForm import UIMainWindow
+from forms.Windows.LoginForm import UILogin
+from forms.Windows.MainForm import UIMainWindow
 
 def showMainForm(mainForm:UIMainWindow,session):
     mainForm.session = session

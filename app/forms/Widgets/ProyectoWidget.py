@@ -1,8 +1,10 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QWidget
-from classes.widget import widget
+from classes.inheritables.widget import widget
 from resources.resources import *
 from classes.objects.workSpace import workSpace
+
 
 class UIWidgetP(widget):
 
@@ -17,25 +19,19 @@ class UIWidgetP(widget):
         Form = self
         Form.setObjectName("Form")
         Form.setWindowModality(QtCore.Qt.WindowModal)
-        Form.resize(376, 88)
+        Form.resize(376, 91)
+        Form.setMinimumSize(QtCore.QSize(0, 91))
         Form.setStyleSheet("background-color: rgb(255, 255, 255);")
         self.ProjectFrame = QtWidgets.QFrame(Form)
         self.ProjectFrame.setGeometry(QtCore.QRect(0, 0, 377, 91))
+        self.ProjectFrame.setMinimumSize(377,91)
         self.ProjectFrame.setMaximumSize(QtCore.QSize(16777215, 91))
         self.ProjectFrame.setFrameShape(QtWidgets.QFrame.StyledPanel)
         self.ProjectFrame.setFrameShadow(QtWidgets.QFrame.Raised)
         self.ProjectFrame.setObjectName("ProjectFrame")
-        self.lblCount = QtWidgets.QLabel(self.ProjectFrame)
-        self.lblCount.setGeometry(QtCore.QRect(10, 60, 181, 17))
-        font = QtGui.QFont()
-        font.setFamily("Roboto")
-        font.setPointSize(9)
-        font.setBold(True)
-        font.setWeight(75)
-        self.lblCount.setFont(font)
-        self.lblCount.setObjectName("lblCount")
+        self.gridLayout = QtWidgets.QGridLayout(self.ProjectFrame)
+        self.gridLayout.setObjectName("gridLayout")
         self.ProjectTitle = QtWidgets.QTextBrowser(self.ProjectFrame)
-        self.ProjectTitle.setGeometry(QtCore.QRect(10, 10, 161, 31))
         self.ProjectTitle.setMaximumSize(QtCore.QSize(161, 31))
         font = QtGui.QFont()
         font.setFamily("Roboto")
@@ -54,8 +50,28 @@ class UIWidgetP(widget):
         self.ProjectTitle.setAcceptRichText(True)
         self.ProjectTitle.setOpenLinks(False)
         self.ProjectTitle.setObjectName("ProjectTitle")
-        self.btnAbrir = QtWidgets.QPushButton(self.ProjectFrame)
-        self.btnAbrir.setGeometry(QtCore.QRect(270, 30, 91, 31))
+        self.gridLayout.addWidget(self.ProjectTitle, 0, 0, 1, 1)
+        self.lblCount = QtWidgets.QLabel(self.ProjectFrame)
+        font = QtGui.QFont()
+        font.setFamily("Roboto")
+        font.setPointSize(9)
+        font.setBold(True)
+        font.setWeight(75)
+        self.lblCount.setFont(font)
+        self.lblCount.setObjectName("lblCount")
+        self.gridLayout.addWidget(self.lblCount, 1, 0, 1, 1)
+        self.btnAbrirFrame = QtWidgets.QFrame(self.ProjectFrame)
+        self.btnAbrirFrame.setFrameShape(QtWidgets.QFrame.NoFrame)
+        self.btnAbrirFrame.setFrameShadow(QtWidgets.QFrame.Raised)
+        self.btnAbrirFrame.setLineWidth(0)
+        self.btnAbrirFrame.setObjectName("btnAbrirFrame")
+        self.btnAbrirLayout = QtWidgets.QVBoxLayout(self.btnAbrirFrame)
+        self.btnAbrirLayout.setContentsMargins(0, 0, 0, 0)
+        self.btnAbrirLayout.setSpacing(0)
+        self.btnAbrirLayout.setObjectName("btnAbrirLayout")
+        self.btnAbrir = QtWidgets.QPushButton(self.btnAbrirFrame)
+        self.btnAbrir.setMinimumSize(QtCore.QSize(91, 31))
+        self.btnAbrir.setMaximumSize(QtCore.QSize(91, 31))
         font = QtGui.QFont()
         font.setFamily("Roboto")
         font.setPointSize(11)
@@ -68,11 +84,13 @@ class UIWidgetP(widget):
         self.btnAbrir.setIcon(icon)
         self.btnAbrir.setFlat(True)
         self.btnAbrir.setObjectName("btnAbrir")
+        self.btnAbrirLayout.addWidget(self.btnAbrir, 0, QtCore.Qt.AlignHCenter)
+        self.gridLayout.addWidget(self.btnAbrirFrame, 0, 1, 2, 1)
+
+        self.btnAbrir.clicked.connect(lambda : self.sucess(self.__workSpace))
 
         self.retranslateUi(Form)
         QtCore.QMetaObject.connectSlotsByName(Form)
-
-        self.btnAbrir.clicked.connect(lambda : self.sucess(self.__workSpace))
 
     def retranslateUi(self, Form):
         _translate = QtCore.QCoreApplication.translate
@@ -84,3 +102,4 @@ class UIWidgetP(widget):
 "</style></head><body style=\" font-family:\'Roboto\'; font-size:11pt; font-weight:600; font-style:normal;\">\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:\'Noto Sans\';\">%s</span></p></body></html>") % self.__workSpace.nombre )
         self.btnAbrir.setText(_translate("Form", "Abrir"))
+

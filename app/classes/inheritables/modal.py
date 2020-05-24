@@ -11,18 +11,20 @@ class modal(QDialog): # Class to be inherit to convert a window into a modal
     
     def __init__(self,Parent,session = None): #Parent must be a QMainWindow
         self.signals = modalSignals() # Instance signals to be emited
-        self.threadpool = QThreadPool()
+        self.threadpool = QThreadPool() #QThearPool object to execute work class
         self.__session = None # session object
         if(session == None): return
         else: self.__session = session
         QDialog.__init__(self,Parent)
         self.setWindowFlags(Qt.FramelessWindowHint) # removes borders
         self.setAttribute(Qt.WA_TranslucentBackground) # Making it translucent to make a trick with the shadows
-        self.center(Parent)
 
     def center(self,parent:QMainWindow): # this function is responsible for centering the modal with respect its father
         qr = self.frameGeometry()
-        qr.moveTo(parent.rect().center())
+        pr = parent.geometry()
+        x = (parent.width() - qr.width()) / 2
+        y = (parent.height() - qr.height()) / 2 
+        self.setGeometry(x,y,qr.width(),qr.height())
 
     def exit(self): # this function is responsible to emit a cancelation signal if exit button was clicked
         reply = QMessageBox.question(
@@ -40,6 +42,17 @@ class modal(QDialog): # Class to be inherit to convert a window into a modal
             return self.__session["access_token"]
         else:
             return None
+
+    def mousePressEvent(self, event):
+        if event.buttons() == Qt.LeftButton:
+            self.dragPos = event.globalPos()
+            event.accept()
+
+    def mouseMoveEvent(self, event):
+        if event.buttons() == Qt.LeftButton:
+            self.move(self.pos() + event.globalPos() - self.dragPos)
+            self.dragPos = event.globalPos()
+            event.accept()
 
     def success(self,_x:object): # this function is responsible to emit a success signal, if dialog was success
         self.signals.success.emit(_x)

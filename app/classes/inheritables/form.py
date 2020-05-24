@@ -10,6 +10,7 @@ class formSignals(QObject):
     logout = pyqtSignal()
     finish = pyqtSignal()
     error = pyqtSignal(Exception)
+    resize = pyqtSignal()
 
 class form(QMainWindow): # class to be inherit to make a main window
 
@@ -27,6 +28,9 @@ class form(QMainWindow): # class to be inherit to make a main window
         cp = QDesktopWidget().availableGeometry().center()
         qr.moveCenter(cp)
         self.move(qr.topLeft())
+
+    def resizeEvent(self,event):
+        self.signals.resize.emit()
 
     def exit(self,event):
         reply = QMessageBox.question(
