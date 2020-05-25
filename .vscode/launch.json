@@ -1,6 +1,8 @@
 {
     "version": "0.2.0",
     "configurations": [
+    {"name":"test","type":"python","request":"launch","program":"${workSpaceFolder}app/test.py","console":"integratedTerminal"},
+
         {
             "name": "Scada Debug",
             "type": "python",
