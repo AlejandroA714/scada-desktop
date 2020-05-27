@@ -7,6 +7,7 @@ from classes.inheritables.modal import modal
 from classes.utils.logica import Logica
 from classes.utils.worker import Worker
 from classes.objects.workSpace import workSpace
+from classes.utils.timer import timer
 from resources.resources import *
 
 class UIAbrirModal(modal):
@@ -242,9 +243,15 @@ class UIAbrirModal(modal):
         self.movie.start()
         self.Status.setMovie(self.movie)
         
+        #asd = timer()
+        #asd.signals.time_elapsed.connect(self.test)
+        
         # listener
         self.btnExit.clicked.connect(self.exit)
         self.btnReload.clicked.connect(self.btnReload_click)
+    
+    def test(self):
+        print("called each second")
 
     def showEvent(self,event):
         self.center(self.__parent)

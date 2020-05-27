@@ -7,9 +7,9 @@ class widgetSignals(QObject):
 
 class widget(QWidget):
 
-    def __init__(self):
+    def __init__(self,Parent=None):
         self.signals = widgetSignals()
-        QWidget.__init__(self)
+        QWidget.__init__(self,Parent)
 
     def sucess(self, result:object):
         reply = QMessageBox.question(

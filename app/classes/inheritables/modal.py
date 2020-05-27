@@ -60,4 +60,3 @@ class modal(QDialog): # Class to be inherit to convert a window into a modal
     
     def cancel(self):
         self.signals.canceled.emit()
-        self.close

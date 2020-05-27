@@ -1,7 +1,8 @@
 import sys, traceback, logging, os
-#from classes.logger import Logger
+from classes.utils.logger import logger
 from PyQt5.QtCore import QObject, QRunnable, pyqtSignal, pyqtSlot
-from PyQt5.QtWidgets import QMessageBox
+from PyQt5.QtWidgets import QMessageBox, QApplication
+from requests.exceptions import HTTPError
 
 #This file handle the execute of thread to contact with API SCADA
 # wiil call and request executing a thread to avoid program freezing
@@ -22,6 +23,7 @@ class Worker(QRunnable): # Class to execute a function inside a thread
         self.args = args
         self.kwargs = kwargs
         self.signals = WorkerSignals() 
+        self.logger = logger()
         #self.kwargs['progress_callback'] = self.signals.progress 
 
     @pyqtSlot()
@@ -30,9 +32,13 @@ class Worker(QRunnable): # Class to execute a function inside a thread
         try:
             result = self.fn(*self.args, **self.kwargs) #Execute function, passing args and kwargs, always recibe **kwargs as json object
         except Exception as e:
-            #Logger.log_error(e)
+            self.logger.log_error(e)
+            if isinstance(e,HTTPError):#
+                if e.response.status_code == 401:
+                    QMessageBox.warning(None,"¡Error!","Sesión expirada\nCerrando Aplicación")
+                    QApplication.exit()
             traceback.print_exc()
-            self.signals.error.emit(e)
+            self.signals.error.emit(e)   
         else:
             self.signals.result.emit(result)  # Return the result of the processing
         finally:

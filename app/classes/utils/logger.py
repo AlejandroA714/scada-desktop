@@ -21,7 +21,6 @@ class logger(object):
             self.__app_log = logging.getLogger()
             self.__app_log.setLevel(logging.INFO)
             self.__app_log.addHandler(__my_handler)
-            print(self.__app_log)
             self.__Initialized = True
 
     def __new__(cls,*args,**kwargs ):        
@@ -30,7 +29,10 @@ class logger(object):
         return cls.__instance
 
     def log_error(self,e:Exception):
-        self.__app_log.error("¡Error! %s" % str(e))
+        self.__app_log.error("¡Error! %s" % str(e),exc_info=True)
+    
+    def log_traceback(self,traceback):
+        self.__app_log.info(traceback)
 
     def log_info(self,e):
         self.__app_log.info("¡Info! %s" % str(e))

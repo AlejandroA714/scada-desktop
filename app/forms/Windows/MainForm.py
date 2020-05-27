@@ -4,6 +4,10 @@ from PyQt5.QtCore import Qt, pyqtSlot
 from PyQt5.QtGui import QKeySequence
 from classes.inheritables.form import form
 from forms.Modals.AbrirModal import UIAbrirModal
+from forms.Widgets.DispositivoWidget import UIDispositivoWidget
+from classes.utils.worker import Worker
+from classes.utils.logica import Logica
+from classes.objects.workSpace import *
 from resources.resources import *
 
 
@@ -12,7 +16,6 @@ class UIMainWindow(form):
     def __init__(self):
         super(UIMainWindow,self).__init__()
         self.setupUi()
-
 
     def setupUi(self):
         MainWindow = self
@@ -208,7 +211,7 @@ class UIMainWindow(form):
         self.retranslateUi(MainWindow)
         QtCore.QMetaObject.connectSlotsByName(MainWindow)
 
-        #shortcut
+        #shortcuts
 
         self.shortcut_new = QShortcut(QKeySequence(Qt.CTRL+Qt.Key_N),self)
         self.shortcut_new.activated.connect(self.new_Callback)
@@ -241,6 +244,8 @@ class UIMainWindow(form):
         self.shortcut_reportes = QShortcut(QKeySequence(Qt.CTRL+Qt.Key_R),self)
         self.shortcut_reportes.activated.connect(self.reports_Callback)
 
+        ASD = UIDispositivoWidget(self.tab)
+
         # listener
 
     def closeEvent(self,event): # asks if user wants to close application
@@ -250,7 +255,18 @@ class UIMainWindow(form):
         self.exit(event)
 
     def openMenu_Callback(self,workSpace):
-        print(workSpace.__dict__)
+        worker = Worker(Logica.AbrirProyecto,**{"access_token":self.session["access_token"],"id":workSpace.id})
+        worker.signals.result.connect(self.MostrarDispositivos)
+        worker.signals.error.connect(self.MostrarDispositivos)
+        self.threadpool.start(worker)
+
+    def MostrarDispositivos(self,DispositivosList:workSpace):
+        if isinstance(DispositivosList,Exception):
+            QMessageBox.warning(self,"¡Error!", "Fallo al cargar el proyecto")
+            return
+        #print(DispositivosList.devices)
+        #for x in DispositivosList.devices:
+        #    print(x)
 
     def defineMenuArchivo(self):
         # Definicion de menus
