@@ -1,13 +1,12 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import Qt
-from classes.inheritables.widget import widget
-from classes.objects.workSpace import variable
+from classes import widget, variable, variableSignals
 
 class UIDOVariable(widget):
 
-    def __init__(self):
-        self.__variable = None
-        self.__dispostivo = None
+    def __init__(self,var):
+        self.__variable = var
+        self.signals = variableSignals()
         super(UIDOVariable,self).__init__()
         self.setupUi()
 
@@ -70,6 +69,7 @@ class UIDOVariable(widget):
 
         self.retranslateUi(DOVariable)
         QtCore.QMetaObject.connectSlotsByName(DOVariable)
+        self.show()
 
     def retranslateUi(self, DOVariable):
         _translate = QtCore.QCoreApplication.translate

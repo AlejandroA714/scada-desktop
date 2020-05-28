@@ -7,6 +7,7 @@ class workSpace(object):
     def __init__( self, dict ): # Devices property must assign manually no by dict
         self.id = dict["Id"]
         self.nombre = dict["Nombre"]
+        self.devices = None 
         self.devicesCount = dict["DriversCount"]
         
     @property
@@ -261,3 +262,17 @@ class variable(object):
     @output.setter
     def output(self,value):
         self.__output = value
+
+    def toJSON(self):
+        return {
+                "UnicID":self.unicID,
+                "Nombre":self.nombre,
+                "PIN":self.pin,
+                "Valor":self.value,
+                "Analogic":bool(self.analogic),
+                "DisplayColor":self.displayColor,
+                "Expresion":self.expresion,
+                "Notificar":self.notify,
+                "Nivel":self.nivel,
+                "IsOutput":self.output
+                }

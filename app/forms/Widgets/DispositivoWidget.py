@@ -1,21 +1,21 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QMovie
-from classes.inheritables.widget import widget
-from resources.resources import *
-from classes.objects.workSpace import workSpace
-from classes.utils.timer import timer
-from forms.Widgets.AIWidget import UIAIVariable
-from forms.Widgets.AOWidget import UIAOVariable
-from forms.Widgets.DOWidget import UIDOVariable
-from forms.Widgets.DIWidget import UIDIVariable
+from classes import workSpace, timer, widget, device, deviceSignals, Worker
+from .AIWidget import UIAIVariable
+from .AOWidget import UIAOVariable
+from .DIWidget import UIDIVariable
+from .DOWidget import UIDOVariable
+from resources import *
 
 class UIDispositivoWidget(widget):
 
-    def __init__(self,Parent):
-        self.__dispostivo = None
+    def __init__(self,Parent,dispositivo:device): #1: waiting, 2: updating, 3: writing
+        self.__dispostivo = dispositivo
         self.__parent = Parent
-        self.__dispostivo = None
+        self.deviceSignals = deviceSignals()
+        self.__status = 1
+        self.__variablesContainer = dict()
         super(UIDispositivoWidget,self).__init__(Parent)
         self.setupUi()
 
@@ -24,9 +24,10 @@ class UIDispositivoWidget(widget):
         DispositivoWidget.setObjectName("DispositivoWidget")
         DispositivoWidget.setWindowModality(QtCore.Qt.WindowModal)
         DispositivoWidget.resize(330, 200)
-        DispositivoWidget.setMinimumSize(QtCore.QSize(165, 115))
+        DispositivoWidget.setGeometry(self.__dispostivo.x,self.__dispostivo.y,330,200)
+        DispositivoWidget.setMinimumSize(QtCore.QSize(330, 200))
         self.MainFrame = QtWidgets.QFrame(DispositivoWidget)
-        self.MainFrame.setGeometry(QtCore.QRect(0, 0, 330, 200))
+        self.MainFrame.setGeometry(QtCore.QRect( 0,0, 330, 200))
         self.MainFrame.setStyleSheet("background-color: rgb(255, 255, 255);")
         self.MainFrame.setFrameShape(QtWidgets.QFrame.NoFrame)
         self.MainFrame.setFrameShadow(QtWidgets.QFrame.Plain)
@@ -95,7 +96,7 @@ class UIDispositivoWidget(widget):
         font.setBold(True)
         font.setWeight(75)
         self.Status.setFont(font)
-        self.Status.setStyleSheet("color:green;")
+        self.Status.setStyleSheet("color:gray;")
         self.Status.setFrameShadow(QtWidgets.QFrame.Sunken)
         self.Status.setAlignment(QtCore.Qt.AlignLeading|QtCore.Qt.AlignLeft|QtCore.Qt.AlignVCenter)
         self.Status.setObjectName("Status")
@@ -107,7 +108,7 @@ class UIDispositivoWidget(widget):
         font.setBold(True)
         font.setWeight(75)
         self.StatusCircle.setFont(font)
-        self.StatusCircle.setStyleSheet("background-color:green;border-radius:5px;")
+        self.StatusCircle.setStyleSheet("background-color:gray;border-radius:5px;")
         self.StatusCircle.setFrameShadow(QtWidgets.QFrame.Sunken)
         self.StatusCircle.setMidLineWidth(1)
         self.StatusCircle.setText("")
@@ -163,40 +164,49 @@ class UIDispositivoWidget(widget):
         self.verticalLayout.setSpacing(5)
         self.verticalLayout.setObjectName("verticalLayout")
         self.VariablesScroll.setWidget(self.VariablesFrame)
-
+        self.movie = QMovie(":/source/img/Cargando.gif")
+        self.movie.setScaledSize(QtCore.QSize(64,64))
         self.retranslateUi(DispositivoWidget)
         QtCore.QMetaObject.connectSlotsByName(DispositivoWidget)
 
-        timer.signals.time_elapsed.connect(self.test)
-        self.movie = QMovie(":/source/img/Cargando.gif")
-        self.movie.setScaledSize(QtCore.QSize(64,64))
+        for var in self.__dispostivo.variables:
+            UIvariable = None
+            if (var.analogic and not var.output):
+                UIvariable = UIAIVariable(var)
+            if (var.analogic and var.output):
+                UIvariable = UIAOVariable(var)
+            if (not var.analogic and not var.output):
+                UIvariable = UIDIVariable(var)
+            if(not var.analogic and var.output):
+                UIvariable = UIDOVariable(var)
+            self.verticalLayout.addWidget(UIvariable)
+            self.__variablesContainer[var] = UIvariable
+        if (len(self.__dispostivo.variables)*25) > 115:
+                self.VariablesFrame.setGeometry(0,0,175,len(self.__dispostivo.variables)*25)
+        self.show()
+        
+        timer.signals.time_elapsed.connect(self.time) # Signal emitted each second
 
-        asd = UIAIVariable()
-        self.verticalLayout.addWidget(asd)
-        asf = UIAOVariable()
-        self.verticalLayout.addWidget(asf)
-        asg = UIDIVariable()
-        self.verticalLayout.addWidget(asg)
-        ash = UIDOVariable()
-        self.verticalLayout.addWidget(ash)
-        asj = UIDIVariable()
-        self.verticalLayout.addWidget(asj)
-        ask = UIAIVariable()
-        self.verticalLayout.addWidget(ask)
-        asq = UIAOVariable()
-        self.verticalLayout.addWidget(asq)
-        self.VariablesFrame.setGeometry(0,0,175,175)
+    def time(self):
+        if self.__status == 1:
+            time = int(self.Time.text())-1
+            if time == 0:
+                self.__status = 2
+                self.movie.start()
+                self.lblTime.setText("Actualizando...")
+                self.Time.setMovie(self.movie)
+                self.actualizarVariables(self.__dispostivo.variables)
+            else:
+                self.Time.setText(str(time))
 
-        #self.movie.start()
-        #self.Time.setMovie(self.movie)
+    def actualizarVariables(self,variablesList:list):
+        variablesList = list(filter(lambda var: (not var.output) ,variablesList))
+        variablesList = list(self.variablesListToJSON(variablesList))
+        print(variablesList)
 
-    def test(self):
-        time = int(self.Time.text())-1
-        if time == 0:
-            print("update time")
-            time = 30
-        self.Time.setText(str(time))
-
+    def variablesListToJSON(self,variablesList:list):
+        for var in variablesList:
+            yield var.toJSON()
 
     def mousePressEvent(self, event):
         if event.buttons() == Qt.LeftButton:
@@ -215,10 +225,10 @@ class UIDispositivoWidget(widget):
     def retranslateUi(self, DispositivoWidget):
         _translate = QtCore.QCoreApplication.translate
         DispositivoWidget.setWindowTitle(_translate("DispositivoWidget", "Form"))
-        self.Container.setTitle(_translate("DispositivoWidget", "Dispositivo 1"))
+        self.Container.setTitle(_translate("DispositivoWidget", self.__dispostivo.nombre))
         self.lblStatus.setText(_translate("DispositivoWidget", "Estado:"))
         self.lblTime.setText(_translate("DispositivoWidget", "Actualizando en"))
-        self.Time.setText(_translate("DispostivoWidget","30"))
-        self.Status.setText(_translate("DispositivoWidget", "Conectado"))
+        self.Time.setText(_translate("DispostivoWidget", str(self.__dispostivo.time)))
+        self.Status.setText(_translate("DispositivoWidget", "Desconocido"))
         self.lblLast.setText(_translate("DispositivoWidget", "Ultima Vez:"))
-        self.Last.setText(_translate("DispositivoWidget", "20/05/2020 02:34:32pm"))
+        self.Last.setText(_translate("DispositivoWidget", self.__dispostivo.lastUpdate))

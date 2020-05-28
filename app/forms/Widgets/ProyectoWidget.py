@@ -1,10 +1,8 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QWidget
-from classes.inheritables.widget import widget
-from resources.resources import *
-from classes.objects.workSpace import workSpace
-
+from classes import widget, workSpace
+from resources import *
 
 class UIWidgetP(widget):
 

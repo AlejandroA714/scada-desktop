@@ -1,11 +1,13 @@
 from PyQt5.QtWidgets import QWidget, QMessageBox
-from PyQt5.QtCore import Qt, QObject, pyqtSlot, pyqtSignal
+from PyQt5.QtCore import Qt, QObject, pyqtSlot, pyqtSignal, QThreadPool
 
 class widgetSignals(QObject):
 
     sucess = pyqtSignal(object)
 
 class widget(QWidget):
+
+    threadpool = QThreadPool()
 
     def __init__(self,Parent=None):
         self.signals = widgetSignals()

@@ -1,14 +1,11 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import Qt
-from classes.inheritables.widget import widget
-from resources.resources import *
-from classes.objects.workSpace import variable
+from classes import widget, variable
 
 class UIAIVariable(widget):
 
-    def __init__(self):
-        self.__variable = None
-        self.__dispostivo = None
+    def __init__(self,var:variable):
+        self.__variable = var
         super(UIAIVariable,self).__init__()
         self.setupUi()
 
@@ -75,6 +72,7 @@ class UIAIVariable(widget):
 
         self.retranslateUi(AIVariable)
         QtCore.QMetaObject.connectSlotsByName(AIVariable)
+        self.show()
 
     def retranslateUi(self, AIVariable):
         _translate = QtCore.QCoreApplication.translate

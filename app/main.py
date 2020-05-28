@@ -1,8 +1,6 @@
 from PyQt5.QtWidgets import QApplication
-from forms.Windows.LoginForm import UILogin
-from forms.Windows.MainForm import UIMainWindow
-from classes.utils.timer import timer
-from classes.utils.logger import logger
+from forms import UILogin, UIMainWindow
+from classes import logger,timer
 
 class application(QApplication):
 

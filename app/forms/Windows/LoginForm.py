@@ -1,13 +1,9 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtCore import QThreadPool, Qt
-from PyQt5.QtGui import QMovie, QPainter, QPixmap
+from PyQt5.QtCore import Qt
+from PyQt5.QtGui import QMovie, QPainter, QPixmap, QKeySequence, QKeyEvent
 from PyQt5.QtWidgets import QMessageBox, QApplication, QGraphicsDropShadowEffect, QMainWindow, QApplication, QShortcut
-from PyQt5.QtGui import QKeySequence, QKeyEvent
-from classes.utils.logica import Logica
-from classes.utils.worker import Worker
-from classes.inheritables.form import form
-from resources.resources import *
-
+from classes import Logica, Worker, form
+from resources import *
 
 class UILogin(form):
 

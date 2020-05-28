@@ -2,19 +2,16 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QMainWindow, QAction, QMenu, QMessageBox, QShortcut
 from PyQt5.QtCore import Qt, pyqtSlot
 from PyQt5.QtGui import QKeySequence
-from classes.inheritables.form import form
-from forms.Modals.AbrirModal import UIAbrirModal
-from forms.Widgets.DispositivoWidget import UIDispositivoWidget
-from classes.utils.worker import Worker
-from classes.utils.logica import Logica
-from classes.objects.workSpace import *
-from resources.resources import *
+from classes import form, Worker, Logica, device, workSpace,container
+from forms import UIAbrirModal,UIDispositivoWidget
+from resources import *
 
 
 class UIMainWindow(form):
 
     def __init__(self):
         super(UIMainWindow,self).__init__()
+        self.__containers = dict()
         self.setupUi()
 
     def setupUi(self):
@@ -167,7 +164,7 @@ class UIMainWindow(form):
         self.btnMax_2.setObjectName("btnMax_2")
         self.tabWidget.addTab(self.tab, "")
         self.tab_2 = QtWidgets.QWidget()
-        self.tab_2.setObjectName("tab_2")
+        self.tab_2.setObjectName("tab2")
         self.tabWidget.addTab(self.tab_2, "")
         self.verticalLayout_3.addWidget(self.tabWidget)
         self.verticalLayout_2.addLayout(self.verticalLayout_3)
@@ -243,9 +240,7 @@ class UIMainWindow(form):
 
         self.shortcut_reportes = QShortcut(QKeySequence(Qt.CTRL+Qt.Key_R),self)
         self.shortcut_reportes.activated.connect(self.reports_Callback)
-
-        ASD = UIDispositivoWidget(self.tab)
-
+        
         # listener
 
     def closeEvent(self,event): # asks if user wants to close application
@@ -260,13 +255,29 @@ class UIMainWindow(form):
         worker.signals.error.connect(self.MostrarDispositivos)
         self.threadpool.start(worker)
 
-    def MostrarDispositivos(self,DispositivosList:workSpace):
-        if isinstance(DispositivosList,Exception):
+    def MostrarDispositivos(self,workSpace:workSpace):
+        
+        if isinstance(workSpace,Exception):
             QMessageBox.warning(self,"¡Error!", "Fallo al cargar el proyecto")
             return
-        #print(DispositivosList.devices)
-        #for x in DispositivosList.devices:
-        #    print(x)
+        tabName = self.tabWidget.currentWidget().objectName()
+        if tabName in self.__containers.keys():
+            reply = QMessageBox.question(
+            self, "Confirmacion",
+            "¿Seguro? Esto sobreescribira el proyecto actual",
+            QMessageBox.Yes | QMessageBox.No)
+            if reply == QMessageBox.No:
+                return
+        containerObject = container({"tab":self.tabWidget.currentWidget(),"workSpace":workSpace })
+        self.__containers[tabName] = containerObject
+        self.PaintDevices(containerObject)
+
+    def PaintDevices(self,containerObject:container):
+        devices = containerObject.workSpace.devices
+        parent = containerObject.tab
+        for device in devices:
+            UIDevice = UIDispositivoWidget(parent,device)
+            #pending signals
 
     def defineMenuArchivo(self):
         # Definicion de menus
