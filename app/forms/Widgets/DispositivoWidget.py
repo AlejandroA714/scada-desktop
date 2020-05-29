@@ -1,18 +1,21 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QMovie
-from classes import workSpace, timer, widget, device, deviceSignals, Worker
+from classes import workSpace, timer, widget, device, deviceSignals, Worker, Logica, variable
 from .AIWidget import UIAIVariable
 from .AOWidget import UIAOVariable
 from .DIWidget import UIDIVariable
 from .DOWidget import UIDOVariable
 from resources import *
+from datetime import datetime
+from functools import partial
 
 class UIDispositivoWidget(widget):
 
-    def __init__(self,Parent,dispositivo:device): #1: waiting, 2: updating, 3: writing
+    def __init__(self,Parent,dispositivo:device,access_token): #1: waiting, 2: updating, 3: writing
         self.__dispostivo = dispositivo
         self.__parent = Parent
+        self.__access_token = access_token
         self.deviceSignals = deviceSignals()
         self.__status = 1
         self.__variablesContainer = dict()
@@ -135,7 +138,7 @@ class UIDispositivoWidget(widget):
         self.Last.setTextFormat(QtCore.Qt.RichText)
         self.Last.setObjectName("Last")
         self.VariablesScroll = QtWidgets.QScrollArea(self.Container)
-        self.VariablesScroll.setGeometry(QtCore.QRect(145, 50, 175, 120))
+        self.VariablesScroll.setGeometry(QtCore.QRect(140, 50, 175, 120))
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Preferred)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -175,12 +178,14 @@ class UIDispositivoWidget(widget):
                 UIvariable = UIAIVariable(var)
             if (var.analogic and var.output):
                 UIvariable = UIAOVariable(var)
+                UIvariable.variableSignals.update.connect(self.actualizarVariable)
             if (not var.analogic and not var.output):
                 UIvariable = UIDIVariable(var)
             if(not var.analogic and var.output):
                 UIvariable = UIDOVariable(var)
+                UIvariable.variableSignals.update.connect(self.actualizarVariable)
             self.verticalLayout.addWidget(UIvariable)
-            self.__variablesContainer[var] = UIvariable
+            self.__variablesContainer[var.unicID] = UIvariable
         if (len(self.__dispostivo.variables)*25) > 115:
                 self.VariablesFrame.setGeometry(0,0,175,len(self.__dispostivo.variables)*25)
         self.show()
@@ -199,10 +204,71 @@ class UIDispositivoWidget(widget):
             else:
                 self.Time.setText(str(time))
 
-    def actualizarVariables(self,variablesList:list):
+    def actualizarVariables(self,variablesList:list): # Updates all input variables
         variablesList = list(filter(lambda var: (not var.output) ,variablesList))
         variablesList = list(self.variablesListToJSON(variablesList))
-        print(variablesList)
+        worker = Worker(Logica.LeerSensor,**{"access_token":self.__access_token,"ID":self.__dispostivo.id,"Token":self.__dispostivo.token,"data":variablesList})
+        worker.signals.result.connect(self.actualizarVariables_Callback)
+        worker.signals.error.connect(self.actualizarVariables_Callback)
+        self.threadpool.start(worker)
+
+    def actualizarVariables_Callback(self,variablesList:list): # callback for worker
+        if isinstance(variablesList,Exception):
+            self.deviceSignals.error.emit(variablesList)
+            self.Status.setText("Sin Conexion")
+            self.Status.setStyleSheet("color:gray")
+            self.StatusCircle.setStyleSheet("background-color:gray;border-radius:5px;")
+        else:
+            if len(variablesList) == 0:
+                self.deviceSignals.error.emit(Exception("No hay acceso a internet"))
+                self.Status.setText("Desconectado")
+                self.Status.setStyleSheet("color:red")
+                self.StatusCircle.setStyleSheet("background-color:red;border-radius:5px;")
+            else:
+                for v in variablesList:
+                    self.__variablesContainer[v.unicID].update(v)
+                    self.Status.setText("Conectado")
+                    self.Status.setStyleSheet("color:green")
+                    self.StatusCircle.setStyleSheet("background-color:green;border-radius:5px;")
+                    self.Last.setText(datetime.now().strftime("%d/%m/%Y %I:%M:%S %p"))
+                    self.__dispostivo.lastUpdate = datetime.now().strftime("%d/%m/%Y %I:%M:%S %p")
+        self.lblTime.setText("Actualizando en")
+        self.Time.setText(str(self.__dispostivo.time))
+        self.__status = 1
+
+    def actualizarVariable(self,var:variable):
+        self.__status = 2
+        current_time =  int(self.Time.text()) if self.Time.text() != '' else self.__dispostivo.time
+        self.VariablesFrame.setEnabled(False)
+        self.movie.start()
+        self.lblTime.setText("Actualizando...")
+        self.Time.setMovie(self.movie)
+        worker = Worker(Logica.ActualizarSensor,**{"access_token":self.__access_token,"ID":self.__dispostivo.id,"Token":self.__dispostivo.token,"data":var.toJSON() })
+        worker.signals.result.connect(partial(self.actualizarVariable_Callback,var,current_time))
+        worker.signals.error.connect(partial(self.actualizarVariable_Callback,var,current_time))
+        self.threadpool.start(worker)
+
+    def actualizarVariable_Callback(self,var:variable,current_time,response):
+        if isinstance(response,Exception):
+            self.deviceSignals.error.emit(response)
+            self.Status.setText("Sin Conexion")
+            self.Status.setStyleSheet("color:gray")
+            self.StatusCircle.setStyleSheet("background-color:gray;border-radius:5px;")
+        else:
+            if response["success"] == "false" :
+                self.deviceSignals.error.emit(Exception("No hay acceso a internet"))
+                self.Status.setText("Desconectado")
+                self.Status.setStyleSheet("color:red")
+                self.StatusCircle.setStyleSheet("background-color:red;border-radius:5px;")
+            else:
+                self.Status.setText("Conectado")
+                self.Status.setStyleSheet("color:green")
+                self.StatusCircle.setStyleSheet("background-color:green;border-radius:5px;")
+                self.__variablesContainer[var.unicID].actualizarVariable(var)
+        self.VariablesFrame.setEnabled(True)
+        self.lblTime.setText("Actualizando en")
+        self.Time.setText(str(current_time))
+        self.__status = 1
 
     def variablesListToJSON(self,variablesList:list):
         for var in variablesList:

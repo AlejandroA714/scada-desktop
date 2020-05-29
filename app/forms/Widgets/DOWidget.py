@@ -4,9 +4,9 @@ from classes import widget, variable, variableSignals
 
 class UIDOVariable(widget):
 
-    def __init__(self,var):
+    def __init__(self,var:variable):
         self.__variable = var
-        self.signals = variableSignals()
+        self.variableSignals = variableSignals()
         super(UIDOVariable,self).__init__()
         self.setupUi()
 
@@ -66,13 +66,25 @@ class UIDOVariable(widget):
         self.btnValue.setFont(font)
         self.btnValue.setStyleSheet("color:white;background-color:green;")
         self.btnValue.setObjectName("btnValue")
-
+        self.btnValue.setStyleSheet("color:white;background-color:%s" % "green" if int(self.__variable.value) >= 1 else "red")
         self.retranslateUi(DOVariable)
         QtCore.QMetaObject.connectSlotsByName(DOVariable)
         self.show()
 
+        #listener
+        self.btnValue.clicked.connect(self.valueChanged)
+
+    def valueChanged(self):
+        self.__variable.value = 0 if int(self.__variable.value) > 0 else 1
+        self.variableSignals.update.emit(self.__variable)
+
+    def actualizarVariable(self,var:variable):
+        self.__variable = var
+        self.btnValue.setText("on" if int(self.__variable.value) >= 1 else "off")
+        self.btnValue.setStyleSheet("color:white;background-color:%s" % "green" if int(self.__variable.value) >= 1 else "red")
+
     def retranslateUi(self, DOVariable):
         _translate = QtCore.QCoreApplication.translate
         DOVariable.setWindowTitle(_translate("DOVariable", "Form"))
-        self.lblTitle.setText(_translate("DOVariable", "DO0"))
-        self.btnValue.setText(_translate("DOVariable", "On"))
+        self.lblTitle.setText(_translate("DOVariable", self.__variable.nombre))
+        self.btnValue.setText(_translate("DOVariable", "on" if int(self.__variable.value) >= 1 else "off" ))

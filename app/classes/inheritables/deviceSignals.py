@@ -5,5 +5,6 @@ class deviceSignals(QObject):
     updated = pyqtSignal()
     report_emitted = pyqtSignal()
     status_changes = pyqtSignal()
+    error = pyqtSignal(Exception)
 
 

@@ -74,8 +74,12 @@ class UIAIVariable(widget):
         QtCore.QMetaObject.connectSlotsByName(AIVariable)
         self.show()
 
+    def update(self,var:variable):
+        self.__variable = var
+        self.lblValue.setText(str(self.__variable.value))
+
     def retranslateUi(self, AIVariable):
         _translate = QtCore.QCoreApplication.translate
         AIVariable.setWindowTitle(_translate("AIVariable", "Form"))
-        self.lblTitle.setText(_translate("AIVariable", "AI0"))
-        self.lblValue.setText(_translate("AIVariable", "255"))
+        self.lblTitle.setText(_translate("AIVariable", self.__variable.nombre))
+        self.lblValue.setText(_translate("AIVariable", self.__variable.value))

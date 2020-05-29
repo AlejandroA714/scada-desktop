@@ -1,6 +1,7 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import Qt
 from classes import widget, variable
+import webcolors
 
 class UIDIVariable(widget):
 
@@ -60,12 +61,23 @@ class UIDIVariable(widget):
         self.lblValue.setFrameShape(QtWidgets.QFrame.Panel)
         self.lblValue.setText("")
         self.lblValue.setObjectName("lblValue")
-
         self.retranslateUi(DIVariable)
         QtCore.QMetaObject.connectSlotsByName(DIVariable)
+
+        if int(self.__variable.value) == 0:
+            self.lblValue.setStyleSheet("background-color:%s; border-radius:8px;" % webcolors.name_to_hex(self.__variable.displayColor))
+        else:
+            self.lblValue.setStyleSheet("background-color:gray;border-radius:8px;")
         self.show()
+
+    def update(self,var:variable):
+        self.__variable = var
+        if int(self.__variable.value > 0):
+            self.lblValue.setStyleSheet("background-color:%s; border-radius:8px;" % webcolors.name_to_hex(self.__variable.displayColor))
+        else:
+            self.lblValue.setStyleSheet("background-color:gray;border-radius:8px;")
 
     def retranslateUi(self, DIVariable):
         _translate = QtCore.QCoreApplication.translate
         DIVariable.setWindowTitle(_translate("DIVariable", "Form"))
-        self.lblTitle.setText(_translate("DIVariable", "DI0"))
+        self.lblTitle.setText(_translate("DIVariable", self.__variable.nombre))

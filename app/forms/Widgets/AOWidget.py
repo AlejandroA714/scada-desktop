@@ -6,7 +6,7 @@ class UIAOVariable(widget):
 
     def __init__(self,var:variable):
         self.__variable = var
-        self.signals = variableSignals()
+        self.variableSignals = variableSignals()
         super(UIAOVariable,self).__init__()
         self.setupUi()
 
@@ -62,14 +62,27 @@ class UIAOVariable(widget):
         self.SpinValue.setReadOnly(False)
         self.SpinValue.setDecimals(0)
         self.SpinValue.setMaximum(255.0)
-        self.SpinValue.setProperty("value", 255.0)
+        self.SpinValue.setProperty("value", self.__variable.value)
         self.SpinValue.setObjectName("SpinValue")
 
         self.retranslateUi(AOVariable)
         QtCore.QMetaObject.connectSlotsByName(AOVariable)
         self.show()
 
+        #listener
+        self.SpinValue.valueChanged.connect(self.valueChanged)
+        #self.SpinValue.va
+
+    def valueChanged(self):
+        self.__variable.value = int(self.SpinValue.value())
+        self.variableSignals.update.emit(self.__variable)
+
+    def actualizarVariable(self,var:variable):
+        self.__variable = var
+        self.SpinValue.setProperty("value", str(self.__variable.value))
+        
+
     def retranslateUi(self, AOVariable):
         _translate = QtCore.QCoreApplication.translate
         AOVariable.setWindowTitle(_translate("AOVariable", "Form"))
-        self.lblTitle.setText(_translate("AOVariable", "AO0"))
+        self.lblTitle.setText(_translate("AOVariable", self.__variable.nombre))

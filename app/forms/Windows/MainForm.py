@@ -256,7 +256,6 @@ class UIMainWindow(form):
         self.threadpool.start(worker)
 
     def MostrarDispositivos(self,workSpace:workSpace):
-        
         if isinstance(workSpace,Exception):
             QMessageBox.warning(self,"¡Error!", "Fallo al cargar el proyecto")
             return
@@ -276,7 +275,7 @@ class UIMainWindow(form):
         devices = containerObject.workSpace.devices
         parent = containerObject.tab
         for device in devices:
-            UIDevice = UIDispositivoWidget(parent,device)
+            UIDevice = UIDispositivoWidget(parent,device,self.session["access_token"])
             #pending signals
 
     def defineMenuArchivo(self):

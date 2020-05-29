@@ -56,7 +56,7 @@ class device(object):
     def __init__( self, dict ):
         self.unicID = dict["UnicID"]
         self.nombre = dict["Nombre"]
-        self.empty = dict["IsEmpty"]
+        self.empty = False
         self.time = dict["Time"]
         self.x = dict["X"]
         self.y = dict["Y"]

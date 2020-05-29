@@ -31,7 +31,7 @@ class Logica():
         _headers = {'Authorization': 'Bearer ' + kwargs["access_token"]}
         result  = requests.get("http://%s:%s/Controles/Abrir/%s" % (Logica.settings["APISCADA"]["Host"],Logica.settings["APISCADA"]["Port"],kwargs["id"]), timeout = 45, headers=_headers)
         result.raise_for_status()
-        drivers = [] # this is the problem
+        drivers = []
         for x in result.json()["Drivers"]:
             dev = device(x)
             dev.variables = json.loads( json.dumps(x["variables"]), object_hook=variable )
@@ -39,6 +39,23 @@ class Logica():
         workSpace({"Id":result.json()["Id"],"Nombre":result.json()["Nombre"], "DriversCount": len(drivers) })
         workSpace.devices = drivers
         return workSpace
+
+    @staticmethod
+    def LeerSensor(**kwargs):
+        _headers = {'Authorization': 'Bearer ' + kwargs["access_token"]}
+        result  = requests.post("http://%s:%s/Controles/LeerSensor/%s/%s" % (Logica.settings["APISCADA"]["Host"],Logica.settings["APISCADA"]["Port"],kwargs["ID"],kwargs["Token"]), timeout = 45,json=kwargs["data"],headers=_headers)
+        result.raise_for_status()
+        _answer:variable = json.loads(result.content, object_hook=variable)
+        return _answer
+
+    @staticmethod
+    def ActualizarSensor(**kwargs):
+        _headers = {'Authorization': 'Bearer ' + kwargs["access_token"]}
+        result  = requests.post("http://%s:%s/Controles/ActualizarVariable/%s/%s" % (Logica.settings["APISCADA"]["Host"],Logica.settings["APISCADA"]["Port"],kwargs["ID"],kwargs["Token"]), timeout = 45,json=kwargs["data"],headers=_headers)
+        result.raise_for_status()
+        return result.json()
+
+
 
     @staticmethod
     def LeerConfiguracion():
