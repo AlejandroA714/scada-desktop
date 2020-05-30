@@ -57,6 +57,22 @@ class Logica():
 
 
 
+
+
+    @staticmethod
+    def imageToByteArray(fileName):
+        from base64 import b64encode
+        with open(fileName,'rb') as f:
+            file = b64encode(f.read())
+        return file
+        
+    @staticmethod
+    def byteArrayToImage(file):
+        from base64 import b64encode, b64decode
+        from PyQt5.QtGui import QPixmap, QImage
+        from PyQt5.QtCore import QByteArray
+        return QPixmap.fromImage(QImage.fromData(QByteArray.fromBase64 ( bytes(file,"utf-8") )))
+
     @staticmethod
     def LeerConfiguracion():
         Logger = logger()

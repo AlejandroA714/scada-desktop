@@ -20,7 +20,7 @@
    <string>Software SCADA</string>
   </property>
   <property name="windowIcon">
-   <iconset resource="../resources/resources.qrc">
+   <iconset resource="../../resources/resources.qrc">
     <normaloff>:/source/img/if_16_1751363.png</normaloff>:/source/img/if_16_1751363.png</iconset>
   </property>
   <property name="dockOptions">
@@ -47,7 +47,7 @@
      <number>0</number>
     </property>
     <item>
-     <widget class="QFrame" name="frame">
+     <widget class="QFrame" name="ContainerFrame">
       <property name="styleSheet">
        <string notr="true">background-color: rgb(255, 255, 255);
 </string>
@@ -75,12 +75,32 @@
         <number>0</number>
        </property>
        <item>
-        <layout class="QGridLayout" name="gridLayout">
+        <layout class="QGridLayout" name="TitileLayout">
          <property name="spacing">
           <number>0</number>
          </property>
+         <item row="0" column="0">
+          <widget class="QLabel" name="lblIIE">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
+           <property name="styleSheet">
+            <string notr="true">background-color: rgb(65, 105, 225);
+margin:0px;</string>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+           <property name="pixmap">
+            <pixmap resource="../../resources/resources.qrc">:/source/img/iiie.png</pixmap>
+           </property>
+          </widget>
+         </item>
          <item row="0" column="1">
-          <widget class="QLabel" name="label_5">
+          <widget class="QLabel" name="lblSCADA">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
              <horstretch>0</horstretch>
@@ -113,76 +133,7 @@ margin:0px;</string>
           </widget>
          </item>
          <item row="0" column="2">
-          <widget class="QFrame" name="frame_2">
-           <property name="sizePolicy">
-            <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
-             <horstretch>0</horstretch>
-             <verstretch>0</verstretch>
-            </sizepolicy>
-           </property>
-           <property name="minimumSize">
-            <size>
-             <width>0</width>
-             <height>81</height>
-            </size>
-           </property>
-           <property name="styleSheet">
-            <string notr="true">color: rgb(255, 255, 0);background-color: rgb(65, 105, 225);
-margin:0px;</string>
-           </property>
-           <property name="frameShape">
-            <enum>QFrame::NoFrame</enum>
-           </property>
-           <property name="lineWidth">
-            <number>0</number>
-           </property>
-           <layout class="QVBoxLayout" name="verticalLayout_4">
-            <property name="spacing">
-             <number>0</number>
-            </property>
-            <property name="leftMargin">
-             <number>0</number>
-            </property>
-            <property name="topMargin">
-             <number>0</number>
-            </property>
-            <property name="rightMargin">
-             <number>0</number>
-            </property>
-            <property name="bottomMargin">
-             <number>0</number>
-            </property>
-            <item>
-             <widget class="QLabel" name="label">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
-                <horstretch>0</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="styleSheet">
-               <string notr="true">background-color: rgb(65, 105, 225);
-margin:0px;</string>
-              </property>
-              <property name="frameShape">
-               <enum>QFrame::NoFrame</enum>
-              </property>
-              <property name="text">
-               <string/>
-              </property>
-              <property name="pixmap">
-               <pixmap resource="../resources/resources.qrc">:/source/img/logo.png</pixmap>
-              </property>
-              <property name="alignment">
-               <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </widget>
-         </item>
-         <item row="0" column="0">
-          <widget class="QLabel" name="label_3">
+          <widget class="QLabel" name="lblLogo">
            <property name="sizePolicy">
             <sizepolicy hsizetype="Maximum" vsizetype="Preferred">
              <horstretch>0</horstretch>
@@ -193,23 +144,29 @@ margin:0px;</string>
             <string notr="true">background-color: rgb(65, 105, 225);
 margin:0px;</string>
            </property>
+           <property name="frameShape">
+            <enum>QFrame::NoFrame</enum>
+           </property>
            <property name="text">
             <string/>
            </property>
            <property name="pixmap">
-            <pixmap resource="../resources/resources.qrc">:/source/img/iiie.png</pixmap>
+            <pixmap resource="../../resources/resources.qrc">:/source/img/logo.png</pixmap>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
            </property>
           </widget>
          </item>
         </layout>
        </item>
        <item>
-        <layout class="QVBoxLayout" name="verticalLayout_3">
+        <layout class="QVBoxLayout" name="ContentLayout">
          <property name="spacing">
           <number>0</number>
          </property>
          <item>
-          <widget class="QFrame" name="frame_3">
+          <widget class="QFrame" name="MenuFrame">
            <property name="minimumSize">
             <size>
              <width>0</width>
@@ -315,64 +272,36 @@ margin:0px;</string>
           </widget>
          </item>
          <item>
-          <widget class="QTabWidget" name="tabWidget">
-           <widget class="QWidget" name="tab">
+          <widget class="QTabWidget" name="workSpaceTab">
+           <property name="font">
+            <font>
+             <family>Roboto</family>
+             <pointsize>10</pointsize>
+             <weight>50</weight>
+             <bold>false</bold>
+            </font>
+           </property>
+           <property name="tabShape">
+            <enum>QTabWidget::Rounded</enum>
+           </property>
+           <property name="currentIndex">
+            <number>0</number>
+           </property>
+           <property name="elideMode">
+            <enum>Qt::ElideLeft</enum>
+           </property>
+           <property name="tabsClosable">
+            <bool>true</bool>
+           </property>
+           <property name="movable">
+            <bool>true</bool>
+           </property>
+           <widget class="QWidget" name="workSpace1">
             <attribute name="title">
              <string>Tab 1</string>
             </attribute>
-            <widget class="QPushButton" name="btnMax_2">
-             <property name="geometry">
-              <rect>
-               <x>500</x>
-               <y>120</y>
-               <width>26</width>
-               <height>18</height>
-              </rect>
-             </property>
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="minimumSize">
-              <size>
-               <width>24</width>
-               <height>12</height>
-              </size>
-             </property>
-             <property name="maximumSize">
-              <size>
-               <width>64</width>
-               <height>32</height>
-              </size>
-             </property>
-             <property name="autoFillBackground">
-              <bool>false</bool>
-             </property>
-             <property name="styleSheet">
-              <string notr="true">background-color: rgb(65, 105, 225);
-margin:0px;</string>
-             </property>
-             <property name="text">
-              <string/>
-             </property>
-             <property name="icon">
-              <iconset resource="../resources/resources.qrc">
-               <normaloff>:/source/img/max.png</normaloff>:/source/img/max.png</iconset>
-             </property>
-             <property name="iconSize">
-              <size>
-               <width>16</width>
-               <height>16</height>
-              </size>
-             </property>
-             <property name="flat">
-              <bool>true</bool>
-             </property>
-            </widget>
            </widget>
-           <widget class="QWidget" name="tab_2">
+           <widget class="QWidget" name="WorkSpace2">
             <attribute name="title">
              <string>Tab 2</string>
             </attribute>
@@ -382,7 +311,7 @@ margin:0px;</string>
         </layout>
        </item>
        <item>
-        <widget class="QFrame" name="frame_4">
+        <widget class="QFrame" name="StatusFrame">
          <property name="minimumSize">
           <size>
            <width>0</width>
@@ -401,7 +330,7 @@ margin:0px;</string>
          <property name="lineWidth">
           <number>0</number>
          </property>
-         <widget class="QLabel" name="label_2">
+         <widget class="QLabel" name="lblStatus">
           <property name="geometry">
            <rect>
             <x>5</x>
@@ -428,10 +357,10 @@ margin:0px;</string>
            <bool>false</bool>
           </property>
          </widget>
-         <widget class="QLabel" name="label_4">
+         <widget class="QLabel" name="Status">
           <property name="geometry">
            <rect>
-            <x>50</x>
+            <x>65</x>
             <y>2</y>
             <width>54</width>
             <height>20</height>
@@ -461,6 +390,39 @@ margin:0px;</string>
            <set>Qt::AlignCenter</set>
           </property>
          </widget>
+         <widget class="QLabel" name="StatusCircle">
+          <property name="geometry">
+           <rect>
+            <x>52</x>
+            <y>7</y>
+            <width>12</width>
+            <height>12</height>
+           </rect>
+          </property>
+          <property name="font">
+           <font>
+            <family>Roboto</family>
+            <pointsize>10</pointsize>
+            <weight>75</weight>
+            <bold>true</bold>
+           </font>
+          </property>
+          <property name="styleSheet">
+           <string notr="true">background-color:green; border-radius:5px;</string>
+          </property>
+          <property name="lineWidth">
+           <number>0</number>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+          <property name="scaledContents">
+           <bool>false</bool>
+          </property>
+          <property name="alignment">
+           <set>Qt::AlignCenter</set>
+          </property>
+         </widget>
         </widget>
        </item>
       </layout>
@@ -470,6 +432,7 @@ margin:0px;</string>
   </widget>
  </widget>
  <resources>
+  <include location="../../resources/resources.qrc"/>
   <include location="../resources/resources.qrc"/>
  </resources>
  <connections/>

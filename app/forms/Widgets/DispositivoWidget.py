@@ -1,6 +1,7 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
+from PyQt5.QtWidgets import QFileDialog
 from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QMovie
+from PyQt5.QtGui import QMovie, QPixmap, QImage
 from classes import workSpace, timer, widget, device, deviceSignals, Worker, Logica, variable
 from .AIWidget import UIAIVariable
 from .AOWidget import UIAOVariable
@@ -9,6 +10,8 @@ from .DOWidget import UIDOVariable
 from resources import *
 from datetime import datetime
 from functools import partial
+from base64 import b64decode,b64encode
+
 
 class UIDispositivoWidget(widget):
 
@@ -48,7 +51,7 @@ class UIDispositivoWidget(widget):
         self.lblImagen.setFrameShape(QtWidgets.QFrame.Panel)
         self.lblImagen.setLineWidth(0)
         self.lblImagen.setText("")
-        self.lblImagen.setPixmap(QtGui.QPixmap(":/source/img/if_16_1751363.png"))
+        self.lblImagen.setPixmap(Logica.byteArrayToImage(self.__dispostivo.image))
         self.lblImagen.setScaledContents(True)
         self.lblImagen.setObjectName("lblImagen")
         self.StatusFrame = QtWidgets.QFrame(self.Container)
@@ -191,6 +194,14 @@ class UIDispositivoWidget(widget):
         self.show()
         
         timer.signals.time_elapsed.connect(self.time) # Signal emitted each second
+        self.lblImagen.mouseDoubleClickEvent = self.actualizarImagen
+
+    def actualizarImagen(self,event):
+        from PyQt5.QtCore import QByteArray
+        fileName = QFileDialog.getOpenFileName(self,"Abrir",filter="Images (*.png *.jpg)")  # options=QtWidgets.QFileDialog.DontUseNativeDialog
+        if all(fileName):
+            self.lblImagen.setPixmap(QPixmap.fromImage(QImage.fromData(QByteArray.fromBase64(Logica.imageToByteArray(fileName[0])))))
+            self.__dispostivo.image = Logica.imageToByteArray(fileName[0])
 
     def time(self):
         if self.__status == 1:
@@ -277,7 +288,6 @@ class UIDispositivoWidget(widget):
     def mousePressEvent(self, event):
         if event.buttons() == Qt.LeftButton:
             self.dragPos = event.globalPos()
-            #event.accept()
 
     def mouseMoveEvent(self, event):
         if event.buttons() == Qt.LeftButton:
