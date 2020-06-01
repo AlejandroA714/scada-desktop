@@ -80,7 +80,9 @@ class UIAOVariable(widget):
     def actualizarVariable(self,var:variable):
         self.__variable = var
         self.SpinValue.setProperty("value", str(self.__variable.value))
-        
+
+    def getVariable(self):
+        return self.__variable.toJSON()
 
     def retranslateUi(self, AOVariable):
         _translate = QtCore.QCoreApplication.translate

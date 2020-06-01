@@ -36,9 +36,9 @@ class Logica():
             dev = device(x)
             dev.variables = json.loads( json.dumps(x["variables"]), object_hook=variable )
             drivers.append(dev)
-        workSpace({"Id":result.json()["Id"],"Nombre":result.json()["Nombre"], "DriversCount": len(drivers) })
-        workSpace.devices = drivers
-        return workSpace
+        work = workSpace({"Id":result.json()["Id"],"Nombre":result.json()["Nombre"], "DriversCount": len(drivers) })
+        work.devices = drivers
+        return work
 
     @staticmethod
     def LeerSensor(**kwargs):

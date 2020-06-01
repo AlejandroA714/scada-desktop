@@ -56,8 +56,8 @@ class UIDIVariable(widget):
         self.vboxlayout.addWidget(self.lblTitle)
         self.lblTileScroll.setWidget(self.ScrollLayout)
         self.lblValue = QtWidgets.QLabel(self.MainFrame)
-        self.lblValue.setGeometry(QtCore.QRect(123, 3, 20, 20))
-        self.lblValue.setStyleSheet("background-color:green;border-radius:8px;")
+        self.lblValue.setGeometry(QtCore.QRect(123, 3, 16, 16))
+        self.lblValue.setStyleSheet("background-color:green;border-radius:5px;")
         self.lblValue.setFrameShape(QtWidgets.QFrame.Panel)
         self.lblValue.setText("")
         self.lblValue.setObjectName("lblValue")
@@ -76,6 +76,9 @@ class UIDIVariable(widget):
             self.lblValue.setStyleSheet("background-color:%s; border-radius:8px;" % webcolors.name_to_hex(self.__variable.displayColor))
         else:
             self.lblValue.setStyleSheet("background-color:gray;border-radius:8px;")
+
+    def getVariable(self):
+        return self.__variable.toJSON()
 
     def retranslateUi(self, DIVariable):
         _translate = QtCore.QCoreApplication.translate

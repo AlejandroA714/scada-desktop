@@ -2,6 +2,7 @@ class container(object):
 
     def __init__(self,dict):
         self.tab = dict["tab"]
+        self.devicesContainer = dict["devicesContainer"]
         self.workSpace = dict["workSpace"]
         
 
@@ -20,3 +21,11 @@ class container(object):
     @workSpace.setter
     def workSpace(self,value):
         self.__workSpace = value
+
+    @property
+    def devices(self):
+        return self.__devices
+
+    @devices.setter
+    def devices(self,value):
+        self.__devices = value

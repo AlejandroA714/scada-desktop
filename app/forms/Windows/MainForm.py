@@ -1,10 +1,11 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtWidgets import QMainWindow, QAction, QMenu, QMessageBox, QShortcut
+from PyQt5.QtWidgets import QMainWindow, QAction, QMenu, QMessageBox, QShortcut, QInputDialog
 from PyQt5.QtCore import Qt, pyqtSlot
 from PyQt5.QtGui import QKeySequence
 from classes import form, Worker, Logica, device, workSpace,container
 from forms import UIAbrirModal,UIDispositivoWidget
 from resources import *
+from bson import ObjectId
 
 class UIMainWindow(form):
 
@@ -30,8 +31,7 @@ class UIMainWindow(form):
         self.verticalLayout.setSpacing(0)
         self.verticalLayout.setObjectName("verticalLayout")
         self.ContainerFrame = QtWidgets.QFrame(self.MainFrame)
-        self.ContainerFrame.setStyleSheet("background-color: rgb(255, 255, 255);\n"
-"")
+        self.ContainerFrame.setStyleSheet("background-color: rgb(255, 255, 255);\n""")
         self.ContainerFrame.setFrameShape(QtWidgets.QFrame.StyledPanel)
         self.ContainerFrame.setFrameShadow(QtWidgets.QFrame.Raised)
         self.ContainerFrame.setObjectName("ContainerFrame")
@@ -48,8 +48,7 @@ class UIMainWindow(form):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.lblIIE.sizePolicy().hasHeightForWidth())
         self.lblIIE.setSizePolicy(sizePolicy)
-        self.lblIIE.setStyleSheet("background-color: rgb(65, 105, 225);\n"
-"margin:0px;")
+        self.lblIIE.setStyleSheet("background-color: rgb(65, 105, 225);\n""margin:0px;")
         self.lblIIE.setText("")
         self.lblIIE.setPixmap(QtGui.QPixmap(":/source/img/iiie.png"))
         self.lblIIE.setObjectName("lblIIE")
@@ -67,8 +66,7 @@ class UIMainWindow(form):
         font.setWeight(75)
         self.lblSCADA.setFont(font)
         self.lblSCADA.setAutoFillBackground(False)
-        self.lblSCADA.setStyleSheet("color: rgb(255, 255, 0);background-color: rgb(65, 105, 225);\n"
-"margin:0px;")
+        self.lblSCADA.setStyleSheet("color: rgb(255, 255, 0);background-color: rgb(65, 105, 225);\n margin:0px;")
         self.lblSCADA.setObjectName("lblSCADA")
         self.TitileLayout.addWidget(self.lblSCADA, 0, 1, 1, 1)
         self.lblLogo = QtWidgets.QLabel(self.ContainerFrame)
@@ -77,8 +75,7 @@ class UIMainWindow(form):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.lblLogo.sizePolicy().hasHeightForWidth())
         self.lblLogo.setSizePolicy(sizePolicy)
-        self.lblLogo.setStyleSheet("background-color: rgb(65, 105, 225);\n"
-"margin:0px;")
+        self.lblLogo.setStyleSheet("background-color: rgb(65, 105, 225);\n margin:0px;")
         self.lblLogo.setFrameShape(QtWidgets.QFrame.NoFrame)
         self.lblLogo.setText("")
         self.lblLogo.setPixmap(QtGui.QPixmap(":/source/img/logo.png"))
@@ -130,7 +127,7 @@ class UIMainWindow(form):
         self.workSpaceTab.setFont(font)
         self.workSpaceTab.setTabShape(QtWidgets.QTabWidget.Rounded)
         self.workSpaceTab.setElideMode(QtCore.Qt.ElideLeft)
-        self.workSpaceTab.setTabsClosable(True)
+        #self.workSpaceTab.setTabsClosable(True)
         self.workSpaceTab.setMovable(True)
         self.workSpaceTab.setObjectName("workSpaceTab")
         self.workSpace1 = QtWidgets.QWidget()
@@ -246,6 +243,10 @@ class UIMainWindow(form):
             QMessageBox.warning(self,"¡Error!", "Fallo al cargar el proyecto")
             return
         tabName = self.workSpaceTab.currentWidget().objectName()
+        for x in self.__containers.items():
+            if x[1].workSpace.id == workSpace.id:
+                QMessageBox.warning(self,"Advertencia","¡Error! Proyecto ya ha sido abierto")
+                return
         if tabName in self.__containers.keys():
             reply = QMessageBox.question(
             self, "Confirmacion",
@@ -253,17 +254,30 @@ class UIMainWindow(form):
             QMessageBox.Yes | QMessageBox.No)
             if reply == QMessageBox.No:
                 return
-        containerObject = container({"tab":self.workSpaceTab.currentWidget(),"workSpace":workSpace })
-        self.__containers[tabName] = containerObject
-        self.PaintDevices(containerObject)
+        #
+        self.workSpaceTab.setTabText(self.workSpaceTab.indexOf(self.workSpaceTab.currentWidget()),workSpace.nombre)
+        self.PaintDevices(workSpace)
 
-    def PaintDevices(self,containerObject:container):
-        devices = containerObject.workSpace.devices
-        parent = containerObject.tab
+    def PaintDevices(self,workSpace:workSpace):
+        devices = workSpace.devices
+        parent = self.workSpaceTab.currentWidget()
+        devicesContainer = dict()
         for device in devices:
             UIDevice = UIDispositivoWidget(parent,device,self.session["access_token"])
-            #pending signals
+            devicesContainer[device.unicID] = UIDevice
+        containerObject = container({"tab":self.workSpaceTab.currentWidget(),"workSpace":workSpace,"devicesContainer":devicesContainer })
+        self.__containers[self.workSpaceTab.currentWidget().objectName()] = containerObject
 
+    def serializeWorkSpace(self,tabName):
+        devicesContainer:dict = self.__containers[tabName].devicesContainer
+        workSpace = self.__containers[tabName].workSpace
+        devices = []
+        for x in devicesContainer.items():
+            devices.append(x[1].getDevice())
+        work = workSpace.toJSON()
+        work["Drivers"] = devices
+        return work
+        
     def defineMenuArchivo(self):
         # Definicion de menus
         archivoMenu = QMenu()
@@ -322,15 +336,30 @@ class UIMainWindow(form):
 
     # methods of archive:menu
     def archivoMenu_Default(self):
-        print("Default")
+        pass
     def new_Callback(self):
-        print("new_callback")
+        name = QInputDialog.getText(self,"Nombre","Ingrese nombre del proyecto")
+        if not all(name):
+            return
+        work = workSpace({"Id":ObjectId().__str__(),"Nombre":name[0],"Devices":None,"DriversCount":0})
+        tabName = self.workSpaceTab.currentWidget().objectName()
+        if tabName in self.__containers.keys():
+            reply = QMessageBox.question(
+            self, "Confirmacion",
+            "¿Seguro? Esto sobreescribira el proyecto actual",
+            QMessageBox.Yes | QMessageBox.No)
+            if reply == QMessageBox.No:
+                return
+        containerObject = container({"tab":self.workSpaceTab.currentWidget(),"workSpace":work })
+        self.__containers[tabName] = containerObject
+        self.workSpaceTab.setTabText(self.workSpaceTab.indexOf(self.workSpaceTab.currentWidget()),work.nombre)
+        print(self.__containers)
     def open_Callback(self):
         dialog = UIAbrirModal(self,self.session)
         dialog.show()
         dialog.signals.success.connect(self.openMenu_Callback)
     def save_Callback(self):
-            print("save")
+        self.serializeWorkSpace(self.workSpaceTab.currentWidget().objectName())
     def saveAs_Callback(self):
             print("save as")
     def close_Callback(self):

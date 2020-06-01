@@ -48,8 +48,12 @@ class workSpace(object):
         self.__devicesCount = value
 
     def toJSON(self):
-        JSON = {"Id":self.id,"Nombre":self.nombre,"Drivers":self.devices,"DriversCount":self.devicesCount}
-        return json.dumps(JSON)
+        return  {
+                 "Id":self.id,
+                 "Nombre":self.nombre,
+                 "Drivers":self.devices,
+                 "DriversCount":self.devicesCount
+                }
 
 class device(object):
 
@@ -168,6 +172,21 @@ class device(object):
     @lastUpdate.setter
     def lastUpdate(self,value):
         self.__lastUpdate = value
+
+    def toJSON(self):
+        return {
+            "UnicID":self.unicID,
+            "Nombre":self.nombre,
+            "IsEmpty":False,
+            "Time":self.time,
+            "X":self.x,
+            "Y":self.y,
+            "ID":self.id,
+            "Token":self.token,
+            "Image":self.image,
+            "variables":self.variables,
+            "LastUpdate":self.lastUpdate
+        }
 
 class variable(object):
 

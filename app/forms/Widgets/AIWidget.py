@@ -78,6 +78,9 @@ class UIAIVariable(widget):
         self.__variable = var
         self.lblValue.setText(str(self.__variable.value))
 
+    def getVariable(self):
+        return self.__variable.toJSON()
+
     def retranslateUi(self, AIVariable):
         _translate = QtCore.QCoreApplication.translate
         AIVariable.setWindowTitle(_translate("AIVariable", "Form"))

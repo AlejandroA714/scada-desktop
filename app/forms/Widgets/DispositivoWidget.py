@@ -25,6 +25,14 @@ class UIDispositivoWidget(widget):
         super(UIDispositivoWidget,self).__init__(Parent)
         self.setupUi()
 
+    def getDevice(self):
+        variables = []
+        for v in self.__variablesContainer.items():
+            variables.append(v[1].getVariable())
+        device = self.__dispostivo.toJSON()
+        device["variables"] = variables
+        return device
+
     def setupUi(self):
         DispositivoWidget = self
         DispositivoWidget.setObjectName("DispositivoWidget")
