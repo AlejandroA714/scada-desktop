@@ -1,7 +1,7 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QMainWindow, QAction, QMenu, QMessageBox, QShortcut, QInputDialog
 from PyQt5.QtCore import Qt, pyqtSlot
-from PyQt5.QtGui import QKeySequence
+from PyQt5.QtGui import QKeySequence, QMovie
 from classes import form, Worker, Logica, device, workSpace,container
 from forms import UIAbrirModal,UIDispositivoWidget
 from resources import *
@@ -157,7 +157,7 @@ class UIMainWindow(form):
         self.lblStatus.setScaledContents(False)
         self.lblStatus.setObjectName("lblStatus")
         self.Status = QtWidgets.QLabel(self.StatusFrame)
-        self.Status.setGeometry(QtCore.QRect(65, 2, 54, 20))
+        self.Status.setGeometry(QtCore.QRect(65, 4, 500, 20))
         font = QtGui.QFont()
         font.setFamily("Roboto")
         font.setPointSize(10)
@@ -167,10 +167,10 @@ class UIMainWindow(form):
         self.Status.setStyleSheet("color: rgb(0, 170, 127);")
         self.Status.setLineWidth(0)
         self.Status.setScaledContents(False)
-        self.Status.setAlignment(QtCore.Qt.AlignCenter)
+        self.Status.setAlignment(QtCore.Qt.AlignLeft)
         self.Status.setObjectName("Status")
         self.StatusCircle = QtWidgets.QLabel(self.StatusFrame)
-        self.StatusCircle.setGeometry(QtCore.QRect(52, 7, 12, 12))
+        self.StatusCircle.setGeometry(QtCore.QRect(50, 7, 12, 12))
         font = QtGui.QFont()
         font.setFamily("Roboto")
         font.setPointSize(10)
@@ -224,6 +224,9 @@ class UIMainWindow(form):
         self.shortcut_reportes = QShortcut(QKeySequence(Qt.CTRL+Qt.Key_R),self)
         self.shortcut_reportes.activated.connect(self.reports_Callback)
         
+        self.movie = QMovie(":/source/img/Cargando.gif") # 80 ,200
+        self.movie.setScaledSize(QtCore.QSize(20,20))
+            
         # listener
 
     def closeEvent(self,event): # asks if user wants to close application
@@ -254,29 +257,20 @@ class UIMainWindow(form):
             QMessageBox.Yes | QMessageBox.No)
             if reply == QMessageBox.No:
                 return
-        #
         self.workSpaceTab.setTabText(self.workSpaceTab.indexOf(self.workSpaceTab.currentWidget()),workSpace.nombre)
-        self.PaintDevices(workSpace)
+        containerObject = container({"tab":self.workSpaceTab.currentWidget(),"workSpace":workSpace,"devicesContainer":None })
+        self.__containers[tabName] = containerObject
+        self.PaintDevices(self.__containers[tabName].workSpace)
 
     def PaintDevices(self,workSpace:workSpace):
         devices = workSpace.devices
         parent = self.workSpaceTab.currentWidget()
-        devicesContainer = dict()
         for device in devices:
             UIDevice = UIDispositivoWidget(parent,device,self.session["access_token"])
-            devicesContainer[device.unicID] = UIDevice
-        containerObject = container({"tab":self.workSpaceTab.currentWidget(),"workSpace":workSpace,"devicesContainer":devicesContainer })
-        self.__containers[self.workSpaceTab.currentWidget().objectName()] = containerObject
-
+        
     def serializeWorkSpace(self,tabName):
-        devicesContainer:dict = self.__containers[tabName].devicesContainer
-        workSpace = self.__containers[tabName].workSpace
-        devices = []
-        for x in devicesContainer.items():
-            devices.append(x[1].getDevice())
-        work = workSpace.toJSON()
-        work["Drivers"] = devices
-        return work
+        workSpace = self.__containers[tabName].workSpace.toJSON()
+        return workSpace
         
     def defineMenuArchivo(self):
         # Definicion de menus
@@ -359,9 +353,39 @@ class UIMainWindow(form):
         dialog.show()
         dialog.signals.success.connect(self.openMenu_Callback)
     def save_Callback(self):
-        self.serializeWorkSpace(self.workSpaceTab.currentWidget().objectName())
+        tabName = self.workSpaceTab.currentWidget().objectName()
+        if tabName not in self.__containers.keys():
+            QMessageBox.warning(self,"¡Error!","¡Error! No hay datos que guardar\nAbra un proyecto(Ctrl+A) o cree uno nuevo(Ctrl+N)")
+            return
+        self.actualizarEstado("Guardando...","white","slategray",self.movie)
+        workSpace = self.serializeWorkSpace(self.workSpaceTab.currentWidget().objectName())
+        worker = Worker(Logica.Guardar,**{"access_token":self.session["access_token"],"data":workSpace})
+        worker.signals.result.connect(self.GuardarCallback)
+        worker.signals.error.connect(self.GuardarCallback)
+        self.threadpool.start(worker)
     def saveAs_Callback(self):
-            print("save as")
+        tabName = self.workSpaceTab.currentWidget().objectName()
+        if tabName not in self.__containers.keys():
+            QMessageBox.warning(self,"¡Error!","¡Error! No hay datos que guardar\nAbra un proyecto(Ctrl+A) o cree uno nuevo(Ctrl+N)")
+            return
+        name = QInputDialog.getText(self,"Nombre","Ingrese nombre del proyecto")
+        if not all(name):
+            return
+        workSpace = self.__containers[self.workSpaceTab.currentWidget().objectName()].workSpace
+        workSpace.id = ObjectId().__str__()
+        workSpace.nombre = name[0]
+        self.workSpaceTab.setTabText(self.workSpaceTab.indexOf(self.workSpaceTab.currentWidget()),workSpace.nombre)
+        workSpace = self.serializeWorkSpace(self.workSpaceTab.currentWidget().objectName())
+        worker = Worker(Logica.Guardar,**{"access_token":self.session["access_token"],"data":workSpace})
+        worker.signals.result.connect(self.GuardarCallback)
+        worker.signals.error.connect(self.GuardarCallback)
+        self.threadpool.start(worker)
+    def GuardarCallback(self,response):
+        from datetime import datetime
+        if response["Success"] == 'true':
+            self.actualizarEstado("¡Exito! Guardado exitoso a las %s" % datetime.now().strftime("%I:%M del dia %d/%m"),"green","green")
+        else:
+            self.actualizarEstado("¡Error! Fallo al guardar a las %s" % datetime.now().strftime("%I:%M del dia %d/%m"),"red","red")
     def close_Callback(self):
         print("close")
 
@@ -384,6 +408,14 @@ class UIMainWindow(form):
             QMessageBox.Yes | QMessageBox.No)
         if reply == QMessageBox.Yes:
             self.close()
+
+    def actualizarEstado(self,text,backColor = "white",color = "green",movie = None):
+        self.movie.start() if movie != None else self.movie.stop()
+        self.StatusCircle.setMovie(movie)
+        self.Status.setText(text)
+        self.Status.setStyleSheet("color:%s;" % color)
+        self.StatusCircle.setMovie(movie)
+        self.StatusCircle.setStyleSheet("background-color:%s; border-radius:5px;" % backColor)
 
     def retranslateUi(self, MainWindow):
         _translate = QtCore.QCoreApplication.translate

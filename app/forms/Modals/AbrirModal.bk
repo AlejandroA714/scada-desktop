@@ -21,7 +21,7 @@ class UIAbrirModal(modal):
         AbrirModal = self
         AbrirModal.setObjectName("AbrirModal")
         AbrirModal.setWindowModality(QtCore.Qt.WindowModal)
-        AbrirModal.resize(480, 704)
+        AbrirModal.setGeometry(0,0,478,715)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Maximum)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -35,7 +35,7 @@ class UIAbrirModal(modal):
         AbrirModal.setFont(font)
         AbrirModal.setContextMenuPolicy(QtCore.Qt.NoContextMenu)
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap("../../../../../.designer/if_16_1751363.ico"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon.addPixmap(QtGui.QPixmap(":/source/img/if_16_1751363.ico"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         AbrirModal.setWindowIcon(icon)
         AbrirModal.setStyleSheet("background-color: rgb(255, 255, 255);")
         AbrirModal.setInputMethodHints(QtCore.Qt.ImhSensitiveData)
@@ -178,24 +178,10 @@ class UIAbrirModal(modal):
         self.ContentBox.setFlat(True)
         self.ContentBox.setObjectName("ContentBox")
         self.verticalLayout_3 = QtWidgets.QVBoxLayout(self.ContentBox)
-        self.verticalLayout_3.setContentsMargins(0, 0, 0, 0)
-        self.verticalLayout_3.setSpacing(0)
+        self.verticalLayout_3.setContentsMargins(9, 5, -1, 5)
+        self.verticalLayout_3.setSpacing(5)
         self.verticalLayout_3.setObjectName("verticalLayout_3")
-        self.ContentScroll = QtWidgets.QScrollArea(self.ContentBox)
-        self.ContentScroll.setFrameShape(QtWidgets.QFrame.NoFrame)
-        self.ContentScroll.setLineWidth(0)
-        self.ContentScroll.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
-        self.ContentScroll.setWidgetResizable(False)
-        self.ContentScroll.setObjectName("ContentScroll")
-        self.ContainerScroll = QtWidgets.QWidget()
-        self.ContainerScroll.setGeometry(QtCore.QRect(0, 0, 377, 490))
-        self.ContainerScroll.setMinimumSize(QtCore.QSize(0, 490))
-        self.ContainerScroll.setObjectName("ContainerScroll")
-        self.LayoutScroll = QtWidgets.QVBoxLayout(self.ContainerScroll)
-        self.LayoutScroll.setContentsMargins(0, 9, 5, 9)
-        self.LayoutScroll.setSpacing(7)
-        self.LayoutScroll.setObjectName("LayoutScroll")
-        self.UtilsFrame = QtWidgets.QFrame(self.ContainerScroll)
+        self.UtilsFrame = QtWidgets.QFrame(self.ContentBox)
         self.UtilsFrame.setMinimumSize(QtCore.QSize(256, 132))
         self.UtilsFrame.setMaximumSize(QtCore.QSize(128, 128))
         self.UtilsFrame.setStyleSheet("background-color: rgb(252, 252, 252);")
@@ -210,7 +196,7 @@ class UIAbrirModal(modal):
         self.Status = QtWidgets.QLabel(self.UtilsFrame)
         self.Status.setMaximumSize(QtCore.QSize(64, 64))
         self.Status.setText("")
-        self.Status.setPixmap(QtGui.QPixmap(":/source/img/Cargando.gif"))
+        #self.Status.setPixmap(QtGui.QPixmap(":/source/img/Cargando.gif"))
         self.Status.setScaledContents(True)
         self.Status.setObjectName("Status")
         self.utilsLayout.addWidget(self.Status, 0, QtCore.Qt.AlignHCenter)
@@ -242,12 +228,10 @@ class UIAbrirModal(modal):
         self.btnReload.setFlat(True)
         self.btnReload.setObjectName("btnReload")
         self.utilsLayout.addWidget(self.btnReload, 0, QtCore.Qt.AlignHCenter)
-        self.LayoutScroll.addWidget(self.UtilsFrame, 0, QtCore.Qt.AlignHCenter)
-        self.ContentScroll.setWidget(self.ContainerScroll)
-        self.verticalLayout_3.addWidget(self.ContentScroll, 0, QtCore.Qt.AlignHCenter)
+        self.verticalLayout_3.setAlignment(Qt.AlignHCenter)
+        self.verticalLayout_3.addWidget(self.UtilsFrame, 0, QtCore.Qt.AlignHCenter)
         self.verticalLayout_2.addWidget(self.ContentBox, 0, QtCore.Qt.AlignHCenter)
         self.verticalLayout.addWidget(self.MainFrame)
-
         self.retranslateUi(AbrirModal)
         QtCore.QMetaObject.connectSlotsByName(AbrirModal)
         self.btnReload.hide()
@@ -297,14 +281,11 @@ class UIAbrirModal(modal):
             self.Status.setMovie(self.movie)
             return
         self.UtilsFrame.deleteLater()
-        #self.verticalLayout_3.setAlignment(Qt.AlignTop)
-        self.LayoutScroll.setAlignment(Qt.AlignTop)
+        self.verticalLayout_3.setAlignment(Qt.AlignTop)
         for workSpace in _data:
             WidgetP = UIWidgetP(workSpace)
             WidgetP.signals.sucess.connect(self.success)
-            self.LayoutScroll.addWidget(WidgetP,0,QtCore.Qt.AlignTop)
-        if (len(_data)*96) > 390:
-            self.ContainerScroll.setGeometry(QtCore.QRect(0, 0, 377, (len(_data)*108) ))
+            self.verticalLayout_3.addWidget(WidgetP,0,QtCore.Qt.AlignTop)
         
     def btnReload_click(self):
         self.obtenerProyectos()
@@ -317,3 +298,16 @@ class UIAbrirModal(modal):
         self.ContentBox.setTitle(_translate("AbrirModal", "Proyectos"))
         self.lblStatus.setText(_translate("AbrirModal", "Cargando..."))
         self.btnReload.setText(_translate("AbrirModal", "Reintentar"))
+
+
+
+
+
+
+
+
+
+        ####
+
+                
+

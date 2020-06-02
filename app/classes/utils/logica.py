@@ -55,6 +55,12 @@ class Logica():
         result.raise_for_status()
         return result.json()
 
+    @staticmethod
+    def Guardar(**kwargs):
+        _headers = {'Authorization': 'Bearer ' + kwargs["access_token"]}
+        result  = requests.post("http://%s:%s/Controles/Guardar" % (Logica.settings["APISCADA"]["Host"],Logica.settings["APISCADA"]["Port"]), timeout = 45,json=kwargs["data"],headers=_headers)
+        result.raise_for_status()
+        return result.json()
 
 
 

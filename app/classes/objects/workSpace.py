@@ -51,9 +51,12 @@ class workSpace(object):
         return  {
                  "Id":self.id,
                  "Nombre":self.nombre,
-                 "Drivers":self.devices,
+                 "Drivers":list(self.deviceToJSON()),
                  "DriversCount":self.devicesCount
                 }
+    def deviceToJSON(self):
+        for d in self.devices:
+            yield d.toJSON()
 
 class device(object):
 
@@ -184,9 +187,13 @@ class device(object):
             "ID":self.id,
             "Token":self.token,
             "Image":self.image,
-            "variables":self.variables,
+            "variables":list(self.varToJSON()),
             "LastUpdate":self.lastUpdate
         }
+
+    def varToJSON(self):
+        for v in self.variables:
+            yield v.toJSON()
 
 class variable(object):
 
