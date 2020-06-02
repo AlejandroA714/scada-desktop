@@ -12,8 +12,9 @@ from resources.resources import *
 
 class UIAbrirModal(modal):
 
-    def __init__(self,MainWindow,session:object):
+    def __init__(self,MainWindow,session:object,IsDelete = False):
         super(UIAbrirModal,self).__init__(MainWindow,session)
+        self.__IsDelete = IsDelete
         self.__parent = MainWindow
         self.setupUi()
     
@@ -22,6 +23,8 @@ class UIAbrirModal(modal):
         AbrirModal.setObjectName("AbrirModal")
         AbrirModal.setWindowModality(QtCore.Qt.WindowModal)
         AbrirModal.resize(480, 704)
+        self.width = 520
+        self.height = 735
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Maximum)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -300,7 +303,7 @@ class UIAbrirModal(modal):
         #self.verticalLayout_3.setAlignment(Qt.AlignTop)
         self.LayoutScroll.setAlignment(Qt.AlignTop)
         for workSpace in _data:
-            WidgetP = UIWidgetP(workSpace)
+            WidgetP = UIWidgetP(workSpace,self.__IsDelete)
             WidgetP.signals.sucess.connect(self.success)
             self.LayoutScroll.addWidget(WidgetP,0,QtCore.Qt.AlignTop)
         if (len(_data)*96) > 390:
@@ -313,7 +316,7 @@ class UIAbrirModal(modal):
         _translate = QtCore.QCoreApplication.translate
         AbrirModal.setWindowTitle(_translate("AbrirModal", "Sistema SCADA"))
         self.lblSCADA.setText(_translate("AbrirModal", "SCADA"))
-        self.lblTitle.setText(_translate("AbrirModal", "Abrir"))
+        self.lblTitle.setText(_translate("AbrirModal", "Abrir" if not self.__IsDelete else "Eliminar"))
         self.ContentBox.setTitle(_translate("AbrirModal", "Proyectos"))
         self.lblStatus.setText(_translate("AbrirModal", "Cargando..."))
         self.btnReload.setText(_translate("AbrirModal", "Reintentar"))

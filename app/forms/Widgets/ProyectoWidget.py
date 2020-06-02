@@ -5,7 +5,8 @@ from resources import *
 
 class UIWidgetP(widget):
 
-    def __init__(self, workSpace:workSpace):
+    def __init__(self, workSpace:workSpace,IsDelete = False):
+        self.__IsDelete = IsDelete
         self.__workSpace = workSpace
         super(UIWidgetP,self).__init__()
         self.setupUi()
@@ -65,7 +66,7 @@ class UIWidgetP(widget):
         self.btnAbrir.setFont(font)
         self.btnAbrir.setStyleSheet("border: 1px solid green;")
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap(":/source/img/Abrir.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon.addPixmap(QtGui.QPixmap(":/source/img/Abrir.png" if not self.__IsDelete else ":/source/img/Eliminar-SM.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         self.btnAbrir.setIcon(icon)
         self.btnAbrir.setFlat(True)
         self.btnAbrir.setObjectName("btnAbrir")
@@ -84,7 +85,7 @@ class UIWidgetP(widget):
         QtCore.QMetaObject.connectSlotsByName(Form)
 
         #listener
-        self.btnAbrir.clicked.connect(lambda : self.sucess(self.__workSpace))
+        self.btnAbrir.clicked.connect(lambda : self.sucess(self.__workSpace,"¿Abrir este proyecto?" if not self.__IsDelete else "¿Eliminar este proyecto?"))
 
     def sizeHint(self):
         return QtCore.QSize(350,96)
@@ -98,4 +99,4 @@ class UIWidgetP(widget):
 "p, li { white-space: pre-wrap; }\n"
 "</style></head><body style=\" font-family:\'Roboto\'; font-size:11pt; font-weight:600; font-style:normal;\">\n"
 "<p style=\" margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;\"><span style=\" font-family:\'Noto Sans\';\">%s</span></p></body></html>") % self.__workSpace.nombre )
-        self.btnAbrir.setText(_translate("Form", "Abrir"))
+        self.btnAbrir.setText(_translate("Form", "Abrir" if not self.__IsDelete else "Eliminar" ))

@@ -62,8 +62,12 @@ class Logica():
         result.raise_for_status()
         return result.json()
 
-
-
+    @staticmethod
+    def EliminarProyecto(**kwargs):
+        _headers = {'Authorization': 'Bearer ' + kwargs["access_token"]}
+        result  = requests.get("http://%s:%s/Controles/Eliminar/%s" % (Logica.settings["APISCADA"]["Host"],Logica.settings["APISCADA"]["Port"],kwargs["id"]), timeout = 45, headers=_headers)
+        result.raise_for_status()
+        return result.json()
 
     @staticmethod
     def imageToByteArray(fileName):

@@ -13,10 +13,10 @@ class widget(QWidget):
         self.signals = widgetSignals()
         QWidget.__init__(self,Parent)
 
-    def sucess(self, result:object):
+    def sucess(self, result:object,text):
         reply = QMessageBox.question(
             self, "Confirmacion",
-            "¿Abrir este proyecto?",
+            text,
             QMessageBox.Yes | QMessageBox.No)
         if reply == QMessageBox.Yes:
             self.signals.sucess.emit(result)

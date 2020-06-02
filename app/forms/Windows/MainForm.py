@@ -18,7 +18,7 @@ class UIMainWindow(form):
         MainWindow = self
         MainWindow.setObjectName("MainWindow")
         MainWindow.resize(820, 720)
-        MainWindow.setMinimumSize(QtCore.QSize(820, 680))
+        MainWindow.setMinimumSize(QtCore.QSize(820, 720))
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap(":/source/img/if_16_1751363.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         MainWindow.setWindowIcon(icon)
@@ -241,6 +241,27 @@ class UIMainWindow(form):
         worker.signals.error.connect(self.MostrarDispositivos)
         self.threadpool.start(worker)
 
+    def deleteMenu_Callback(self,workSpace):
+        for x in self.__containers.items():
+           if x[1].workSpace.id == workSpace.id:
+               QMessageBox.warning(self,"¡Error!","¡Error! El proyecto que intenta eliminar se encuentra abierto\nCierre dicho proyecto antes de continuar")
+               return
+        self.actualizarEstado("Eliminado...","white","slategray",self.movie)
+        worker = Worker(Logica.EliminarProyecto,**{"access_token":self.session["access_token"],"id":workSpace.id})
+        worker.signals.result.connect(self.deleteCallback)
+        worker.signals.error.connect(self.deleteCallback)
+        self.threadpool.start(worker)
+    
+    def deleteCallback(self,response):
+        from datetime import datetime
+        if isinstance(response,Exception):
+            self.actualizarEstado("¡Error! Fallo al contactar con el servicio SCADA a las %s" % datetime.now().strftime("%I:%M del dia %d/%m"),"red","red")
+            return
+        if response["Success"] == 'true':
+            self.actualizarEstado("¡Exito! Eliminado exitosamente a las %s" % datetime.now().strftime("%I:%M del dia %d/%m"),"green","green")
+        else:
+            self.actualizarEstado("¡Error! Fallo al Eliminar a las %s" % datetime.now().strftime("%I:%M del dia %d/%m"),"red","red")
+
     def MostrarDispositivos(self,workSpace:workSpace):
         if isinstance(workSpace,Exception):
             QMessageBox.warning(self,"¡Error!", "Fallo al cargar el proyecto")
@@ -382,6 +403,9 @@ class UIMainWindow(form):
         self.threadpool.start(worker)
     def GuardarCallback(self,response):
         from datetime import datetime
+        if isinstance(response,Exception):
+            self.actualizarEstado("¡Error! Fallo al contactar con el servicio SCADA a las %s" % datetime.now().strftime("%I:%M del dia %d/%m"),"red","red")
+            return
         if response["Success"] == 'true':
             self.actualizarEstado("¡Exito! Guardado exitoso a las %s" % datetime.now().strftime("%I:%M del dia %d/%m"),"green","green")
         else:
@@ -390,8 +414,9 @@ class UIMainWindow(form):
         print("close")
 
     def delete_Callback(self):
-        print("delete")
-
+        dialog = UIAbrirModal(self,self.session,True)
+        dialog.show()
+        dialog.signals.success.connect(self.deleteMenu_Callback)
     def logout_CallbacK(self):
         reply = QMessageBox.question(
             self, "Confirmacion",

@@ -13,6 +13,9 @@ class modal(QDialog): # Class to be inherit to convert a window into a modal
         self.signals = modalSignals() # Instance signals to be emited
         self.threadpool = QThreadPool() #QThearPool object to execute work class
         self.__session = None # session object
+        self.__parent = Parent
+        self.weight = 480
+        self.height = 720
         if(session == None): return
         else: self.__session = session
         QDialog.__init__(self,Parent)
@@ -50,9 +53,13 @@ class modal(QDialog): # Class to be inherit to convert a window into a modal
 
     def mouseMoveEvent(self, event):
         if event.buttons() == Qt.LeftButton:
-            self.move(self.pos() + event.globalPos() - self.dragPos)
-            self.dragPos = event.globalPos()
-            event.accept()
+            point = self.pos() + event.globalPos() - self.dragPos
+             # Negative because it has a border for shadow, can be see it at qt designer with the .ui
+            if ((point.x() <= -10 or point.x() >= self.__parent.frameSize().width() - self.weight ) or (point.y() <= -10 or point.y() >= self.__parent.frameSize().height() - self.height)) :
+                event.ignore()
+            else:
+                self.move(self.pos() + event.globalPos() - self.dragPos)
+                self.dragPos = event.globalPos()
 
     def success(self,_x:object): # this function is responsible to emit a success signal, if dialog was success
         self.signals.success.emit(_x)
