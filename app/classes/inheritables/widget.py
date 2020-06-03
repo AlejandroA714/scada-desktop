@@ -12,6 +12,7 @@ class widget(QWidget):
     def __init__(self,Parent=None):
         self.signals = widgetSignals()
         QWidget.__init__(self,Parent)
+        self.setAttribute(Qt.WA_DeleteOnClose)
 
     def sucess(self, result:object,text):
         reply = QMessageBox.question(

@@ -86,6 +86,10 @@ class UIDOVariable(widget):
     def getVariable(self):
         return self.__variable.toJSON()
 
+    def disconnectSlots(self): # used to disconnect all slots to delete all references
+        self.btnValue.clicked.disconnect()
+        self.variableSignals.disconnect()
+
     def retranslateUi(self, DOVariable):
         _translate = QtCore.QCoreApplication.translate
         DOVariable.setWindowTitle(_translate("DOVariable", "Form"))

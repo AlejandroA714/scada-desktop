@@ -16,11 +16,13 @@ class modal(QDialog): # Class to be inherit to convert a window into a modal
         self.__parent = Parent
         self.weight = 480
         self.height = 720
+        
         if(session == None): return
         else: self.__session = session
         QDialog.__init__(self,Parent)
         self.setWindowFlags(Qt.FramelessWindowHint) # removes borders
         self.setAttribute(Qt.WA_TranslucentBackground) # Making it translucent to make a trick with the shadows
+        self.setAttribute( Qt.WA_DeleteOnClose) 
 
     def center(self,parent:QMainWindow): # this function is responsible for centering the modal with respect its father
         qr = self.frameGeometry()

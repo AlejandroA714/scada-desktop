@@ -1,6 +1,6 @@
 import sys, traceback, logging, os
 from classes.utils.logger import logger
-from PyQt5.QtCore import QObject, QRunnable, pyqtSignal, pyqtSlot
+from PyQt5.QtCore import QObject, QRunnable, pyqtSignal, pyqtSlot, QThread
 from PyQt5.QtWidgets import QMessageBox, QApplication
 from requests.exceptions import HTTPError
 
@@ -24,6 +24,7 @@ class Worker(QRunnable): # Class to execute a function inside a thread
         self.kwargs = kwargs
         self.signals = WorkerSignals() 
         self.logger = logger()
+        self.setAutoDelete(True)
         #self.kwargs['progress_callback'] = self.signals.progress 
 
     @pyqtSlot()

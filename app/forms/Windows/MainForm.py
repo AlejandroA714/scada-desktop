@@ -6,6 +6,7 @@ from classes import form, Worker, Logica, device, workSpace,container
 from forms import UIAbrirModal,UIDispositivoWidget
 from resources import *
 from bson import ObjectId
+from functools import partial
 
 class UIMainWindow(form):
 
@@ -279,20 +280,29 @@ class UIMainWindow(form):
             if reply == QMessageBox.No:
                 return
         self.workSpaceTab.setTabText(self.workSpaceTab.indexOf(self.workSpaceTab.currentWidget()),workSpace.nombre)
-        containerObject = container({"tab":self.workSpaceTab.currentWidget(),"workSpace":workSpace,"devicesContainer":None })
-        self.__containers[tabName] = containerObject
-        self.PaintDevices(self.__containers[tabName].workSpace)
+        self.PaintDevices(workSpace)
 
     def PaintDevices(self,workSpace:workSpace):
         devices = workSpace.devices
         parent = self.workSpaceTab.currentWidget()
+        devicesContainer = dict()
         for device in devices:
             UIDevice = UIDispositivoWidget(parent,device,self.session["access_token"])
+            devicesContainer[device.unicID] = UIDevice
+        containerObject = container({"tab":self.workSpaceTab.currentWidget(),"workSpace":workSpace,"devicesContainer":devicesContainer })
+        self.__containers[parent.objectName()] = containerObject
         
     def serializeWorkSpace(self,tabName):
         workSpace = self.__containers[tabName].workSpace.toJSON()
         return workSpace
-        
+
+    def cleanWorkSpace(self,tabName):
+        for d in self.__containers[tabName].devicesContainer.items():
+            device = d[1]
+            device.disconnectSignals()
+            device.close()
+            device.deleteLater()
+            del device
     def defineMenuArchivo(self):
         # Definicion de menus
         archivoMenu = QMenu()
@@ -401,18 +411,44 @@ class UIMainWindow(form):
         worker.signals.result.connect(self.GuardarCallback)
         worker.signals.error.connect(self.GuardarCallback)
         self.threadpool.start(worker)
-    def GuardarCallback(self,response):
+    
+    def GuardarCallback(self,response,IsClose = False,Tab = None):
         from datetime import datetime
         if isinstance(response,Exception):
             self.actualizarEstado("¡Error! Fallo al contactar con el servicio SCADA a las %s" % datetime.now().strftime("%I:%M del dia %d/%m"),"red","red")
+            if IsClose:
+                QMessageBox.warning(self,"¡Error!","¡Error! Debido a un error al guardar, La operacion (Cerrar) no ha sido completada") 
             return
         if response["Success"] == 'true':
             self.actualizarEstado("¡Exito! Guardado exitoso a las %s" % datetime.now().strftime("%I:%M del dia %d/%m"),"green","green")
+            if IsClose:
+                self.__containers.pop(Tab.objectName())
+                self.workSpaceTab.setTabText(self.workSpaceTab.indexOf(Tab),"Tab %s" % (self.workSpaceTab.indexOf(Tab) + 1))
         else:
             self.actualizarEstado("¡Error! Fallo al guardar a las %s" % datetime.now().strftime("%I:%M del dia %d/%m"),"red","red")
-    def close_Callback(self):
-        print("close")
+            if IsClose:
+                QMessageBox.warning(self,"¡Error!","¡Error! Debido a un error al guardar, La operacion (Cerrar) no ha sido completada") 
 
+    def close_Callback(self):
+        tabName = self.workSpaceTab.currentWidget().objectName()
+        if tabName not in self.__containers.keys():
+            QMessageBox.warning(self,"¡Error!","¡Error! No hay nada en esta pestaña\nAbra un proyecto(Ctrl+A) o cree uno nuevo(Ctrl+N)")
+            return
+        reply = QMessageBox.question(
+        self, "Confirmacion",
+        "¿Guardar antes de cerrar?",
+        QMessageBox.Save | QMessageBox.No | QMessageBox.Cancel  )
+        if reply == QMessageBox.Save:
+            self.actualizarEstado("Guardando...","white","slategray",self.movie)
+            workSpace = self.serializeWorkSpace(tabName)
+            worker = Worker(Logica.Guardar,**{"access_token":self.session["access_token"],"data":workSpace})
+            worker.signals.result.connect(partial(self.GuardarCallback,True,tabName ))
+            worker.signals.error.connect(self.GuardarCallback)
+            self.threadpool.start(worker)
+        if reply == QMessageBox.No:
+            self.cleanWorkSpace(self.workSpaceTab.currentWidget().objectName())
+            self.__containers.pop(tabName)
+            self.workSpaceTab.setTabText(self.workSpaceTab.indexOf(self.workSpaceTab.currentWidget()),"Tab %s" % (self.workSpaceTab.indexOf(self.workSpaceTab.currentWidget()) + 1) )
     def delete_Callback(self):
         dialog = UIAbrirModal(self,self.session,True)
         dialog.show()

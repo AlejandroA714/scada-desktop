@@ -24,6 +24,20 @@ class UIDispositivoWidget(widget):
         self.__variablesContainer = dict()
         super(UIDispositivoWidget,self).__init__(Parent)
         self.setupUi()
+    
+    def disconnectSignals(self):
+        #self.deviceSignals.disconnect()
+        timer.signals.time_elapsed.disconnect(self.time)
+        self.lblImagen.mouseDoubleClickEvent = None
+        for v in self.__variablesContainer.items():
+            variable = v[1]
+            if (variable.getVariable())["IsOutput"] == True:
+                variable.variableSignals.update.disconnect(self.actualizarVariable)
+            variable.disconnectSlots()
+            variable.close()
+            variable.deleteLater()
+            del variable
+        del self.__variablesContainer
 
     def getDevice(self):
         variables = []
@@ -215,6 +229,7 @@ class UIDispositivoWidget(widget):
         if self.__status == 1:
             time = int(self.Time.text())-1
             if time == 0:
+                print("update time")
                 self.__status = 2
                 self.movie.start()
                 self.lblTime.setText("Actualizando...")
@@ -229,7 +244,7 @@ class UIDispositivoWidget(widget):
         worker = Worker(Logica.LeerSensor,**{"access_token":self.__access_token,"ID":self.__dispostivo.id,"Token":self.__dispostivo.token,"data":variablesList})
         worker.signals.result.connect(self.actualizarVariables_Callback)
         worker.signals.error.connect(self.actualizarVariables_Callback)
-        self.threadpool.start(worker)
+        self.threadpool.start(worker)   
 
     def actualizarVariables_Callback(self,variablesList:list): # callback for worker
         if isinstance(variablesList,Exception):

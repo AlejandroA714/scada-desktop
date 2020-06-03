@@ -1,6 +1,6 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import Qt
-from classes import widget, variable
+from classes import widget, variable, variableSignals
 import webcolors
 
 class UIDIVariable(widget):
@@ -77,6 +77,9 @@ class UIDIVariable(widget):
         else:
             self.lblValue.setStyleSheet("background-color:gray;border-radius:8px;")
 
+    def disconnectSlots(self): # used to disconnect all slots to delete all references
+        pass
+        
     def getVariable(self):
         return self.__variable.toJSON()
 
