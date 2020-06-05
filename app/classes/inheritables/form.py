@@ -22,6 +22,7 @@ class form(QMainWindow): # class to be inherit to make a main window
         QMainWindow.__init__(self)
         self.center()
         self.setWindowIcon(QIcon(':/source/img/if_16_1751363.ico'))
+        self.setAttribute(Qt.WA_DeleteOnClose) 
         
     def center(self):
         qr = self.frameGeometry()

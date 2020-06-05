@@ -303,6 +303,7 @@ class UIMainWindow(form):
             device.close()
             device.deleteLater()
             del device
+        QtWidgets.QApplication.processEvents()
     def defineMenuArchivo(self):
         # Definicion de menus
         archivoMenu = QMenu()

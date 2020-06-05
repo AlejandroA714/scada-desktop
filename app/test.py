@@ -1,24 +1,42 @@
-from classes import workSpace, container
-from bson import ObjectId
+from PyQt5 import QtCore, QtGui
+from PyQt5.QtWidgets import *
 
+class Window(QWidget):
+    @profile
+    def __init__(self,*args):
+        QWidget.__init__(self)
+        self.checkbox = QCheckBox('Delete')
+        self.button = QPushButton('Open', self)
+        self.button.clicked.connect(self.openDialog)
+        layout = QHBoxLayout(self)
+        layout.addWidget(self.checkbox)
+        layout.addWidget(self.button)
 
-containers = dict()
+    @profile
+    def openDialog(self,*args):
+        widget = QDialog(self)
+        if (self.checkbox.isChecked() and
+            not widget.testAttribute(QtCore.Qt.WA_DeleteOnClose)):
+            widget.setAttribute(QtCore.Qt.WA_DeleteOnClose)
+            for child in self.findChildren(QDialog):
+                if child is not widget:
+                    child.deleteLater()
+        label = QLabel(widget)
+        button = QPushButton('Close', widget)
+        button.clicked.connect(widget.close)
+        layout = QVBoxLayout(widget)
+        layout.addWidget(label)
+        layout.addWidget(button)
+        objects = self.findChildren(QtCore.QObject)
+        label.setText('Objects = %d' % len(objects))
+        print(objects)
+        widget.show()
 
-#containers.append()
-#containers.append(container({"tab":None,"workSpace":workSpace({"Id":ObjectId().__str__(),"Nombre":"Debug 2","Drivers":None,"DriversCount":0})}))
-#containers.append(container({"tab":None,"workSpace":workSpace({"Id":ObjectId().__str__(),"Nombre":"Debug 3","Drivers":None,"DriversCount":0})}))
+if __name__ == '__main__':
 
-obj = ObjectId().__str__()
-#containers["tab1"] = container({"tab":None,"workSpace":workSpace({"Id":obj,"Nombre":"Debug 1","Drivers":None,"DriversCount":0})})
-#containers["tab2"] = container({"tab":None,"workSpace":workSpace({"Id":ObjectId().__str__(),"Nombre":"Debug 2","Drivers":None,"DriversCount":0})})
-#containers["tab3"] = container({"tab":None,"workSpace":workSpace({"Id":ObjectId().__str__(),"Nombre":"Debug 3","Drivers":None,"DriversCount":0})})
-
-#for x in containers.items():
-#    print(x[1].nombre)
-
-#tab = containers["tab2"].workSpace.id
-print(tab)
-
-#if obj in containers.items()[1]
-#print(containers.keys())
-#print(containers.items())
+    import sys
+    app = QApplication(sys.argv)
+    window = Window()
+    window.setGeometry(500, 300, 100, 50)
+    window.show()
+    sys.exit(app.exec_())

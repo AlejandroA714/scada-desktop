@@ -3,8 +3,8 @@ from classes.objects.time import time
 
 class timerSignals(QObject):
     
-    time_elapsed = pyqtSignal()
-    access_token_expired = pyqtSignal()
+    time_elapsed = pyqtSignal() # each second
+    access_token_expired = pyqtSignal() # each 23 hours
     session_expired = pyqtSignal() # not being implemented, not necessary
 
 class timer(QTimer):
@@ -14,7 +14,7 @@ class timer(QTimer):
   
     def timerEvent(self,event):
         self.__time.addSeconds(1)
-        print(self.__time.__dict__)
+        print(self.__time.__dict__) # debug
         if self.__time.hours == 23:
             self.signals.access_token_expired.emit()
         self.signals.time_elapsed.emit()
@@ -25,6 +25,10 @@ class timer(QTimer):
             super(timer,cls.__instance).__init__()
             cls.__time = time()     
         return cls.__instance
+
+    def restartTimer(self,timerid):
+        self.killTimer(timerid)
+        self.__time.restart()
 
     @property
     def time(self):

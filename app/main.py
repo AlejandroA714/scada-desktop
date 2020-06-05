@@ -1,28 +1,42 @@
 from PyQt5.QtWidgets import QApplication
 from forms import UILogin, UIMainWindow
 from classes import logger,timer
+from functools import partial
+import sip,sys
 
 class application(QApplication):
 
     def __init__(self,*args):
         super(application,self).__init__(*args)
-        self.__mainForm = UIMainWindow()
-        self.__loginForm = UILogin()
-        self.__timer = timer() # Initializate timer
-        self.__logger = logger() # Initializate logger
-        self.connectSignals() # connects the signal to be captured
-        self.__loginForm.show()
+        self.mainWindow = None
+        self.timer = timer() # Initializate timer
+        self.logger = logger() # Initializate logger
 
-    def connectSignals(self):
-        self.__loginForm.signals.login.connect(self.showMainForm)
-        self.__mainForm.signals.logout.connect(lambda : self.__loginForm.show())
-        self.__loginForm.signals.finish.connect(lambda: app.closeAllWindows())
+    def showLoginForm(self,sessionClosed = False,timerid = 0):
+        if sessionClosed:
+            self.mainWindow.signals.logout.disconnect()
+            del self.mainWindow.session
+            self.timer.restartTimer(timerid)
+            self.mainWindow.deleteLater()
+            self.processEvents()
+        self.mainWindow = UILogin()
+        self.mainWindow.signals.login.connect(self.showMainForm)
+        self.mainWindow.signals.finish.connect(self.exit)
+        self.mainWindow.show()
 
     def showMainForm(self,session):
-        self.__mainForm.session = session
-        self.__mainForm.show()
-        self.__timer.startTimer(1000)
+        self.mainWindow.signals.login.disconnect(self.showMainForm)
+        self.mainWindow.signals.finish.disconnect(self.exit)
+        self.mainWindow.deleteLater()
+        self.processEvents()
+        self.mainWindow = UIMainWindow()
+        self.mainWindow.session = session
+        self.mainWindow.show()
+        timerid = self.timer.startTimer(1000)
+        self.mainWindow.signals.logout.connect(partial(self.showLoginForm,True,timerid))
 
 if __name__ == "__main__":
     app = application([])
-    app.exec_()
+    app.showLoginForm()
+    app.exec()
+    

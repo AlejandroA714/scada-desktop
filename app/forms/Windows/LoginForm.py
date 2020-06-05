@@ -10,7 +10,7 @@ class UILogin(form):
     def __init__(self):
         super(UILogin,self).__init__()
         self.setWindowFlags(Qt.FramelessWindowHint)
-        self.setAttribute(Qt.WA_TranslucentBackground)  
+        self.setAttribute(Qt.WA_TranslucentBackground)
         self.setupUi()
 
     def setupUi(self):
@@ -175,6 +175,7 @@ class UILogin(form):
         self.btnExit.clicked.connect(self.exit)
         
         # end
+
     def btnAceptar_Click(self):
         if(self.txtUsuario.text() == "" or self.txtPassword.text() == ""):
             QMessageBox.warning(self,"¡Advertencia!","Rellene los campos solicitados")
@@ -184,10 +185,12 @@ class UILogin(form):
         self.btnAceptar.hide()
         self.lblmovie.show()
         self.movie.start()
-        worker = Worker(Logica.IniciarSesion,**{"Usuario":self.txtUsuario.text(),"Password":self.txtPassword.text()})
-        worker.signals.result.connect(self.btnAceptar_CallBack)
-        worker.signals.error.connect(self.btnAceptar_CallBack)
-        self.threadpool.start(worker)
+        s = Logica.IniciarSesion(**{"Usuario":self.txtUsuario.text(),"Password":self.txtPassword.text()})
+        self.btnAceptar_CallBack(s)
+        #worker = Worker(Logica.IniciarSesion,**{"Usuario":self.txtUsuario.text(),"Password":self.txtPassword.text()})
+        #worker.signals.result.connect(self.btnAceptar_CallBack)
+        #worker.signals.error.connect(self.btnAceptar_CallBack)
+        #self.threadpool.start(worker)
 
     def btnAceptar_CallBack(self,s):
         self.lblmovie.hide()
@@ -206,7 +209,10 @@ class UILogin(form):
             return
         self.txtUsuario.setText("")
         self.txtPassword.setText("")
+        self.btnAceptar.clicked.disconnect(self.btnAceptar_Click)
+        self.btnExit.clicked.disconnect(self.exit)
         self.signals.login.emit(s)
+        self.signals = None
         self.close()
                 
     def mousePressEvent(self, event):

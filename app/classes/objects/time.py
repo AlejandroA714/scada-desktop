@@ -22,6 +22,13 @@ class time(object): # this class is ussed manage the execution time of the app
     def addWeeks(self,value:int):
         self.weeks += value
 
+    def restart(self):
+        self.seconds = 0
+        self.minutes = 0
+        self.hours = 0
+        self.days = 0
+        self.weeks= 0
+
     @property
     def seconds(self):
         return self.__seconds
