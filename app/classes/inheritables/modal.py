@@ -16,7 +16,6 @@ class modal(QDialog): # Class to be inherit to convert a window into a modal
         self.__parent = Parent
         self.weight = 480
         self.height = 720
-        
         if(session == None): return
         else: self.__session = session
         QDialog.__init__(self,Parent)
@@ -37,10 +36,15 @@ class modal(QDialog): # Class to be inherit to convert a window into a modal
             "¿Seguro que desea cancelar?",
             QMessageBox.Yes | QMessageBox.No)
         if reply == QMessageBox.Yes:
+            self.disconnectSignals()
             self.signals.canceled.emit()
             self.close()
+            self.deleteLater()
         else:
             pass
+
+    def disconnectSignals(self): # virtual method, that should be implement for each class that inherit
+        raise NotImplementedError()
     
     def getAccessToken(self):
         if self.__session != None:
@@ -65,7 +69,10 @@ class modal(QDialog): # Class to be inherit to convert a window into a modal
 
     def success(self,_x:object): # this function is responsible to emit a success signal, if dialog was success
         self.signals.success.emit(_x)
+        self.disconnectSignals()
         self.close()
+        self.deleteLater()
     
     def cancel(self):
+        self.disconnectSignals()
         self.signals.canceled.emit()

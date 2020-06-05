@@ -41,8 +41,15 @@ class Worker(QRunnable): # Class to execute a function inside a thread
                     QApplication.exit()
             traceback.print_exc()
             self.signals.error.emit(e)   
+            self.disconnectSignals()
         else:
             self.signals.result.emit(result)  # Return the result of the processing
-        finally:
-            self.signals.finished.emit()  # Done
+            self.disconnectSignals()
+        #finally:
+        #    self.signals.finished.emit()  # Done
+        #    self.disconnectSignals()
+
+    def disconnectSignals(self):
+        self.signals.result.disconnect()
+        self.signals.error.disconnect()
 

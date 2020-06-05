@@ -253,25 +253,28 @@ class UIAbrirModal(modal):
 
         self.retranslateUi(AbrirModal)
         QtCore.QMetaObject.connectSlotsByName(AbrirModal)
-        self.btnReload.hide()
-        self.__parent.signals.resize.connect(lambda : self.center(self.__parent))
 
+        self.btnReload.hide()
+        
         # lblMovie
         self.movie = QMovie(":/source/img/Cargando.gif")
         self.movie.setScaledSize(QtCore.QSize(64,64))
         self.movie.start()
         self.Status.setMovie(self.movie)
         
-        #asd = timer()
-        #asd.signals.time_elapsed.connect(self.test)
-        
         # listener
+        self.__parent.signals.resize.connect(lambda : self.center(self.__parent))
         self.btnExit.clicked.connect(self.exit)
         self.btnReload.clicked.connect(self.btnReload_click)
-    
+
     def showEvent(self,event):
         self.center(self.__parent)
         self.obtenerProyectos()
+
+    def disconnectSignals(self):
+        self.signals.success.disconnect()
+        self.__parent.signals.resize.disconnect()
+        self.btnExit.clicked.disconnect()
 
     def obtenerProyectos(self):
         self.btnReload.hide()
@@ -300,7 +303,6 @@ class UIAbrirModal(modal):
             self.Status.setMovie(self.movie)
             return
         self.UtilsFrame.deleteLater()
-        #self.verticalLayout_3.setAlignment(Qt.AlignTop)
         self.LayoutScroll.setAlignment(Qt.AlignTop)
         for workSpace in _data:
             WidgetP = UIWidgetP(workSpace,self.__IsDelete)
@@ -308,7 +310,7 @@ class UIAbrirModal(modal):
             self.LayoutScroll.addWidget(WidgetP,0,QtCore.Qt.AlignTop)
         if (len(_data)*96) > 390:
             self.ContainerScroll.setGeometry(QtCore.QRect(0, 0, 377, (len(_data)*108) ))
-        
+
     def btnReload_click(self):
         self.obtenerProyectos()
 

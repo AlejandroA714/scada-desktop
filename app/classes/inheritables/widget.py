@@ -21,6 +21,7 @@ class widget(QWidget):
             QMessageBox.Yes | QMessageBox.No)
         if reply == QMessageBox.Yes:
             self.signals.sucess.emit(result)
+            self.close()
         else:
             pass
 

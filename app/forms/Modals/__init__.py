@@ -1,1 +1,2 @@
 from .AbrirModal import UIAbrirModal
+from .ConfiguracionesModal import UIConfiguracionesModal
