@@ -35,19 +35,18 @@ class Worker(QRunnable): # Class to execute a function inside a thread
         except Exception as e:
             self.logger.log_error(e)
             if isinstance(e,HTTPError):#
-                print(e.__dict__)
                 if e.response.status_code == 401:
                     QMessageBox.warning(None,"¡Error!","Sesión expirada\nCerrando Aplicación")
                     QApplication.exit()
             traceback.print_exc()
             self.signals.error.emit(e)   
-            self.disconnectSignals()
+            #self.disconnectSignals()
         else:
             self.signals.result.emit(result)  # Return the result of the processing
-            self.disconnectSignals()
-        #finally:
-        #    self.signals.finished.emit()  # Done
-        #    self.disconnectSignals()
+            #self.disconnectSignals()
+        finally:
+            self.signals.finished.emit()  # Done
+            #self.disconnectSignals()
 
     def disconnectSignals(self):
         self.signals.result.disconnect()

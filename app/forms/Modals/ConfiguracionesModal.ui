@@ -276,7 +276,7 @@ margin:0px;</string>
            </property>
            <property name="minimumSize">
             <size>
-             <width>300</width>
+             <width>250</width>
              <height>116</height>
             </size>
            </property>
@@ -450,9 +450,6 @@ margin:0px;</string>
               <property name="styleSheet">
                <string notr="true">border-bottom:1px solid black;border-top:none;</string>
               </property>
-              <property name="inputMask">
-               <string>127.0.0.1</string>
-              </property>
               <property name="text">
                <string>127.0.0.1</string>
               </property>
@@ -488,10 +485,7 @@ margin:0px;</string>
               </property>
               <property name="styleSheet">
                <string notr="true">border-bottom:1px solid black;border-top:none;</string>
-              </property>
-              <property name="inputMask">
-               <string>8080</string>
-              </property>
+              </property>y>
               <property name="text">
                <string>8080</string>
               </property>
@@ -558,9 +552,6 @@ margin:0px;</string>
               <property name="styleSheet">
                <string notr="true">border-bottom:1px solid black;border-top:none;</string>
               </property>
-              <property name="inputMask">
-               <string>127.0.0.1</string>
-              </property>
               <property name="text">
                <string>127.0.0.1</string>
               </property>
@@ -599,9 +590,6 @@ margin:0px;</string>
               </property>
               <property name="styleSheet">
                <string notr="true">border-bottom:1px solid black;border-top:none;</string>
-              </property>
-              <property name="inputMask">
-               <string>8080</string>
               </property>
               <property name="text">
                <string>8080</string>
@@ -642,9 +630,6 @@ margin:0px;</string>
               <property name="styleSheet">
                <string notr="true">border-bottom:1px solid black;border-top:none;</string>
               </property>
-              <property name="inputMask">
-               <string/>
-              </property>
               <property name="text">
                <string/>
               </property>
@@ -680,9 +665,6 @@ margin:0px;</string>
               </property>
               <property name="styleSheet">
                <string notr="true">border-bottom:1px solid black;border-top:none;</string>
-              </property>
-              <property name="inputMask">
-               <string/>
               </property>
               <property name="text">
                <string/>
@@ -749,9 +731,6 @@ margin:0px;</string>
               </property>
               <property name="styleSheet">
                <string notr="true">border-bottom:1px solid black;border-top:none;</string>
-              </property>
-              <property name="inputMask">
-               <string/>
               </property>
               <property name="text">
                <string>api.particle.io/v1/devices</string>

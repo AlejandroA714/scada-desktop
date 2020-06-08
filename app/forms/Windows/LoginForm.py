@@ -185,12 +185,10 @@ class UILogin(form):
         self.btnAceptar.hide()
         self.lblmovie.show()
         self.movie.start()
-        s = Logica.IniciarSesion(**{"Usuario":self.txtUsuario.text(),"Password":self.txtPassword.text()})
-        self.btnAceptar_CallBack(s)
-        #worker = Worker(Logica.IniciarSesion,**{"Usuario":self.txtUsuario.text(),"Password":self.txtPassword.text()})
-        #worker.signals.result.connect(self.btnAceptar_CallBack)
-        #worker.signals.error.connect(self.btnAceptar_CallBack)
-        #self.threadpool.start(worker)
+        worker = Worker(Logica.IniciarSesion ,**{"Usuario":self.txtUsuario.text(),"Password":self.txtPassword.text()})
+        worker.signals.result.connect(self.btnAceptar_CallBack)
+        worker.signals.error.connect(self.btnAceptar_CallBack)
+        self.threadpool.start(worker)
 
     def btnAceptar_CallBack(self,s):
         self.lblmovie.hide()

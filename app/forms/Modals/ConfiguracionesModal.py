@@ -1,14 +1,9 @@
 from PyQt5.QtWidgets import QGraphicsDropShadowEffect, QMessageBox
 from PyQt5 import QtCore, QtGui, QtWidgets
-from forms.Widgets.ProyectoWidget import UIWidgetP
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QMovie
-from classes.inheritables.modal import modal
-from classes.utils.logica import Logica
-from classes.utils.worker import Worker
-from classes.objects.workSpace import workSpace
-from classes.utils.timer import timer
-from resources.resources import *
+from classes import Logica,Worker,workSpace, configuracion, modal
+from resources import *
 
 class UIConfiguracionesModal(modal):
 
@@ -131,7 +126,7 @@ class UIConfiguracionesModal(modal):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.lblSCADA.sizePolicy().hasHeightForWidth())
         self.lblSCADA.setSizePolicy(sizePolicy)
-        self.lblSCADA.setMinimumSize(QtCore.QSize(300, 116))
+        self.lblSCADA.setMinimumSize(QtCore.QSize(250, 116))
         self.lblSCADA.setMaximumSize(QtCore.QSize(16777215, 116))
         font = QtGui.QFont()
         font.setPointSize(21)
@@ -182,7 +177,7 @@ class UIConfiguracionesModal(modal):
         self.ContentLayout.setContentsMargins(10, 10, 10, 10)
         self.ContentLayout.setSpacing(10)
         self.ContentLayout.setObjectName("ContentLayout")
-        self.ContentAPILocal = QtWidgets.QGroupBox(self.ContentBox)
+        self.ContentAPILocal = QtWidgets.QGroupBox()
         font = QtGui.QFont()
         font.setFamily("Roboto")
         font.setBold(True)
@@ -233,8 +228,7 @@ class UIConfiguracionesModal(modal):
         self.txtPuertoLocal.setStyleSheet("border-bottom:1px solid black;border-top:none;")
         self.txtPuertoLocal.setObjectName("txtPuertoLocal")
         self.ContentLocalLayout.addWidget(self.txtPuertoLocal, 0, 3, 1, 1)
-        self.ContentLayout.addWidget(self.ContentAPILocal)
-        self.ContentMongoDB = QtWidgets.QGroupBox(self.ContentBox)
+        self.ContentMongoDB = QtWidgets.QGroupBox() #asd
         font = QtGui.QFont()
         font.setBold(True)
         font.setWeight(75)
@@ -304,7 +298,7 @@ class UIConfiguracionesModal(modal):
         font.setWeight(75)
         self.txtUsuarioMongo.setFont(font)
         self.txtUsuarioMongo.setStyleSheet("border-bottom:1px solid black;border-top:none;")
-        self.txtUsuarioMongo.setInputMask("")
+        #self.txtUsuarioMongo.setInputMask("")
         self.txtUsuarioMongo.setText("")
         self.txtUsuarioMongo.setObjectName("txtUsuarioMongo")
         self.ContentMongoLayout.addWidget(self.txtUsuarioMongo, 1, 1, 1, 1)
@@ -330,8 +324,7 @@ class UIConfiguracionesModal(modal):
         self.txtPassMongo.setText("")
         self.txtPassMongo.setObjectName("txtPassMongo")
         self.ContentMongoLayout.addWidget(self.txtPassMongo, 1, 3, 1, 1)
-        self.ContentLayout.addWidget(self.ContentMongoDB)
-        self.ContentAPIExterna = QtWidgets.QGroupBox(self.ContentBox)
+        self.ContentAPIExterna = QtWidgets.QGroupBox() # asd
         font = QtGui.QFont()
         font.setBold(True)
         font.setWeight(75)
@@ -359,11 +352,10 @@ class UIConfiguracionesModal(modal):
         font.setWeight(75)
         self.txtIPExterna.setFont(font)
         self.txtIPExterna.setStyleSheet("border-bottom:1px solid black;border-top:none;")
-        self.txtIPExterna.setInputMask("")
+        #self.txtIPExterna.setInputMask("")
         self.txtIPExterna.setObjectName("txtIPExterna")
         self.ContentExternaLayout.addWidget(self.txtIPExterna, 0, 1, 1, 1)
-        self.ContentLayout.addWidget(self.ContentAPIExterna)
-        self.btnAceptar = QtWidgets.QPushButton(self.ContentBox)
+        self.btnAceptar = QtWidgets.QPushButton()
         self.btnAceptar.setMinimumSize(QtCore.QSize(128, 48))
         self.btnAceptar.setMaximumSize(QtCore.QSize(128, 48))
         font = QtGui.QFont()
@@ -381,22 +373,173 @@ class UIConfiguracionesModal(modal):
         self.btnAceptar.setCheckable(False)
         self.btnAceptar.setFlat(True)
         self.btnAceptar.setObjectName("btnAceptar")
-        self.ContentLayout.addWidget(self.btnAceptar, 0, QtCore.Qt.AlignHCenter)
+        #UtilsFrame
+        self.UtilsFrame = QtWidgets.QFrame(self.ContentBox)
+        self.UtilsFrame.setGeometry(QtCore.QRect(30, 20, 256, 132))
+        self.UtilsFrame.setMinimumSize(QtCore.QSize(256, 132))
+        self.UtilsFrame.setMaximumSize(QtCore.QSize(128, 128))
+        self.UtilsFrame.setStyleSheet("background-color: rgb(252, 252, 252);")
+        self.UtilsFrame.setFrameShape(QtWidgets.QFrame.NoFrame)
+        self.UtilsFrame.setFrameShadow(QtWidgets.QFrame.Plain)
+        self.UtilsFrame.setLineWidth(0)
+        self.UtilsFrame.setObjectName("UtilsFrame")
+        self.utilsLayout = QtWidgets.QVBoxLayout(self.UtilsFrame)
+        self.utilsLayout.setContentsMargins(0, 0, 0, 0)
+        self.utilsLayout.setSpacing(0)
+        self.utilsLayout.setObjectName("utilsLayout")
+        self.Status = QtWidgets.QLabel(self.UtilsFrame)
+        self.Status.setMinimumSize(QtCore.QSize(64,64))
+        self.Status.setMaximumSize(QtCore.QSize(64, 64))
+        self.Status.setText("")
+        self.Status.setPixmap(QtGui.QPixmap(":/source/img/Cargando.gif"))
+        self.Status.setScaledContents(True)
+        self.Status.setObjectName("Status")
+        self.utilsLayout.addWidget(self.Status, 0, QtCore.Qt.AlignHCenter)
+        self.lblStatus = QtWidgets.QLabel(self.UtilsFrame)
+        self.lblStatus.setMaximumSize(QtCore.QSize(16777215, 24))
+        font = QtGui.QFont()
+        font.setFamily("Roboto")
+        font.setPointSize(11)
+        font.setBold(True)
+        font.setWeight(75)
+        self.lblStatus.setFont(font)
+        self.lblStatus.setAlignment(QtCore.Qt.AlignCenter)
+        self.lblStatus.setObjectName("lblStatus")
+        self.utilsLayout.addWidget(self.lblStatus)
+        self.btnReload = QtWidgets.QPushButton(self.UtilsFrame)
+        self.btnReload.setMinimumSize(QtCore.QSize(0, 16))
+        self.btnReload.setMaximumSize(QtCore.QSize(132, 42))
+        font = QtGui.QFont()
+        font.setFamily("Roboto")
+        font.setPointSize(11)
+        font.setBold(True)
+        font.setWeight(75)
+        self.btnReload.setFont(font)
+        self.btnReload.setStyleSheet("border: 1px solid rgb(0, 170, 255);padding:5px;")
+        icon = QtGui.QIcon()
+        icon.addPixmap(QtGui.QPixmap(":/source/img/retry.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.btnReload.setIcon(icon)
+        self.btnReload.setIconSize(QtCore.QSize(24, 24))
+        self.btnReload.setFlat(True)
+        self.btnReload.setObjectName("btnReload")
+        self.utilsLayout.addWidget(self.btnReload, 0, QtCore.Qt.AlignHCenter)
         self.verticalLayout_2.addWidget(self.ContentBox, 0, QtCore.Qt.AlignHCenter)
         self.verticalLayout.addWidget(self.MainFrame)
-
         self.retranslateUi(ConfiguracionesModal)
         QtCore.QMetaObject.connectSlotsByName(ConfiguracionesModal)
-        
+        self.btnReload.hide()
+        #Movie
+        self.movie = QMovie(":/source/img/Cargando.gif")
+        self.movie.setScaledSize(QtCore.QSize(64,64))
+        self.Status.setMovie(self.movie)
+
+        self.ContentLayout.addWidget(self.UtilsFrame, 0, QtCore.Qt.AlignHCenter)
+
         # listener
         self.__parent.signals.resize.connect(lambda : self.center(self.__parent))
         self.btnExit.clicked.connect(self.exit)
+        self.btnAceptar.clicked.connect(self.btnAceptar_Click)
+        self.btnReload.clicked.connect(self.ObtenerConfguraciones)
 
     def showEvent(self,event):
         self.center(self.__parent)
+        self.ObtenerConfguraciones()
 
-    def disconnectSignals():
-        pass
+    def ObtenerConfguraciones(self):
+        self.btnReload.hide()
+        self.lblStatus.setText("Cargando...")
+        self.movie = QMovie(":/source/img/Cargando.gif")
+        self.movie.setScaledSize(QtCore.QSize(64,64))
+        self.movie.start()
+        self.Status.setMovie(self.movie)
+        worker = Worker(Logica.ObtenerConfiguraciones,**{"access_token":self.getAccessToken()})
+        worker.signals.result.connect(self.obtenerConfiguracionesCallBack)
+        worker.signals.error.connect(self.obtenerConfiguracionesCallBack)
+        self.threadpool.start(worker)
+        
+    def obtenerConfiguracionesCallBack(self,response):
+        if isinstance(response,Exception):
+            self.btnReload.show()
+            self.lblStatus.setText("¡Error! Ha ocurrido un error")
+            self.movie = QMovie(":/source/img/Error.png")
+            self.movie.setScaledSize(QtCore.QSize(64,64))
+            self.movie.start()
+            self.Status.setMovie(self.movie)
+            return
+        if len(response) == 0:
+            self.btnReload.show()
+            self.lblStatus.setText("¡Vacio! Aún no hay nada")
+            self.movie = QMovie(":/source/img/Empty.png")
+            self.movie.setScaledSize(QtCore.QSize(64,64))
+            self.movie.start()
+            self.Status.setMovie(self.movie)
+            return
+        self.UtilsFrame.deleteLater()
+        self.config = configuracion(response)
+        self.txtIPLocal.setText(response["APISCADA"]["Host"])
+        self.txtPuertoLocal.setText(response["APISCADA"]["Port"])
+        self.txtIPMongo.setText(response["MONGO"]["MONGO_HOST"])
+        self.txtPuertoMongo.setText(response["MONGO"]["MONGO_PORT"])
+        self.txtUsuarioMongo.setText(response["MONGO"]["MONGO_USER"])
+        self.txtPassMongo.setText(response["MONGO"]["MONGO_PASS"])
+        self.txtIPExterna.setText(response["APIPARTICLE"]["URI"])
+        self.ContentLayout.addWidget(self.ContentAPILocal)
+        self.ContentLayout.addWidget(self.ContentMongoDB)
+        self.ContentLayout.addWidget(self.ContentAPIExterna)
+        self.ContentLayout.addWidget(self.btnAceptar, 0, QtCore.Qt.AlignHCenter)
+
+    def btnAceptar_Click(self):
+        try:
+            self.config.apiLocal.IP = self.txtIPLocal.text()
+            self.config.apiLocal.puerto = self.txtPuertoLocal.text()
+            self.config.mongoDB.IP = self.txtIPMongo.text()
+            self.config.mongoDB.puerto = self.txtPuertoMongo.text()
+            self.config.mongoDB.usuario = self.txtUsuarioMongo.text()
+            self.config.mongoDB.password = self.txtPassMongo.text()
+            self.config.apiExterna.uri = self.txtIPExterna.text()
+        except ValueError as e:
+            QMessageBox.warning(self,"¡Error!",str(e))
+            return
+        response = QMessageBox.question(self,"¡Confirmacion!","¿Seguro que desea guardar estas configuraciones?\nCualquier error podria provocar que API SCADA\nno se ejecute correctamente")
+        if response == QMessageBox.Yes:
+            self.guardarConfiguracione()
+
+    def guardarConfiguracione(self):
+        self.btnAceptar.hide()
+        self.Status = QtWidgets.QLabel(self.ContentBox)
+        self.Status.setMaximumSize(QtCore.QSize(64, 64))
+        self.Status.setText("")
+        self.Status.setPixmap(QtGui.QPixmap(":/source/img/Cargando.gif"))
+        self.Status.setScaledContents(True)
+        self.Status.setObjectName("Status")
+        self.movie = QMovie(":/source/img/Cargando.gif")
+        self.movie.start()
+        self.Status.setMovie(self.movie)
+        self.ContentLayout.addWidget(self.Status, 0, QtCore.Qt.AlignHCenter)
+        worker = Worker(Logica.GuardarConfiguraciones,**{"access_token":self.getAccessToken(),"data":self.config.toJSON() } )
+        worker.signals.result.connect(self.guardarConfiguracionesCallback)
+        worker.signals.error.connect(self.guardarConfiguracionesCallback)
+        self.threadpool.start(worker)
+
+    def guardarConfiguracionesCallback(self,response):
+        self.movie.deleteLater()
+        self.Status.deleteLater()
+        if isinstance(response,Exception):
+            QMessageBox.warning(self,"¡Error!",str(response))
+            self.btnAceptar.show()
+            return
+        if response["success"] == "false":
+            QMessageBox.warning(self,"¡Error!",str(response["Message"]))
+            self.btnAceptar.show()
+        else:
+            QMessageBox.information(self,"¡Exito!","¡Exito! Configuraciones actualizadas\nSurtiran efecto la proxima vez que\nse inicie el servicio API SCADA")
+            self.success(None)
+
+
+    def disconnectSignals(self):
+        self.__parent.signals.resize.disconnect()
+        self.btnExit.clicked.disconnect()
+        self.btnAceptar.clicked.disconnect()
 
     def retranslateUi(self, ConfiguracionesModal):
         _translate = QtCore.QCoreApplication.translate
@@ -406,17 +549,17 @@ class UIConfiguracionesModal(modal):
         self.ContentBox.setTitle(_translate("ConfiguracionesModal", "Conexión"))
         self.ContentAPILocal.setTitle(_translate("ConfiguracionesModal", "API Local"))
         self.lblIPLocal.setText(_translate("ConfiguracionesModal", "Dirección IP:"))
-        self.txtIPLocal.setInputMask(_translate("ConfiguracionesModal", "127.0.0.1"))
+        #self.txtIPLocal.setInputMask(_translate("ConfiguracionesModal", "127.0.0.1"))
         self.txtIPLocal.setText(_translate("ConfiguracionesModal", "127.0.0.1"))
         self.lblPuertoLocal.setText(_translate("ConfiguracionesModal", "Puerto:"))
-        self.txtPuertoLocal.setInputMask(_translate("ConfiguracionesModal", "8080"))
+        #self.txtPuertoLocal.setInputMask(_translate("ConfiguracionesModal", "8080"))
         self.txtPuertoLocal.setText(_translate("ConfiguracionesModal", "8080"))
         self.ContentMongoDB.setTitle(_translate("ConfiguracionesModal", "MongoDB"))
         self.lblIPMongo.setText(_translate("ConfiguracionesModal", "Dirección IP:"))
-        self.txtIPMongo.setInputMask(_translate("ConfiguracionesModal", "127.0.0.1"))
+        #self.txtIPMongo.setInputMask(_translate("ConfiguracionesModal", "127.0.0.1"))
         self.txtIPMongo.setText(_translate("ConfiguracionesModal", "127.0.0.1"))
         self.lblPuertoMOngo.setText(_translate("ConfiguracionesModal", "Puerto:"))
-        self.txtPuertoMongo.setInputMask(_translate("ConfiguracionesModal", "8080"))
+        #self.txtPuertoMongo.setInputMask(_translate("ConfiguracionesModal", "8080"))
         self.txtPuertoMongo.setText(_translate("ConfiguracionesModal", "8080"))
         self.lblUsuarioMongo.setText(_translate("ConfiguracionesModal", "Usuario:"))
         self.lblPasswordMongo.setText(_translate("ConfiguracionesModal", "Contraseña:"))
@@ -424,3 +567,5 @@ class UIConfiguracionesModal(modal):
         self.lblIPExterna.setText(_translate("ConfiguracionesModal", "Dirección IP:"))
         self.txtIPExterna.setText(_translate("ConfiguracionesModal", "api.particle.io/v1/devices"))
         self.btnAceptar.setText(_translate("ConfiguracionesModal", "Aceptar"))
+        self.lblStatus.setText(_translate("Form", "Cargando..."))
+        self.btnReload.setText(_translate("Form", "Reintentar"))

@@ -25,7 +25,22 @@ class Logica():
         result.raise_for_status()
         _answer:workSpace = json.loads( result.content ,object_hook=workSpace)
         return _answer
+    
+    @staticmethod
+    def ObtenerConfiguraciones(**kwargs):
+        _headers = {'Authorization': 'Bearer ' + kwargs["access_token"]}
+        result  = requests.get("http://%s:%s/Configuraciones/Obtener" % (Logica.settings["APISCADA"]["Host"],Logica.settings["APISCADA"]["Port"]), timeout = 45, headers=_headers)
+        result.raise_for_status()
+        return result.json()
 
+    @staticmethod
+    def GuardarConfiguraciones(**kwargs):
+        _headers = {'Authorization': 'Bearer ' + kwargs["access_token"]}
+        result  = requests.post("http://%s:%s/Configuraciones/Actualizar" % (Logica.settings["APISCADA"]["Host"],Logica.settings["APISCADA"]["Port"]), timeout = 45,json=kwargs["data"], headers=_headers)
+        result.raise_for_status()
+        return result.json()
+
+        
     @staticmethod
     def AbrirProyecto(**kwargs):
         _headers = {'Authorization': 'Bearer ' + kwargs["access_token"]}
