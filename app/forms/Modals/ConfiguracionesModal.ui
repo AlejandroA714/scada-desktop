@@ -485,7 +485,7 @@ margin:0px;</string>
               </property>
               <property name="styleSheet">
                <string notr="true">border-bottom:1px solid black;border-top:none;</string>
-              </property>y>
+              </property>
               <property name="text">
                <string>8080</string>
               </property>
