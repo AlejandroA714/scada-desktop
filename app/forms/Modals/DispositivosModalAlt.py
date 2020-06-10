@@ -7,8 +7,7 @@ from resources import *
 class UIDispositvoModal(modal):
 
     def __init__(self,MainWindow,session:object,dict:dict):
-        self.workSpaces = dict
-        self.UIContainer = []
+        self.__workSpaces = dict
         super(UIDispositvoModal,self).__init__(MainWindow,session)
         self.__parent = MainWindow
         self.setupUi()
@@ -17,13 +16,15 @@ class UIDispositvoModal(modal):
         DispositvoModal = self
         DispositvoModal.setObjectName("DispositvoModal")
         DispositvoModal.setWindowModality(QtCore.Qt.WindowModal)
-        DispositvoModal.resize(720, 739)
+        DispositvoModal.resize(720, 740)
+        self.width = 800
+        self.height = 771
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Maximum)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(DispositvoModal.sizePolicy().hasHeightForWidth())
         DispositvoModal.setSizePolicy(sizePolicy)
-        DispositvoModal.setMinimumSize(QtCore.QSize(480, 720))
+        DispositvoModal.setMinimumSize(QtCore.QSize(480, 740))
         font = QtGui.QFont()
         font.setFamily("Noto Serif")
         font.setPointSize(11)
@@ -32,7 +33,7 @@ class UIDispositvoModal(modal):
         DispositvoModal.setFont(font)
         DispositvoModal.setContextMenuPolicy(QtCore.Qt.NoContextMenu)
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap("../../../../../.designer/if_16_1751363.ico"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon.addPixmap(QtGui.QPixmap(":/source/img/if_16_1751363.ico"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         DispositvoModal.setWindowIcon(icon)
         DispositvoModal.setStyleSheet("background-color: rgb(255, 255, 255);")
         DispositvoModal.setInputMethodHints(QtCore.Qt.ImhSensitiveData)
@@ -163,7 +164,7 @@ class UIDispositvoModal(modal):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.ContentBox.sizePolicy().hasHeightForWidth())
         self.ContentBox.setSizePolicy(sizePolicy)
-        self.ContentBox.setMinimumSize(QtCore.QSize(672, 535))
+        self.ContentBox.setMinimumSize(QtCore.QSize(672, 540))
         font = QtGui.QFont()
         font.setFamily("Roboto")
         font.setPointSize(11)
@@ -237,18 +238,16 @@ class UIDispositvoModal(modal):
         self.ContainerScroll = QtWidgets.QScrollArea(self.ContentBox)
         self.ContainerScroll.setGeometry(QtCore.QRect(5, 45, 660, 470))
         self.ContainerScroll.setMinimumSize(QtCore.QSize(660, 470))
-        self.ContainerScroll.setMaximumSize(QtCore.QSize(16777215, 167777))
         self.ContainerScroll.setFrameShape(QtWidgets.QFrame.NoFrame)
         self.ContainerScroll.setLineWidth(0)
-        self.ContainerScroll.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
-        self.ContainerScroll.setWidgetResizable(False)
+        self.ContainerScroll.setWidgetResizable(True)
         self.ContainerScroll.setObjectName("ContainerScroll")
         self.ScrollContainer = QtWidgets.QWidget()
         self.ScrollContainer.setGeometry(QtCore.QRect(0, 0, 660, 470))
-        self.ScrollContainer.setMinimumSize(QtCore.QSize(0, 470))
         self.ScrollContainer.setObjectName("ScrollContainer")
+        #self.ScrollContainer.setMaximumSize(QtCore.QSize(166672, 470))
         self.verticalLayout_3 = QtWidgets.QVBoxLayout(self.ScrollContainer)
-        self.verticalLayout_3.setContentsMargins(0, 10, 0, 0)
+        self.verticalLayout_3.setContentsMargins(0, 10, 0, 10)
         self.verticalLayout_3.setSpacing(0)
         self.verticalLayout_3.setObjectName("verticalLayout_3")
         self.UtilsFrame = QtWidgets.QFrame(self.ScrollContainer)
@@ -322,22 +321,24 @@ class UIDispositvoModal(modal):
         self.comboBox.setGeometry(QtCore.QRect(565, 7, 100, 25))
         self.comboBox.setInsertPolicy(QtWidgets.QComboBox.InsertAtTop)
         self.comboBox.setObjectName("comboBox")
-        self.verticalLayout_2.addWidget(self.ContentBox, 0, QtCore.Qt.AlignHCenter)
+        self.verticalLayout_2.addWidget(self.ContentBox,0,QtCore.Qt.AlignHCenter)
         self.verticalLayout.addWidget(self.MainFrame)
-
         self.retranslateUi(DispositvoModal)
         QtCore.QMetaObject.connectSlotsByName(DispositvoModal)
         self.btnReload.hide()
-        self.btnAgregar.setEnabled(False)
-        self.btnImportar.setEnabled(False)
-        self.btnExportar.setEnabled(False)
         
         #listener
         self.__parent.signals.resize.connect(lambda : self.center(self.__parent))
         self.btnExit.clicked.connect(self.exit)
 
-    def disconnectSignals(self):
-        pass
+        self.UtilsFrame.deleteLater()
+        UI = UIDispositivoModalWidget({"ID":None})
+        UI2 = UIDispositivoModalWidget({"ID":None})
+        UI3 = UIDispositivoModalWidget({"ID":None})
+        self.ScrollContainer.setGeometry(QtCore.QRect(5,45,660,650))
+        self.verticalLayout_3.addWidget(UI,0,QtCore.Qt.AlignTop | QtCore.Qt.AlignHCenter)
+        self.verticalLayout_3.addWidget(UI2,0,QtCore.Qt.AlignTop | QtCore.Qt.AlignHCenter)
+        self.verticalLayout_3.addWidget(UI3,0,QtCore.Qt.AlignTop | QtCore.Qt.AlignHCenter)
 
     def showEvent(self,event):
         self.center(self.__parent)
@@ -346,44 +347,10 @@ class UIDispositvoModal(modal):
         self.movie.start()
         self.Status.setMovie(self.movie)
         
-        if len(self.workSpaces) == 0:
-            self.movie = QMovie(":/source/img/Empty.png")
-            self.movie.start()
-            self.Status.setMovie(self.movie)
-            self.lblStatus.setText("¡Vacio! Aqui no hay nada")
-            return
-        if self.workSpaces is None:
-            self.movie = QMovie(":/source/img/Error.png")
-            self.movie.start()
-            self.Status.setMovie(self.movie)
-            self.lblStatus.setText("¡Error! Ha ocurrido un error")
-            return
-        self.UtilsFrame.deleteLater()
-        self.btnAgregar.setEnabled(True)
-        self.btnExportar.setEnabled(True)
-        self.btnImportar.setEnabled(True)
-        for w in self.workSpaces.items():
-            self.comboBox.addItem(w[1].workSpace.nombre,w[1])
-        self.comboBox.setCurrentIndex(0)
-        self.comboBox.currentIndexChanged.connect(self.mostrarDispositivos)
-        self.mostrarDispositivos(0)
+        print(self.__workSpaces)
 
-    def mostrarDispositivos(self,index):
-        for ui in self.UIContainer:
-            ui.disconnectSignals()
-            ui.close()
-            ui.deleteLater()
-        self.UIContainer.clear()
-        QtWidgets.QApplication.processEvents()
-        container = self.comboBox.itemData(index)
-        for d in container.workSpace.devices:
-            UI = UIDispositivoModalWidget(d)
-            self.verticalLayout_3.addWidget(UI,0,QtCore.Qt.AlignTop | QtCore.Qt.AlignHCenter)
-            self.UIContainer.append(UI)
-        if len(container.workSpace.devices)*200 > 399:
-           self.ScrollContainer.setGeometry(QtCore.QRect(5,45,660,(len(container.workSpace.devices)*200)+35))
-
-    
+    def disconnectSignals(self):
+        pass
 
     def retranslateUi(self, DispositvoModal):
         _translate = QtCore.QCoreApplication.translate

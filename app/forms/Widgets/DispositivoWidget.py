@@ -1,22 +1,23 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
-from classes import widget,device
+from classes import widget,device,deviceSignals, Logica
 
 class UIDispositivoModalWidget(widget):
 
-    def __init__(self, device):
+    def __init__(self, device:device):
         self.dispositivo = device
         super(UIDispositivoModalWidget,self).__init__()
+        self.deviceSignals = deviceSignals()
         self.setupUi()
 
     def setupUi(self):
         DispositivoWidget = self
         DispositivoWidget.setObjectName("DispositivoWidget")
         DispositivoWidget.setWindowModality(QtCore.Qt.WindowModal)
-        DispositivoWidget.resize(612, 178)
+        DispositivoWidget.resize(612, 186)
         DispositivoWidget.setStyleSheet("background-color: rgb(255, 255, 255);")
         self.ProjectFrame = QtWidgets.QFrame(DispositivoWidget)
-        self.ProjectFrame.setGeometry(QtCore.QRect(0, 0, 612, 195))
-        self.ProjectFrame.setMinimumSize(QtCore.QSize(350, 91))
+        self.ProjectFrame.setGeometry(QtCore.QRect(0, 0, 612, 182))
+        self.ProjectFrame.setMinimumSize(QtCore.QSize(350, 182))
         self.ProjectFrame.setMaximumSize(QtCore.QSize(16777215, 200))
         self.ProjectFrame.setFrameShape(QtWidgets.QFrame.StyledPanel)
         self.ProjectFrame.setFrameShadow(QtWidgets.QFrame.Raised)
@@ -232,7 +233,6 @@ class UIDispositivoModalWidget(widget):
         font.setBold(True)
         font.setWeight(75)
         self.btnEditar.setFont(font)
-        self.btnEditar.setStyleSheet("border:1px solid green;top:0px;")
         self.btnEditar.setText("")
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap(":/source/img/Editar.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
@@ -257,7 +257,6 @@ class UIDispositivoModalWidget(widget):
         font.setBold(True)
         font.setWeight(75)
         self.btnEliminar.setFont(font)
-        self.btnEliminar.setStyleSheet("border:1px solid green;top:0px;")
         self.btnEliminar.setText("")
         icon1 = QtGui.QIcon()
         icon1.addPixmap(QtGui.QPixmap(":/source/img/Cancelar.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
@@ -282,7 +281,6 @@ class UIDispositivoModalWidget(widget):
         font.setBold(True)
         font.setWeight(75)
         self.btnCopiar.setFont(font)
-        self.btnCopiar.setStyleSheet("border:1px solid green;top:0px;")
         self.btnCopiar.setText("")
         icon2 = QtGui.QIcon()
         icon2.addPixmap(QtGui.QPixmap(":/source/img/Copiar.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
@@ -296,8 +294,29 @@ class UIDispositivoModalWidget(widget):
         self.retranslateUi(DispositivoWidget)
         QtCore.QMetaObject.connectSlotsByName(DispositivoWidget)
 
+        self.lblImagen.setPixmap(Logica.byteArrayToImage(self.dispositivo.image))
+        #listener
+        self.btnEditar.clicked.connect(self.btnEditar_Click)
+        self.btnEliminar.clicked.connect(self.btnEliminar_Click)
+        self.btnCopiar.clicked.connect(self.btnCopiar_Click)
+
+
+    def btnEditar_Click(self):
+        pass
+
+    def btnEliminar_Click(self):
+        pass
+
+    def btnCopiar_Click(self):
+        pass
+
     def sizeHint(self):
-        return QtCore.QSize(612, 178)
+        return QtCore.QSize(612, 186)
+
+    def disconnectSignals(self):
+        self.btnEditar.clicked.disconnect(self.btnEditar_Click)
+        self.btnEliminar.clicked.disconnect(self.btnEliminar_Click)
+        self.btnCopiar.clicked.disconnect(self.btnCopiar_Click)
 
     def retranslateUi(self, DispositivoWidget):
         _translate = QtCore.QCoreApplication.translate
@@ -307,8 +326,8 @@ class UIDispositivoModalWidget(widget):
         self.lblToken.setText(_translate("DispositivoWidget", "Token:"))
         self.lblTiempo.setText(_translate("DispositivoWidget", "Tiempo:"))
         self.lblVariables.setText(_translate("DispositivoWidget", "# Variables:"))
-        self.txtNombre.setText(_translate("DispositivoWidget", "Dispositivo 1; Tipo Lecto de temperatura"))
-        self.txtID.setText(_translate("DispositivoWidget", "230037001347343438323536"))
-        self.txtToken.setText(_translate("DispositivoWidget", "57f539fb1a8cc926f59ee72f3fd69e4c5adc3945"))
-        self.txtTiempo.setText(_translate("DispositivoWidget", "30 Segundos"))
-        self.txtVariables.setText(_translate("DispositivoWidget", "4"))
+        self.txtNombre.setText(_translate("DispositivoWidget", self.dispositivo.nombre))
+        self.txtID.setText(_translate("DispositivoWidget", self.dispositivo.id))
+        self.txtToken.setText(_translate("DispositivoWidget", self.dispositivo.token))
+        self.txtTiempo.setText(_translate("DispositivoWidget", str(self.dispositivo.time)))
+        self.txtVariables.setText(_translate("DispositivoWidget", str(len(self.dispositivo.variables))))

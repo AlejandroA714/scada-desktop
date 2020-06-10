@@ -89,7 +89,7 @@ class Logica():
         from base64 import b64encode
         with open(fileName,'rb') as f:
             file = b64encode(f.read())
-        return file
+        return file.decode()
         
     @staticmethod
     def byteArrayToImage(file):
