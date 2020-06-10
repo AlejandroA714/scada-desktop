@@ -18,8 +18,8 @@ class UIMainWindow(form):
     def setupUi(self):
         MainWindow = self
         MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(840, 740)
-        MainWindow.setMinimumSize(QtCore.QSize(840, 740))
+        MainWindow.resize(820, 720)
+        MainWindow.setMinimumSize(QtCore.QSize(820, 720))
         icon = QtGui.QIcon()
         icon.addPixmap(QtGui.QPixmap(":/source/img/if_16_1751363.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         MainWindow.setWindowIcon(icon)
@@ -351,7 +351,7 @@ class UIMainWindow(form):
         UI = UIConfiguracionesModal(self,self.session)
         UI.show()
     def devices_Callback(self):
-        UI = UIDispositvoModal(self,self.session,self.__containers)
+        UI = UIDispositvoModal(self,self.session)
         UI.show()
     def api_Callback(self):
         print("api")

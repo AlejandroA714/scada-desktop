@@ -222,14 +222,14 @@ class UIDispositivoWidget(widget):
         from PyQt5.QtCore import QByteArray
         fileName = QFileDialog.getOpenFileName(self,"Abrir",filter="Images (*.png *.jpg)")  # options=QtWidgets.QFileDialog.DontUseNativeDialog
         if all(fileName):
-            str_base64 = Logica.imageToByteArray(fileName[0])
-            self.lblImagen.setPixmap( Logica.byteArrayToImage(str_base64) )
-            self.__dispostivo.image = str_base64
+            self.lblImagen.setPixmap(QPixmap.fromImage(QImage.fromData(QByteArray.fromBase64(Logica.imageToByteArray(fileName[0])))))
+            self.__dispostivo.image = Logica.imageToByteArray(fileName[0])
 
     def time(self):
         if self.__status == 1:
             time = int(self.Time.text())-1
             if time == 0:
+                print("update time")
                 self.__status = 2
                 self.movie.start()
                 self.lblTime.setText("Actualizando...")
