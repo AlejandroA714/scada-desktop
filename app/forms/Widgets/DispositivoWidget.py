@@ -1,5 +1,6 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from classes import widget,device,deviceSignals, Logica
+from PyQt5.QtWidgets import QMessageBox
 
 class UIDispositivoModalWidget(widget):
 
@@ -302,21 +303,33 @@ class UIDispositivoModalWidget(widget):
 
 
     def btnEditar_Click(self):
-        pass
+        reply = self.prompt("Confirmación","¿Editar este Dispositivo?")
+        if reply == QMessageBox.Yes:
+            self.deviceSignals.edit.emit(self.dispositivo)
 
     def btnEliminar_Click(self):
-        pass
+        reply = self.prompt("Confirmación","¿Eliminar este Dispositivo?")
+        if reply == QMessageBox.Yes:
+            self.deviceSignals.delete.emit(self.dispositivo)
 
     def btnCopiar_Click(self):
-        pass
+        reply = self.prompt("Confirmación","¿Copiar este Dispositivo?")
+        if reply == QMessageBox.Yes:
+            self.deviceSignals.copy.emit(self.dispositivo)
 
-    def sizeHint(self):
-        return QtCore.QSize(612, 186)
+    def prompt(self,title,msg):
+        return QMessageBox.question(
+            self,title,
+            msg,
+            QMessageBox.Yes | QMessageBox.No)
 
     def disconnectSignals(self):
         self.btnEditar.clicked.disconnect(self.btnEditar_Click)
         self.btnEliminar.clicked.disconnect(self.btnEliminar_Click)
         self.btnCopiar.clicked.disconnect(self.btnCopiar_Click)
+
+    def sizeHint(self):
+        return QtCore.QSize(612, 186)
 
     def retranslateUi(self, DispositivoWidget):
         _translate = QtCore.QCoreApplication.translate

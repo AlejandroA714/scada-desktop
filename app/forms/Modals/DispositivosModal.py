@@ -1,6 +1,6 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtGui import QMovie
-from classes import modal
+from classes import modal, device
 from forms.Widgets import UIDispositivoModalWidget
 from resources import *
 
@@ -335,9 +335,13 @@ class UIDispositvoModal(modal):
         #listener
         self.__parent.signals.resize.connect(lambda : self.center(self.__parent))
         self.btnExit.clicked.connect(self.exit)
+        self.btnAgregar.clicked.connect(self.agregarDispositivo)
+        self.btnImportar.clicked.connect(self.importarDispositivos)
+        self.btnExportar.clicked.connect(self.exportarDispositivos)
 
     def disconnectSignals(self):
-        pass
+        self.__parent.signals.resize.disconnect()
+        self.btnExit.clicked.disconnect(self.exit)
 
     def showEvent(self,event):
         self.center(self.__parent)
@@ -368,6 +372,24 @@ class UIDispositvoModal(modal):
         self.comboBox.currentIndexChanged.connect(self.mostrarDispositivos)
         self.mostrarDispositivos(0)
 
+    def editarDispositivio(self,dev:device):
+        print(dev.__dict__)
+
+    def eliminarDispositivo(self,dev:device):
+        print(dev.__dict__)
+
+    def copiarDispositivo(self,dev:device):
+        print(dev.__dict__)
+    
+    def agregarDispositivo(self):
+        pass
+
+    def importarDispositivos(self):
+        pass
+
+    def exportarDispositivos(self):
+        pass
+    
     def mostrarDispositivos(self,index):
         for ui in self.UIContainer:
             ui.disconnectSignals()
@@ -379,11 +401,12 @@ class UIDispositvoModal(modal):
         for d in container.workSpace.devices:
             UI = UIDispositivoModalWidget(d)
             self.verticalLayout_3.addWidget(UI,0,QtCore.Qt.AlignTop | QtCore.Qt.AlignHCenter)
+            UI.deviceSignals.edit.connect(self.editarDispositivio)
+            UI.deviceSignals.delete.connect(self.eliminarDispositivo)
+            UI.deviceSignals.copy.connect(self.copiarDispositivo)
             self.UIContainer.append(UI)
         if len(container.workSpace.devices)*200 > 399:
            self.ScrollContainer.setGeometry(QtCore.QRect(5,45,660,(len(container.workSpace.devices)*200)+35))
-
-    
 
     def retranslateUi(self, DispositvoModal):
         _translate = QtCore.QCoreApplication.translate
