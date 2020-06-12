@@ -9,8 +9,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>640</width>
-    <height>602</height>
+    <width>580</width>
+    <height>640</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -21,8 +21,8 @@
   </property>
   <property name="minimumSize">
    <size>
-    <width>640</width>
-    <height>520</height>
+    <width>580</width>
+    <height>640</height>
    </size>
   </property>
   <property name="font">
@@ -325,7 +325,7 @@ margin:0px;</string>
         <property name="minimumSize">
          <size>
           <width>0</width>
-          <height>24</height>
+          <height>26</height>
          </size>
         </property>
         <property name="maximumSize">
@@ -401,12 +401,12 @@ QGroupBox::title{top:0;}</string>
           <bool>true</bool>
          </property>
         </widget>
-        <widget class="QLineEdit" name="txtUsuario">
+        <widget class="QLineEdit" name="txtNombre">
          <property name="geometry">
           <rect>
            <x>320</x>
-           <y>50</y>
-           <width>141</width>
+           <y>60</y>
+           <width>161</width>
            <height>21</height>
           </rect>
          </property>
@@ -414,12 +414,12 @@ QGroupBox::title{top:0;}</string>
           <string notr="true">border-bottom:1px solid black;border-top:none;</string>
          </property>
         </widget>
-        <widget class="QLineEdit" name="txtUsuario_2">
+        <widget class="QLineEdit" name="txtID">
          <property name="geometry">
           <rect>
            <x>320</x>
            <y>90</y>
-           <width>141</width>
+           <width>161</width>
            <height>21</height>
           </rect>
          </property>
@@ -427,12 +427,12 @@ QGroupBox::title{top:0;}</string>
           <string notr="true">border-bottom:1px solid black;border-top:none;</string>
          </property>
         </widget>
-        <widget class="QLineEdit" name="txtUsuario_3">
+        <widget class="QLineEdit" name="txtToken">
          <property name="geometry">
           <rect>
            <x>320</x>
            <y>120</y>
-           <width>141</width>
+           <width>161</width>
            <height>21</height>
           </rect>
          </property>
@@ -440,11 +440,11 @@ QGroupBox::title{top:0;}</string>
           <string notr="true">border-bottom:1px solid black;border-top:none;</string>
          </property>
         </widget>
-        <widget class="QSpinBox" name="spinBox">
+        <widget class="QSpinBox" name="txtTime">
          <property name="geometry">
           <rect>
-           <x>310</x>
-           <y>160</y>
+           <x>320</x>
+           <y>155</y>
            <width>45</width>
            <height>26</height>
           </rect>
@@ -453,8 +453,8 @@ QGroupBox::title{top:0;}</string>
         <widget class="QLabel" name="label">
          <property name="geometry">
           <rect>
-           <x>233</x>
-           <y>60</y>
+           <x>250</x>
+           <y>63</y>
            <width>61</width>
            <height>20</height>
           </rect>
@@ -477,8 +477,8 @@ QGroupBox::title{top:0;}</string>
         <widget class="QLabel" name="label_2">
          <property name="geometry">
           <rect>
-           <x>230</x>
-           <y>100</y>
+           <x>250</x>
+           <y>93</y>
            <width>54</width>
            <height>17</height>
           </rect>
@@ -501,8 +501,8 @@ QGroupBox::title{top:0;}</string>
         <widget class="QLabel" name="label_3">
          <property name="geometry">
           <rect>
-           <x>230</x>
-           <y>130</y>
+           <x>250</x>
+           <y>125</y>
            <width>54</width>
            <height>17</height>
           </rect>
@@ -525,8 +525,8 @@ QGroupBox::title{top:0;}</string>
         <widget class="QLabel" name="label_4">
          <property name="geometry">
           <rect>
-           <x>240</x>
-           <y>170</y>
+           <x>250</x>
+           <y>160</y>
            <width>54</width>
            <height>17</height>
           </rect>
@@ -544,6 +544,122 @@ QGroupBox::title{top:0;}</string>
          </property>
          <property name="alignment">
           <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnAceptar">
+         <property name="geometry">
+          <rect>
+           <x>430</x>
+           <y>3</y>
+           <width>95</width>
+           <height>40</height>
+          </rect>
+         </property>
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>92</width>
+           <height>38</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>128</width>
+           <height>48</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <family>Roboto</family>
+           <pointsize>11</pointsize>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">border:1px solid green;top:0px;</string>
+         </property>
+         <property name="text">
+          <string>Aceptar</string>
+         </property>
+         <property name="icon">
+          <iconset resource="../../resources/resources.qrc">
+           <normaloff>:/source/img/OK.png</normaloff>:/source/img/OK.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>24</width>
+           <height>24</height>
+          </size>
+         </property>
+         <property name="shortcut">
+          <string notr="true"/>
+         </property>
+         <property name="checkable">
+          <bool>false</bool>
+         </property>
+         <property name="flat">
+          <bool>true</bool>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnImportar">
+         <property name="geometry">
+          <rect>
+           <x>330</x>
+           <y>3</y>
+           <width>95</width>
+           <height>40</height>
+          </rect>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>92</width>
+           <height>38</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>128</width>
+           <height>48</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <family>Roboto</family>
+           <pointsize>11</pointsize>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">border:1px solid green;</string>
+         </property>
+         <property name="text">
+          <string>Importar</string>
+         </property>
+         <property name="icon">
+          <iconset resource="../../resources/resources.qrc">
+           <normaloff>:/source/img/Importar-SM.png</normaloff>:/source/img/Importar-SM.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>24</width>
+           <height>24</height>
+          </size>
+         </property>
+         <property name="shortcut">
+          <string notr="true"/>
+         </property>
+         <property name="checkable">
+          <bool>false</bool>
+         </property>
+         <property name="flat">
+          <bool>true</bool>
          </property>
         </widget>
        </widget>
@@ -565,11 +681,11 @@ QGroupBox::title{top:0;}</string>
        </spacer>
       </item>
       <item>
-       <widget class="QGroupBox" name="groupBox_2">
+       <widget class="QGroupBox" name="variablesContent">
         <property name="minimumSize">
          <size>
           <width>0</width>
-          <height>195</height>
+          <height>225</height>
          </size>
         </property>
         <property name="font">
@@ -587,6 +703,237 @@ QGroupBox::title{top:0;}</string>
         <property name="title">
          <string>Variables</string>
         </property>
+        <widget class="QLabel" name="lblVariablesCount">
+         <property name="geometry">
+          <rect>
+           <x>320</x>
+           <y>13</y>
+           <width>101</width>
+           <height>17</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <family>Roboto</family>
+           <pointsize>11</pointsize>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="text">
+          <string>Variables 0/12</string>
+         </property>
+        </widget>
+        <widget class="QPushButton" name="btnVariableAgregar">
+         <property name="geometry">
+          <rect>
+           <x>430</x>
+           <y>0</y>
+           <width>95</width>
+           <height>40</height>
+          </rect>
+         </property>
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>92</width>
+           <height>38</height>
+          </size>
+         </property>
+         <property name="maximumSize">
+          <size>
+           <width>128</width>
+           <height>48</height>
+          </size>
+         </property>
+         <property name="font">
+          <font>
+           <family>Roboto</family>
+           <pointsize>11</pointsize>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">border:1px solid green;top:0px;</string>
+         </property>
+         <property name="text">
+          <string>Agregar</string>
+         </property>
+         <property name="icon">
+          <iconset resource="../../resources/resources.qrc">
+           <normaloff>:/source/img/Agregar.png</normaloff>:/source/img/Agregar.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>24</width>
+           <height>24</height>
+          </size>
+         </property>
+         <property name="shortcut">
+          <string notr="true"/>
+         </property>
+         <property name="checkable">
+          <bool>false</bool>
+         </property>
+         <property name="flat">
+          <bool>true</bool>
+         </property>
+        </widget>
+        <widget class="QScrollArea" name="variablesScroll">
+         <property name="geometry">
+          <rect>
+           <x>28</x>
+           <y>73</y>
+           <width>505</width>
+           <height>141</height>
+          </rect>
+         </property>
+         <property name="widgetResizable">
+          <bool>true</bool>
+         </property>
+         <widget class="QWidget" name="VariableScrollContent">
+          <property name="geometry">
+           <rect>
+            <x>0</x>
+            <y>0</y>
+            <width>503</width>
+            <height>139</height>
+           </rect>
+          </property>
+         </widget>
+        </widget>
+        <widget class="QLabel" name="lblVariableNombre">
+         <property name="geometry">
+          <rect>
+           <x>45</x>
+           <y>45</y>
+           <width>65</width>
+           <height>17</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <family>Roboto</family>
+           <pointsize>11</pointsize>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="text">
+          <string>Nombre:</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="lblVariablePIN">
+         <property name="geometry">
+          <rect>
+           <x>135</x>
+           <y>45</y>
+           <width>65</width>
+           <height>17</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <family>Roboto</family>
+           <pointsize>11</pointsize>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="text">
+          <string>Variable:</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="lblVariableTipo">
+         <property name="geometry">
+          <rect>
+           <x>230</x>
+           <y>45</y>
+           <width>41</width>
+           <height>17</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <family>Roboto</family>
+           <pointsize>11</pointsize>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="text">
+          <string>Tipo:</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="lblVariableColor">
+         <property name="geometry">
+          <rect>
+           <x>295</x>
+           <y>45</y>
+           <width>41</width>
+           <height>17</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <family>Roboto</family>
+           <pointsize>11</pointsize>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="text">
+          <string>Color:</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="lblVariableSenal">
+         <property name="geometry">
+          <rect>
+           <x>375</x>
+           <y>45</y>
+           <width>51</width>
+           <height>17</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <family>Roboto</family>
+           <pointsize>11</pointsize>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="text">
+          <string>Señal:</string>
+         </property>
+        </widget>
+        <widget class="QLabel" name="lblVariableAccion">
+         <property name="geometry">
+          <rect>
+           <x>450</x>
+           <y>45</y>
+           <width>65</width>
+           <height>17</height>
+          </rect>
+         </property>
+         <property name="font">
+          <font>
+           <family>Roboto</family>
+           <pointsize>11</pointsize>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
+         <property name="text">
+          <string>Acciones:</string>
+         </property>
+        </widget>
        </widget>
       </item>
      </layout>
