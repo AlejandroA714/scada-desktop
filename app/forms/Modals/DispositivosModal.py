@@ -318,7 +318,10 @@ class UIDispositvoModal(modal):
         font.setWeight(75)
         self.lblProyecto.setFont(font)
         self.lblProyecto.setObjectName("lblProyecto")
-        self.comboBox = QtWidgets.QComboBox(self.ContentBox)
+        
+        from forms import colorComboBox
+
+        self.comboBox = colorComboBox(self.ContentBox)
         self.comboBox.setGeometry(QtCore.QRect(565, 7, 100, 25))
         self.comboBox.setInsertPolicy(QtWidgets.QComboBox.InsertAtTop)
         self.comboBox.setObjectName("comboBox")
