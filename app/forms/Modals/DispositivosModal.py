@@ -2,6 +2,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtGui import QMovie
 from classes import modal, device
 from forms.Widgets import UIDispositivoModalWidget
+from forms.Modals.AgregarDispositivoModal import UIAgregarDispositvoModal
 from resources import *
 
 class UIDispositvoModal(modal):
@@ -11,6 +12,7 @@ class UIDispositvoModal(modal):
         self.UIContainer = []
         super(UIDispositvoModal,self).__init__(MainWindow,session)
         self.__parent = MainWindow
+        self.__session = session
         self.setupUi()
 
     def setupUi(self):
@@ -318,10 +320,7 @@ class UIDispositvoModal(modal):
         font.setWeight(75)
         self.lblProyecto.setFont(font)
         self.lblProyecto.setObjectName("lblProyecto")
-        
-        from forms import colorComboBox
-
-        self.comboBox = colorComboBox(self.ContentBox)
+        self.comboBox = QtWidgets.QComboBox(self.ContentBox)
         self.comboBox.setGeometry(QtCore.QRect(565, 7, 100, 25))
         self.comboBox.setInsertPolicy(QtWidgets.QComboBox.InsertAtTop)
         self.comboBox.setObjectName("comboBox")
@@ -385,7 +384,8 @@ class UIDispositvoModal(modal):
         print(dev.__dict__)
     
     def agregarDispositivo(self):
-        pass
+        UIAgregar = UIAgregarDispositvoModal(self,self.__session)
+        UIAgregar.show()
 
     def importarDispositivos(self):
         pass

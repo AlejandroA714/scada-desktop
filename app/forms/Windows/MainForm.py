@@ -304,6 +304,7 @@ class UIMainWindow(form):
             device.deleteLater()
             del device
         QtWidgets.QApplication.processEvents()
+
     def defineMenuArchivo(self):
         # Definicion de menus
         archivoMenu = QMenu()
@@ -378,7 +379,7 @@ class UIMainWindow(form):
             QMessageBox.Yes | QMessageBox.No)
             if reply == QMessageBox.No:
                 return
-        containerObject = container({"tab":self.workSpaceTab.currentWidget(),"workSpace":work })
+        containerObject = container({"tab":self.workSpaceTab.currentWidget(),"workSpace":work,"devicesContainer":dict()  })
         self.__containers[tabName] = containerObject
         self.workSpaceTab.setTabText(self.workSpaceTab.indexOf(self.workSpaceTab.currentWidget()),work.nombre)
         print(self.__containers)
