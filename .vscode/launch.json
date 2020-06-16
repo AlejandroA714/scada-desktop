@@ -6,7 +6,7 @@
             "name": "Scada Debug",
             "type": "python",
             "request": "launch",
-            "program": "${workSpaceFolder}app/main.py",
+            "program": "${PyQt5:workSpaceFolder}app/main.py",
             "console": "integratedTerminal"
         }
     ]

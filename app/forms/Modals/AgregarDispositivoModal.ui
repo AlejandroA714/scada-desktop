@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ui version="4.0">
- <class>DispositvoModal</class>
- <widget class="QWidget" name="DispositvoModal">
+ <class>AgregarDispositvoModal</class>
+ <widget class="QWidget" name="AgregarDispositvoModal">
   <property name="windowModality">
    <enum>Qt::WindowModal</enum>
   </property>
@@ -9,7 +9,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>580</width>
+    <width>560</width>
     <height>640</height>
    </rect>
   </property>
@@ -21,7 +21,7 @@
   </property>
   <property name="minimumSize">
    <size>
-    <width>580</width>
+    <width>560</width>
     <height>640</height>
    </size>
   </property>
@@ -64,7 +64,7 @@
      <property name="frameShadow">
       <enum>QFrame::Raised</enum>
      </property>
-     <layout class="QVBoxLayout" name="verticalLayout_2">
+     <layout class="QVBoxLayout" name="MainLayout">
       <property name="spacing">
        <number>0</number>
       </property>
@@ -100,7 +100,7 @@
         <property name="frameShadow">
          <enum>QFrame::Plain</enum>
         </property>
-        <layout class="QGridLayout" name="gridLayout">
+        <layout class="QGridLayout" name="TitleLayout">
          <property name="leftMargin">
           <number>0</number>
          </property>
@@ -225,7 +225,7 @@ margin:0px;</string>
            <property name="lineWidth">
             <number>0</number>
            </property>
-           <layout class="QGridLayout" name="gridLayout_4">
+           <layout class="QGridLayout" name="ExitLayout">
             <property name="leftMargin">
              <number>0</number>
             </property>
@@ -242,7 +242,7 @@ margin:0px;</string>
              <number>0</number>
             </property>
             <item row="0" column="1">
-             <widget class="QPushButton" name="btnExit_2">
+             <widget class="QPushButton" name="btnExit">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Maximum" vsizetype="Maximum">
                 <horstretch>0</horstretch>
@@ -354,7 +354,7 @@ margin:0px;</string>
        </widget>
       </item>
       <item>
-       <widget class="QGroupBox" name="groupBox">
+       <widget class="QGroupBox" name="InformacionContent">
         <property name="minimumSize">
          <size>
           <width>0</width>
@@ -549,7 +549,7 @@ QGroupBox::title{top:0;}</string>
         <widget class="QPushButton" name="btnAceptar">
          <property name="geometry">
           <rect>
-           <x>430</x>
+           <x>410</x>
            <y>3</y>
            <width>95</width>
            <height>40</height>
@@ -610,7 +610,7 @@ QGroupBox::title{top:0;}</string>
         <widget class="QPushButton" name="btnImportar">
          <property name="geometry">
           <rect>
-           <x>330</x>
+           <x>310</x>
            <y>3</y>
            <width>95</width>
            <height>40</height>
@@ -681,7 +681,7 @@ QGroupBox::title{top:0;}</string>
        </spacer>
       </item>
       <item>
-       <widget class="QGroupBox" name="variablesContent">
+       <widget class="QGroupBox" name="VariablesContent">
         <property name="minimumSize">
          <size>
           <width>0</width>
@@ -706,7 +706,7 @@ QGroupBox::title{top:0;}</string>
         <widget class="QLabel" name="lblVariablesCount">
          <property name="geometry">
           <rect>
-           <x>320</x>
+           <x>300</x>
            <y>13</y>
            <width>101</width>
            <height>17</height>
@@ -727,7 +727,7 @@ QGroupBox::title{top:0;}</string>
         <widget class="QPushButton" name="btnVariableAgregar">
          <property name="geometry">
           <rect>
-           <x>430</x>
+           <x>410</x>
            <y>0</y>
            <width>95</width>
            <height>40</height>
@@ -789,10 +789,31 @@ QGroupBox::title{top:0;}</string>
          <property name="geometry">
           <rect>
            <x>28</x>
-           <y>73</y>
-           <width>505</width>
-           <height>141</height>
+           <y>70</y>
+           <width>481</width>
+           <height>151</height>
           </rect>
+         </property>
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Preferred" vsizetype="Ignored">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
+         </property>
+         <property name="minimumSize">
+          <size>
+           <width>481</width>
+           <height>150</height>
+          </size>
+         </property>
+         <property name="frameShape">
+          <enum>QFrame::NoFrame</enum>
+         </property>
+         <property name="lineWidth">
+          <number>0</number>
+         </property>
+         <property name="horizontalScrollBarPolicy">
+          <enum>Qt::ScrollBarAlwaysOff</enum>
          </property>
          <property name="widgetResizable">
           <bool>true</bool>
@@ -802,10 +823,21 @@ QGroupBox::title{top:0;}</string>
            <rect>
             <x>0</x>
             <y>0</y>
-            <width>503</width>
-            <height>139</height>
+            <width>481</width>
+            <height>151</height>
            </rect>
           </property>
+          <layout class="QVBoxLayout" name="VariablesLayout">
+           <property name="leftMargin">
+            <number>5</number>
+           </property>
+           <property name="topMargin">
+            <number>5</number>
+           </property>
+           <property name="rightMargin">
+            <number>9</number>
+           </property>
+          </layout>
          </widget>
         </widget>
         <widget class="QLabel" name="lblVariableNombre">
@@ -832,7 +864,7 @@ QGroupBox::title{top:0;}</string>
         <widget class="QLabel" name="lblVariablePIN">
          <property name="geometry">
           <rect>
-           <x>135</x>
+           <x>125</x>
            <y>45</y>
            <width>65</width>
            <height>17</height>
@@ -853,7 +885,7 @@ QGroupBox::title{top:0;}</string>
         <widget class="QLabel" name="lblVariableTipo">
          <property name="geometry">
           <rect>
-           <x>230</x>
+           <x>210</x>
            <y>45</y>
            <width>41</width>
            <height>17</height>
@@ -874,7 +906,7 @@ QGroupBox::title{top:0;}</string>
         <widget class="QLabel" name="lblVariableColor">
          <property name="geometry">
           <rect>
-           <x>295</x>
+           <x>288</x>
            <y>45</y>
            <width>41</width>
            <height>17</height>
@@ -895,7 +927,7 @@ QGroupBox::title{top:0;}</string>
         <widget class="QLabel" name="lblVariableSenal">
          <property name="geometry">
           <rect>
-           <x>375</x>
+           <x>363</x>
            <y>45</y>
            <width>51</width>
            <height>17</height>
@@ -916,7 +948,7 @@ QGroupBox::title{top:0;}</string>
         <widget class="QLabel" name="lblVariableAccion">
          <property name="geometry">
           <rect>
-           <x>450</x>
+           <x>422</x>
            <y>45</y>
            <width>65</width>
            <height>17</height>

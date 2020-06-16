@@ -7,12 +7,10 @@ from resources import *
 
 class UIDispositvoModal(modal):
 
-    def __init__(self,MainWindow,session:object,dict:dict):
-        self.workSpaces = dict
+    def __init__(self,MainWindow,session:object,workSpaces:dict):
+        self.workSpaces = workSpaces
         self.UIContainer = []
         super(UIDispositvoModal,self).__init__(MainWindow,session)
-        self.__parent = MainWindow
-        self.__session = session
         self.setupUi()
 
     def setupUi(self):
@@ -335,18 +333,18 @@ class UIDispositvoModal(modal):
         self.btnExportar.setEnabled(False)
         
         #listener
-        self.__parent.signals.resize.connect(lambda : self.center(self.__parent))
+        self.parent.signals.resize.connect(lambda : self.center(self.parent))
         self.btnExit.clicked.connect(self.exit)
         self.btnAgregar.clicked.connect(self.agregarDispositivo)
         self.btnImportar.clicked.connect(self.importarDispositivos)
         self.btnExportar.clicked.connect(self.exportarDispositivos)
 
     def disconnectSignals(self):
-        self.__parent.signals.resize.disconnect()
+        self.parent.signals.resize.disconnect()
         self.btnExit.clicked.disconnect(self.exit)
 
     def showEvent(self,event):
-        self.center(self.__parent)
+        self.center(self.parent)
         self.movie = QMovie(":/source/img/Cargando.gif")
         self.movie.setScaledSize(QtCore.QSize(64,64))
         self.movie.start()
@@ -384,7 +382,7 @@ class UIDispositvoModal(modal):
         print(dev.__dict__)
     
     def agregarDispositivo(self):
-        UIAgregar = UIAgregarDispositvoModal(self,self.__session)
+        UIAgregar = UIAgregarDispositvoModal(self.parent,self.session)
         UIAgregar.show()
 
     def importarDispositivos(self):

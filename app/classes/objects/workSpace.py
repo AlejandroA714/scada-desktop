@@ -13,7 +13,10 @@ class workSpace(object):
         else:
             self.id = dict["Id"]
             self.nombre = dict["Nombre"]
-            self.devices = list(self.devicesToList(dict["Drivers"]))
+            if not "Drivers" in dict.keys():
+                self.devices = list([])
+            else:
+                self.devices = list(self.devicesToList(dict["Drivers"]))
             self.devicesCount = dict["DriversCount"]
         
     @property
@@ -302,6 +305,8 @@ class variable(object):
 
     @pin.setter
     def pin(self,value):
+        if value == "" or value is None:
+            raise ValueError("¡Error! variable no valida")
         self.__pin = value
 
     @property
@@ -318,6 +323,8 @@ class variable(object):
 
     @analogic.setter
     def analogic(self,value):
+        if not isinstance(value,bool):
+            raise ValueError("¡Error! Propiedad analogic solo admite booleanos" % value)
         self.__analogic = value
     
     @property
@@ -326,6 +333,8 @@ class variable(object):
 
     @displayColor.setter
     def displayColor(self,value):
+        if value == "" or value == "null":
+            self.__displayColor = None
         self.__displayColor = value
     
     @property
@@ -334,6 +343,8 @@ class variable(object):
 
     @expresion.setter
     def expresion(self,value):
+        if value == "" or value == "null":
+            self.__expresion = None
         self.__expresion = value
 
     @property
@@ -342,6 +353,10 @@ class variable(object):
 
     @notify.setter
     def notify(self,value):
+        if value == "" or value == "null":
+            self.__expresion = None
+        if value != "->" and value != "-<" and value != "!=" and value != "==":
+            raise ValueError("¡Error! %s no es una expresión valida" % value)
         self.__notify = value
 
     @property
@@ -350,6 +365,10 @@ class variable(object):
 
     @nivel.setter
     def nivel(self,value):
+        if value == "" or value == "null":
+            self.__expresion = None
+        if value != "aqua" and value != "green" and value != "orange" and value != "red":
+            raise ValueError("¡Error! %s no es un nivel valido" % value)
         self.__nivel = value
 
     @property
@@ -358,6 +377,8 @@ class variable(object):
 
     @output.setter
     def output(self,value):
+        if not isinstance(value,bool):
+            raise ValueError("¡Error! Propiedad \"output\" solo admite booleanos ")
         self.__output = value
 
     def toJSON(self):

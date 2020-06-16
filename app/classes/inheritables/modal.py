@@ -12,16 +12,14 @@ class modal(QDialog): # Class to be inherit to convert a window into a modal
     def __init__(self,Parent,session = None): #Parent must be a QMainWindow
         self.signals = modalSignals() # Instance signals to be emited
         self.threadpool = QThreadPool() #QThearPool object to execute work class
-        self.__session = None # session object
-        self.__parent = Parent
+        self.session = session # session object, gonna to be replaced
+        self.parent = Parent
         self.weight = 480
         self.height = 720
-        if(session == None): return
-        else: self.__session = session
         QDialog.__init__(self,Parent)
         self.setWindowFlags(Qt.FramelessWindowHint) # removes borders
         self.setAttribute(Qt.WA_TranslucentBackground) # Making it translucent to make a trick with the shadows
-        self.setAttribute( Qt.WA_DeleteOnClose) 
+        self.setAttribute( Qt.WA_DeleteOnClose) # this should liberate ram
 
     def center(self,parent:QMainWindow): # this function is responsible for centering the modal with respect its father
         qr = self.frameGeometry()
@@ -47,8 +45,8 @@ class modal(QDialog): # Class to be inherit to convert a window into a modal
         raise NotImplementedError()
     
     def getAccessToken(self):
-        if self.__session != None:
-            return self.__session["access_token"]
+        if self.session != None:
+            return self.session["access_token"]
         else:
             return None
 
@@ -61,7 +59,7 @@ class modal(QDialog): # Class to be inherit to convert a window into a modal
         if event.buttons() == Qt.LeftButton:
             point = self.pos() + event.globalPos() - self.dragPos
              # Negative because it has a border for shadow, can be see it at qt designer with the .ui
-            if ((point.x() <= -10 or point.x() >= self.__parent.frameSize().width() - self.weight ) or (point.y() <= -10 or point.y() >= self.__parent.frameSize().height() - self.height)) :
+            if ((point.x() <= -10 or point.x() >= self.parent.frameSize().width() - self.weight ) or (point.y() <= -10 or point.y() >= self.parent.frameSize().height() - self.height)) :
                 event.ignore()
             else:
                 self.move(self.pos() + event.globalPos() - self.dragPos)

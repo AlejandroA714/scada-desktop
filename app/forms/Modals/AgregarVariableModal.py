@@ -1,51 +1,42 @@
-from PyQt5.QtWidgets import QGraphicsDropShadowEffect, QMessageBox
 from PyQt5 import QtCore, QtGui, QtWidgets
-from forms.Widgets.ProyectoWidget import UIWidgetP
-from PyQt5.QtCore import Qt
-from PyQt5.QtGui import QMovie
-from classes.inheritables.modal import modal
-from classes.utils.logica import Logica
-from classes.utils.worker import Worker
-from classes.objects.workSpace import workSpace
-from classes.utils.timer import timer
-from resources.resources import *
+from PyQt5.QtGui import QMovie, QPixmap, QColor, QIcon
+from classes import modal,Logica, Worker
+from resources import *
 
-class UIAbrirModal(modal):
+class UIAgregarVariableModal(modal):
 
-    def __init__(self,MainWindow,session:object,IsDelete = False):
-        super(UIAbrirModal,self).__init__(MainWindow,session)
-        self.__IsDelete = IsDelete
-        self.__parent = MainWindow
+    def __init__(self,Parent,session,ID,Token):
+        super(UIAgregarVariableModal,self).__init__(Parent,session)
+        self.ID = ID
+        self.Token = Token
         self.setupUi()
-    
+
     def setupUi(self):
-        AbrirModal = self
-        AbrirModal.setObjectName("AbrirModal")
-        AbrirModal.setWindowModality(QtCore.Qt.WindowModal)
-        AbrirModal.resize(480, 704)
-        self.width = 520
-        self.height = 735
+        AgregarVariableModal = self
+        AgregarVariableModal.setObjectName("AgregarVariableModal")
+        AgregarVariableModal.setWindowModality(QtCore.Qt.WindowModal)
+        AgregarVariableModal.resize(420, 580)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Maximum)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(AbrirModal.sizePolicy().hasHeightForWidth())
-        AbrirModal.setSizePolicy(sizePolicy)
+        sizePolicy.setHeightForWidth(AgregarVariableModal.sizePolicy().hasHeightForWidth())
+        AgregarVariableModal.setSizePolicy(sizePolicy)
         font = QtGui.QFont()
         font.setFamily("Noto Serif")
         font.setPointSize(11)
         font.setBold(True)
         font.setWeight(75)
-        AbrirModal.setFont(font)
-        AbrirModal.setContextMenuPolicy(QtCore.Qt.NoContextMenu)
+        AgregarVariableModal.setFont(font)
+        AgregarVariableModal.setContextMenuPolicy(QtCore.Qt.NoContextMenu)
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap("../../../../../.designer/if_16_1751363.ico"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        AbrirModal.setWindowIcon(icon)
-        AbrirModal.setStyleSheet("background-color: rgb(255, 255, 255);")
-        AbrirModal.setInputMethodHints(QtCore.Qt.ImhSensitiveData)
-        self.verticalLayout = QtWidgets.QVBoxLayout(AbrirModal)
+        icon.addPixmap(QtGui.QPixmap(":/source/img/if_16_1751363.ico"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        AgregarVariableModal.setWindowIcon(icon)
+        AgregarVariableModal.setStyleSheet("background-color: rgb(255, 255, 255);")
+        AgregarVariableModal.setInputMethodHints(QtCore.Qt.ImhSensitiveData)
+        self.verticalLayout = QtWidgets.QVBoxLayout(AgregarVariableModal)
         self.verticalLayout.setObjectName("verticalLayout")
-        self.MainFrame = QtWidgets.QFrame(AbrirModal)
-        self.MainFrame.setMinimumSize(QtCore.QSize(360, 0))
+        self.MainFrame = QtWidgets.QFrame(AgregarVariableModal)
+        self.MainFrame.setMinimumSize(QtCore.QSize(0, 0))
         self.MainFrame.setFrameShape(QtWidgets.QFrame.StyledPanel)
         self.MainFrame.setFrameShadow(QtWidgets.QFrame.Raised)
         self.MainFrame.setObjectName("MainFrame")
@@ -54,7 +45,7 @@ class UIAbrirModal(modal):
         self.verticalLayout_2.setSpacing(0)
         self.verticalLayout_2.setObjectName("verticalLayout_2")
         self.TitleFrame = QtWidgets.QFrame(self.MainFrame)
-        self.TitleFrame.setMaximumSize(QtCore.QSize(16777215, 16777215))
+        self.TitleFrame.setMaximumSize(QtCore.QSize(16777215, 116))
         self.TitleFrame.setFrameShape(QtWidgets.QFrame.NoFrame)
         self.TitleFrame.setFrameShadow(QtWidgets.QFrame.Plain)
         self.TitleFrame.setObjectName("TitleFrame")
@@ -62,29 +53,13 @@ class UIAbrirModal(modal):
         self.gridLayout.setContentsMargins(0, 0, 0, 0)
         self.gridLayout.setSpacing(0)
         self.gridLayout.setObjectName("gridLayout")
-        self.lblUDB = QtWidgets.QLabel(self.TitleFrame)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Maximum, QtWidgets.QSizePolicy.Maximum)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.lblUDB.sizePolicy().hasHeightForWidth())
-        self.lblUDB.setSizePolicy(sizePolicy)
-        self.lblUDB.setMinimumSize(QtCore.QSize(0, 116))
-        self.lblUDB.setMaximumSize(QtCore.QSize(16777215, 116))
-        self.lblUDB.setStyleSheet("background-color: rgb(65, 105, 225);\n"
-"margin:0px;")
-        self.lblUDB.setFrameShape(QtWidgets.QFrame.NoFrame)
-        self.lblUDB.setText("")
-        self.lblUDB.setPixmap(QtGui.QPixmap(":/source/img/logo.png"))
-        self.lblUDB.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
-        self.lblUDB.setObjectName("lblUDB")
-        self.gridLayout.addWidget(self.lblUDB, 0, 0, 1, 1)
         self.lblSCADA = QtWidgets.QLabel(self.TitleFrame)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Maximum)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.lblSCADA.sizePolicy().hasHeightForWidth())
         self.lblSCADA.setSizePolicy(sizePolicy)
-        self.lblSCADA.setMinimumSize(QtCore.QSize(300, 116))
+        self.lblSCADA.setMinimumSize(QtCore.QSize(150, 116))
         self.lblSCADA.setMaximumSize(QtCore.QSize(16777215, 116))
         font = QtGui.QFont()
         font.setPointSize(21)
@@ -113,6 +88,21 @@ class UIAbrirModal(modal):
         self.gridLayout_4.setContentsMargins(0, 0, 0, 0)
         self.gridLayout_4.setSpacing(0)
         self.gridLayout_4.setObjectName("gridLayout_4")
+        self.lblIIE = QtWidgets.QLabel(self.ExitFrame)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Maximum, QtWidgets.QSizePolicy.Preferred)
+        sizePolicy.setHorizontalStretch(0)
+        sizePolicy.setVerticalStretch(0)
+        sizePolicy.setHeightForWidth(self.lblIIE.sizePolicy().hasHeightForWidth())
+        self.lblIIE.setSizePolicy(sizePolicy)
+        self.lblIIE.setMaximumSize(QtCore.QSize(16777215, 116))
+        self.lblIIE.setStyleSheet("background-color: rgb(65, 105, 225);\n"
+"margin:0px;")
+        self.lblIIE.setText("")
+        self.lblIIE.setPixmap(QtGui.QPixmap(":/source/img/iiie.png"))
+        self.lblIIE.setScaledContents(False)
+        self.lblIIE.setAlignment(QtCore.Qt.AlignCenter)
+        self.lblIIE.setObjectName("lblIIE")
+        self.gridLayout_4.addWidget(self.lblIIE, 0, 0, 2, 1)
         self.btnExit = QtWidgets.QPushButton(self.ExitFrame)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Maximum, QtWidgets.QSizePolicy.Maximum)
         sizePolicy.setHorizontalStretch(0)
@@ -129,22 +119,23 @@ class UIAbrirModal(modal):
         self.btnExit.setFlat(True)
         self.btnExit.setObjectName("btnExit")
         self.gridLayout_4.addWidget(self.btnExit, 0, 1, 1, 1)
-        self.lblIIE = QtWidgets.QLabel(self.ExitFrame)
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Maximum, QtWidgets.QSizePolicy.Preferred)
+        self.gridLayout.addWidget(self.ExitFrame, 0, 2, 1, 1)
+        self.lblUDB = QtWidgets.QLabel(self.TitleFrame)
+        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Maximum, QtWidgets.QSizePolicy.Maximum)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.lblIIE.sizePolicy().hasHeightForWidth())
-        self.lblIIE.setSizePolicy(sizePolicy)
-        self.lblIIE.setMaximumSize(QtCore.QSize(16777215, 116))
-        self.lblIIE.setStyleSheet("background-color: rgb(65, 105, 225);\n"
+        sizePolicy.setHeightForWidth(self.lblUDB.sizePolicy().hasHeightForWidth())
+        self.lblUDB.setSizePolicy(sizePolicy)
+        self.lblUDB.setMinimumSize(QtCore.QSize(0, 116))
+        self.lblUDB.setMaximumSize(QtCore.QSize(16777215, 116))
+        self.lblUDB.setStyleSheet("background-color: rgb(65, 105, 225);\n"
 "margin:0px;")
-        self.lblIIE.setText("")
-        self.lblIIE.setPixmap(QtGui.QPixmap(":/source/img/iiie.png"))
-        self.lblIIE.setScaledContents(False)
-        self.lblIIE.setAlignment(QtCore.Qt.AlignCenter)
-        self.lblIIE.setObjectName("lblIIE")
-        self.gridLayout_4.addWidget(self.lblIIE, 0, 0, 2, 1)
-        self.gridLayout.addWidget(self.ExitFrame, 0, 2, 1, 1)
+        self.lblUDB.setFrameShape(QtWidgets.QFrame.NoFrame)
+        self.lblUDB.setText("")
+        self.lblUDB.setPixmap(QtGui.QPixmap(":/source/img/logo.png"))
+        self.lblUDB.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
+        self.lblUDB.setObjectName("lblUDB")
+        self.gridLayout.addWidget(self.lblUDB, 0, 0, 1, 1)
         self.verticalLayout_2.addWidget(self.TitleFrame)
         self.lblTitle = QtWidgets.QLabel(self.MainFrame)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Minimum, QtWidgets.QSizePolicy.Maximum)
@@ -152,7 +143,7 @@ class UIAbrirModal(modal):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.lblTitle.sizePolicy().hasHeightForWidth())
         self.lblTitle.setSizePolicy(sizePolicy)
-        self.lblTitle.setMaximumSize(QtCore.QSize(16777215, 51))
+        self.lblTitle.setMaximumSize(QtCore.QSize(16777215, 38))
         font = QtGui.QFont()
         font.setFamily("Roboto")
         font.setPointSize(14)
@@ -163,13 +154,14 @@ class UIAbrirModal(modal):
         self.lblTitle.setAlignment(QtCore.Qt.AlignCenter)
         self.lblTitle.setObjectName("lblTitle")
         self.verticalLayout_2.addWidget(self.lblTitle)
-        self.ContentBox = QtWidgets.QGroupBox(self.MainFrame)
+        self.ContentBox = QtWidgets.QGroupBox()
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Minimum)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.ContentBox.sizePolicy().hasHeightForWidth())
         self.ContentBox.setSizePolicy(sizePolicy)
-        self.ContentBox.setMinimumSize(QtCore.QSize(401, 520))
+        self.ContentBox.setMinimumSize(QtCore.QSize(350, 0))
+        self.ContentBox.setMaximumSize(QtCore.QSize(350, 16777215))
         font = QtGui.QFont()
         font.setFamily("Roboto")
         font.setPointSize(11)
@@ -180,25 +172,151 @@ class UIAbrirModal(modal):
         self.ContentBox.setAlignment(QtCore.Qt.AlignBottom|QtCore.Qt.AlignLeading|QtCore.Qt.AlignLeft)
         self.ContentBox.setFlat(True)
         self.ContentBox.setObjectName("ContentBox")
-        self.verticalLayout_3 = QtWidgets.QVBoxLayout(self.ContentBox)
-        self.verticalLayout_3.setContentsMargins(0, 0, 0, 0)
-        self.verticalLayout_3.setSpacing(0)
-        self.verticalLayout_3.setObjectName("verticalLayout_3")
-        self.ContentScroll = QtWidgets.QScrollArea(self.ContentBox)
-        self.ContentScroll.setFrameShape(QtWidgets.QFrame.NoFrame)
-        self.ContentScroll.setLineWidth(0)
-        self.ContentScroll.setHorizontalScrollBarPolicy(QtCore.Qt.ScrollBarAlwaysOff)
-        self.ContentScroll.setWidgetResizable(False)
-        self.ContentScroll.setObjectName("ContentScroll")
-        self.ContainerScroll = QtWidgets.QWidget()
-        self.ContainerScroll.setGeometry(QtCore.QRect(0, 0, 377, 490))
-        self.ContainerScroll.setMinimumSize(QtCore.QSize(0, 490))
-        self.ContainerScroll.setObjectName("ContainerScroll")
-        self.LayoutScroll = QtWidgets.QVBoxLayout(self.ContainerScroll)
-        self.LayoutScroll.setContentsMargins(0, 9, 5, 9)
-        self.LayoutScroll.setSpacing(7)
-        self.LayoutScroll.setObjectName("LayoutScroll")
-        self.UtilsFrame = QtWidgets.QFrame(self.ContainerScroll)
+        self.ContentLayout = QtWidgets.QVBoxLayout(self.ContentBox)
+        self.ContentLayout.setContentsMargins(0, 0, 0, 0)
+        self.ContentLayout.setSpacing(0)
+        self.ContentLayout.setObjectName("ContentLayout")
+        self.ContentFrame = QtWidgets.QFrame()
+        self.ContentFrame.setFrameShape(QtWidgets.QFrame.StyledPanel)
+        self.ContentFrame.setFrameShadow(QtWidgets.QFrame.Raised)
+        self.ContentFrame.setObjectName("ContentFrame")
+        self.txtNombre = QtWidgets.QLineEdit(self.ContentFrame)
+        self.txtNombre.setGeometry(QtCore.QRect(140, 15, 101, 21))
+        self.txtNombre.setStyleSheet("border-bottom:1px solid black;border-top:none;")
+        self.txtNombre.setObjectName("txtNombre")
+        self.label_8 = QtWidgets.QLabel(self.ContentFrame)
+        self.label_8.setGeometry(QtCore.QRect(60, 265, 75, 17))
+        font = QtGui.QFont()
+        font.setFamily("Roboto")
+        font.setPointSize(11)
+        font.setBold(True)
+        font.setWeight(75)
+        self.label_8.setFont(font)
+        self.label_8.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
+        self.label_8.setObjectName("label_8")
+        self.lblNombre = QtWidgets.QLabel(self.ContentFrame)
+        self.lblNombre.setGeometry(QtCore.QRect(60, 20, 75, 17))
+        font = QtGui.QFont()
+        font.setFamily("Roboto")
+        font.setPointSize(11)
+        font.setBold(True)
+        font.setWeight(75)
+        self.lblNombre.setFont(font)
+        self.lblNombre.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
+        self.lblNombre.setObjectName("lblNombre")
+        self.boxNotificar = QtWidgets.QCheckBox(self.ContentFrame)
+        self.boxNotificar.setGeometry(QtCore.QRect(140, 225, 51, 23))
+        font = QtGui.QFont()
+        font.setFamily("Roboto")
+        font.setPointSize(10)
+        font.setBold(True)
+        font.setWeight(75)
+        self.boxNotificar.setFont(font)
+        self.boxNotificar.setObjectName("boxNotificar")
+        self.cmbNotificar = QtWidgets.QComboBox(self.ContentFrame)
+        self.cmbNotificar.setGeometry(QtCore.QRect(190, 225, 41, 25))
+        self.cmbNotificar.setObjectName("cmbNotificar")
+        self.label_9 = QtWidgets.QLabel(self.ContentFrame)
+        self.label_9.setGeometry(QtCore.QRect(60, 193, 75, 17))
+        font = QtGui.QFont()
+        font.setFamily("Roboto")
+        font.setPointSize(11)
+        font.setBold(True)
+        font.setWeight(75)
+        self.label_9.setFont(font)
+        self.label_9.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
+        self.label_9.setObjectName("label_9")
+        self.cmbVariable = QtWidgets.QComboBox(self.ContentFrame)
+        self.cmbVariable.setGeometry(QtCore.QRect(140, 122, 101, 25))
+        self.cmbVariable.setObjectName("cmbVariable")
+        self.label_10 = QtWidgets.QLabel(self.ContentFrame)
+        self.label_10.setGeometry(QtCore.QRect(60, 227, 75, 17))
+        font = QtGui.QFont()
+        font.setFamily("Roboto")
+        font.setPointSize(11)
+        font.setBold(True)
+        font.setWeight(75)
+        self.label_10.setFont(font)
+        self.label_10.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
+        self.label_10.setObjectName("label_10")
+        self.label_11 = QtWidgets.QLabel(self.ContentFrame)
+        self.label_11.setGeometry(QtCore.QRect(60, 160, 75, 17))
+        font = QtGui.QFont()
+        font.setFamily("Roboto")
+        font.setPointSize(11)
+        font.setBold(True)
+        font.setWeight(75)
+        self.label_11.setFont(font)
+        self.label_11.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
+        self.label_11.setObjectName("label_11")
+        self.label_12 = QtWidgets.QLabel(self.ContentFrame)
+        self.label_12.setGeometry(QtCore.QRect(60, 125, 75, 17))
+        font = QtGui.QFont()
+        font.setFamily("Roboto")
+        font.setPointSize(11)
+        font.setBold(True)
+        font.setWeight(75)
+        self.label_12.setFont(font)
+        self.label_12.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
+        self.label_12.setObjectName("label_12")
+        self.txtExpresion = QtWidgets.QLineEdit(self.ContentFrame)
+        self.txtExpresion.setGeometry(QtCore.QRect(140, 187, 101, 21))
+        self.txtExpresion.setStyleSheet("border-bottom:1px solid black;border-top:none;")
+        self.txtExpresion.setObjectName("txtExpresion")
+        self.cmbNivel = QtWidgets.QComboBox(self.ContentFrame)
+        self.cmbNivel.setGeometry(QtCore.QRect(140, 261, 112, 25))
+        self.cmbNivel.setObjectName("cmbNivel")
+        self.btnAceptar_2 = QtWidgets.QPushButton(self.ContentFrame)
+        self.btnAceptar_2.setGeometry(QtCore.QRect(130, 300, 71, 41))
+        font = QtGui.QFont()
+        font.setFamily("Roboto")
+        font.setPointSize(11)
+        font.setBold(True)
+        font.setWeight(75)
+        self.btnAceptar_2.setFont(font)
+        self.btnAceptar_2.setStyleSheet("border:1px solid green;")
+        icon2 = QtGui.QIcon()
+        icon2.addPixmap(QtGui.QPixmap(":/source/img/OK.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.btnAceptar_2.setIcon(icon2)
+        self.btnAceptar_2.setIconSize(QtCore.QSize(24, 24))
+        self.btnAceptar_2.setShortcut("")
+        self.btnAceptar_2.setCheckable(False)
+        self.btnAceptar_2.setFlat(True)
+        self.btnAceptar_2.setObjectName("btnAceptar_2")
+        self.label_13 = QtWidgets.QLabel(self.ContentFrame)
+        self.label_13.setGeometry(QtCore.QRect(60, 90, 75, 17))
+        font = QtGui.QFont()
+        font.setFamily("Roboto")
+        font.setPointSize(11)
+        font.setBold(True)
+        font.setWeight(75)
+        self.label_13.setFont(font)
+        self.label_13.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
+        self.label_13.setObjectName("label_13")
+        self.txtNotificar = QtWidgets.QSpinBox(self.ContentFrame)
+        self.txtNotificar.setGeometry(QtCore.QRect(240, 225, 45, 26))
+        self.txtNotificar.setObjectName("txtNotificar")
+        self.cmbSenal = QtWidgets.QComboBox(self.ContentFrame)
+        self.cmbSenal.setGeometry(QtCore.QRect(140, 51, 101, 25))
+        self.cmbSenal.setObjectName("cmbSenal")
+        self.cmbTipo = QtWidgets.QComboBox(self.ContentFrame)
+        self.cmbTipo.setGeometry(QtCore.QRect(140, 88, 101, 25))
+        self.cmbTipo.setObjectName("cmbTipo")
+        self.label_14 = QtWidgets.QLabel(self.ContentFrame)
+        self.label_14.setGeometry(QtCore.QRect(60, 55, 75, 17))
+        font = QtGui.QFont()
+        font.setFamily("Roboto")
+        font.setPointSize(11)
+        font.setBold(True)
+        font.setWeight(75)
+        self.label_14.setFont(font)
+        self.label_14.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
+        self.label_14.setObjectName("label_14")
+        self.cmbColor = QtWidgets.QComboBox(self.ContentFrame)
+        self.cmbColor.setGeometry(QtCore.QRect(140, 156, 101, 25))
+        self.cmbColor.setObjectName("cmbColor")
+        self.UtilsFrame = QtWidgets.QFrame()
+        self.UtilsFrame.setGeometry(QtCore.QRect(50, 100, 256, 132))
         self.UtilsFrame.setMinimumSize(QtCore.QSize(256, 132))
         self.UtilsFrame.setMaximumSize(QtCore.QSize(128, 128))
         self.UtilsFrame.setStyleSheet("background-color: rgb(252, 252, 252);")
@@ -238,64 +356,99 @@ class UIAbrirModal(modal):
         font.setWeight(75)
         self.btnReload.setFont(font)
         self.btnReload.setStyleSheet("border: 1px solid rgb(0, 170, 255);padding:5px;")
-        icon2 = QtGui.QIcon()
-        icon2.addPixmap(QtGui.QPixmap(":/source/img/retry.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.btnReload.setIcon(icon2)
+        icon3 = QtGui.QIcon()
+        icon3.addPixmap(QtGui.QPixmap(":/source/img/retry.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.btnReload.setIcon(icon3)
         self.btnReload.setIconSize(QtCore.QSize(24, 24))
         self.btnReload.setFlat(True)
         self.btnReload.setObjectName("btnReload")
         self.utilsLayout.addWidget(self.btnReload, 0, QtCore.Qt.AlignHCenter)
-        self.LayoutScroll.addWidget(self.UtilsFrame, 0, QtCore.Qt.AlignHCenter)
-        self.ContentScroll.setWidget(self.ContainerScroll)
-        self.verticalLayout_3.addWidget(self.ContentScroll, 0, QtCore.Qt.AlignHCenter)
+        self.ContentLayout.addWidget(self.UtilsFrame,0,QtCore.Qt.AlignHCenter)
         self.verticalLayout_2.addWidget(self.ContentBox, 0, QtCore.Qt.AlignHCenter)
         self.verticalLayout.addWidget(self.MainFrame)
 
-        self.retranslateUi(AbrirModal)
-        QtCore.QMetaObject.connectSlotsByName(AbrirModal)
+        self.cmbSenal.addItem("Analogica")
+        self.cmbSenal.addItem("Digital")
 
-        self.btnReload.hide()
+        self.cmbTipo.addItem("Lectura")
+        self.cmbTipo.addItem("Escritura")
+
+        self.cmbNotificar.addItem("<")
+        self.cmbNotificar.addItem(">")
+        self.cmbNotificar.addItem("!=")
+        self.cmbNotificar.addItem("==")
         
-        # lblMovie
-        self.movie = QMovie(":/source/img/Cargando.gif")
-        self.movie.setScaledSize(QtCore.QSize(64,64))
-        self.movie.start()
-        self.Status.setMovie(self.movie)
-        
-        # listener
-        self.__parent.signals.resize.connect(lambda : self.center(self.__parent))
+        self.addColorItems()
+        self.addNotifyItems()
+
+        self.retranslateUi(AgregarVariableModal)
+        QtCore.QMetaObject.connectSlotsByName(AgregarVariableModal)
+        self.parent.signals.resize.connect(lambda : self.center(self.parent ))
         self.btnExit.clicked.connect(self.exit)
-        self.btnReload.clicked.connect(self.btnReload_click)
-
-    def showEvent(self,event):
-        self.center(self.__parent)
-        self.obtenerProyectos()
+        self.btnReload.clicked.connect(self.obtenerVariablesFunciones)
+        self.btnReload.hide()
+        self.cmbNotificar.setEnabled(False)
+        self.txtNotificar.setEnabled(False)
+        self.cmbNivel.setEnabled(False)
+        self.cmbTipo.currentIndexChanged.connect(self.updateVariablesFunciones)
+        self.cmbSenal.currentIndexChanged.connect(self.cmbSenal_CurrentIndexChange)
+        self.boxNotificar.stateChanged.connect(self.boxNotificar_StateChange)
 
     def disconnectSignals(self):
-        self.signals.success.disconnect()
-        self.__parent.signals.resize.disconnect()
-        self.btnExit.clicked.disconnect()
-
-    def obtenerProyectos(self):
+        self.parent.signals.resize.disconnect()
+        self.btnExit.clicked.disconnect(self.exit)
+        
+    def showEvent(self,ev):
+        self.center(self.parent)
+        self.obtenerVariablesFunciones()
+        
+    def obtenerVariablesFunciones(self):
         self.btnReload.hide()
         self.lblStatus.setText("Cargando...")
         self.movie = QMovie(":/source/img/Cargando.gif")
         self.movie.start()
         self.Status.setMovie(self.movie)
-        worker = Worker(Logica.ObtenerProyectos,**{"access_token":self.getAccessToken()})
-        worker.signals.result.connect(self.showCallback)
-        worker.signals.error.connect(self.showCallback)
+        worker = Worker(Logica.ObtenerVariablesFunciones,**{"ID":self.ID,"Token":self.Token,"access_token":self.getAccessToken()})
+        worker.signals.result.connect(self.obtenerVariablesFuncionesCallback)
+        worker.signals.error.connect(self.obtenerVariablesFuncionesCallback)
         self.threadpool.start(worker)
 
-    def showCallback(self,_data):
-        if isinstance(_data,Exception): # if data returned is a Exception
+    def addColorItems(self):
+        colors = {"aqua","aquamarine","beige","black","blue","blueviolet","brown","burlywood","chartreuse",
+            "cadetblue","chocolate","crimson","cyan","darkblue","fuchsia","gold","gray",
+            "green","greenyellow","hotpink","indigo","lime","magenta","navy","olive",
+            "orange","orangered","orchid","palegreen","purple","red","salmon","silver",
+            "skyblue","slateblue","springgreen","tomato","turquoise","violet","wheat","yellow","yellowgreen"}
+
+        for color in colors:
+            print(color)
+            pixmap = QPixmap(25,25)
+            pixmap.fill(QColor(color))
+            Icon = QIcon(pixmap)
+            self.cmbColor.addItem(Icon,color)
+
+    def addNotifyItems(self):
+        colors = [{"color":"aqua","text":"Informativa"},
+                {"color":"orange","text":"Advertencia"},
+                {"color":"green","text":"Normal"},
+                {"color":"red","text":"Grave"}]
+
+        for c in colors:
+            print(c)
+            pixmap = QPixmap(25,25)
+            pixmap.fill(QColor(c["color"]))
+            Icon = QIcon(pixmap)
+            self.cmbNivel.addItem(Icon,c["text"],c)
+
+    def obtenerVariablesFuncionesCallback(self,response):
+        if isinstance(response,Exception): # if data returned is a Exception
             self.btnReload.show()
             self.lblStatus.setText("¡Error! Ha ocurrido un error")
             self.movie = QMovie(":/source/img/Error.png")
             self.movie.start()
             self.Status.setMovie(self.movie)
             return
-        if len(_data) == 0:
+        if len(response) == 0:
             self.btnReload.show()
             self.lblStatus.setText("¡Vacio! Aún no hay nada")
             self.movie = QMovie(":/source/img/Empty.png")
@@ -303,22 +456,67 @@ class UIAbrirModal(modal):
             self.Status.setMovie(self.movie)
             return
         self.UtilsFrame.deleteLater()
-        self.LayoutScroll.setAlignment(Qt.AlignTop)
-        for workSpace in _data:
-            WidgetP = UIWidgetP(workSpace,self.__IsDelete)
-            WidgetP.signals.sucess.connect(self.success)
-            self.LayoutScroll.addWidget(WidgetP,0,QtCore.Qt.AlignTop)
-        if (len(_data)*96) > 390:
-            self.ContainerScroll.setGeometry(QtCore.QRect(0, 0, 377, (len(_data)*108) ))
+        self.ContentLayout.addWidget(self.ContentFrame)
+        self.variablesFunciones = response
+        self.updateVariablesFunciones()
 
-    def btnReload_click(self):
-        self.obtenerProyectos()
+    def updateVariablesFunciones(self):
+        self.cmbSenal_CurrentIndexChange()
+        self.cmbVariable.clear()
+        variables = list(self.filterVars(True if self.cmbTipo.currentText() == "Escritura" else False))
+        for v in variables:
+            self.cmbVariable.addItem(v["Nombre"],v)
 
-    def retranslateUi(self, AbrirModal):
+    def boxNotificar_StateChange(self,status):
+        if status == 0:
+           self.cmbNotificar.setEnabled(False)
+           self.cmbNivel.setEnabled(False)
+           self.txtNotificar.setEnabled(False)
+        else:
+           self.cmbNotificar.setEnabled(True)
+           self.cmbNivel.setEnabled(True)
+           self.txtNotificar.setEnabled(True)
+                
+    def cmbSenal_CurrentIndexChange(self):
+        IsOutput = True if self.cmbTipo.currentText() == "Escritura" else False
+        Analogic = True if self.cmbSenal.currentText() == "Analogica" else False
+
+        self.cmbColor.setEnabled(False)
+        self.txtExpresion.setEnabled(False)
+        self.boxNotificar.setEnabled(False)
+        self.cmbNotificar.setEnabled(False)
+        self.txtNotificar.setEnabled(False)
+
+        if not IsOutput and Analogic: # Lectura analogica
+           self.txtExpresion.setEnabled(True)
+           self.boxNotificar.setEnabled(True)
+        if not IsOutput and not Analogic: #Lectura Digital
+           self.cmbColor.setEnabled(True)
+           self.boxNotificar.setEnabled(True)
+
+    def filterVars(self,IsOutput = False):
+        for v in self.variablesFunciones:
+           if self.isBool(v["IsOutput"]) == IsOutput:
+                yield(v)
+
+    def isBool(self,v):
+        return str(v).lower() in ("yes","True","true",1,"t")
+
+    def retranslateUi(self, AgregarVariableModal):
         _translate = QtCore.QCoreApplication.translate
-        AbrirModal.setWindowTitle(_translate("AbrirModal", "Sistema SCADA"))
-        self.lblSCADA.setText(_translate("AbrirModal", "SCADA"))
-        self.lblTitle.setText(_translate("AbrirModal", "Abrir" if not self.__IsDelete else "Eliminar"))
-        self.ContentBox.setTitle(_translate("AbrirModal", "Proyectos"))
-        self.lblStatus.setText(_translate("AbrirModal", "Cargando..."))
-        self.btnReload.setText(_translate("AbrirModal", "Reintentar"))
+        AgregarVariableModal.setWindowTitle(_translate("AgregarVariableModal", "Sistema SCADA"))
+        self.lblSCADA.setText(_translate("AgregarVariableModal", "SCADA"))
+        self.lblTitle.setText(_translate("AgregarVariableModal", "Agregar Variable"))
+        self.ContentBox.setTitle(_translate("AgregarVariableModal", "Información"))
+        self.label_8.setText(_translate("AgregarVariableModal", "Nivel:"))
+        self.lblNombre.setText(_translate("AgregarVariableModal", "Nombre:"))
+        self.boxNotificar.setText(_translate("AgregarVariableModal", "Si X"))
+        self.label_9.setText(_translate("AgregarVariableModal", "Expresion:"))
+        self.label_10.setText(_translate("AgregarVariableModal", "Notificar:"))
+        self.label_11.setText(_translate("AgregarVariableModal", "Color:"))
+        self.label_12.setText(_translate("AgregarVariableModal", "Variable:"))
+        self.btnAceptar_2.setText(_translate("AgregarVariableModal", "OK"))
+        self.label_13.setText(_translate("AgregarVariableModal", "Tipo:"))
+        self.label_14.setText(_translate("AgregarVariableModal", "Señal:"))
+        self.lblStatus.setText(_translate("AgregarVariableModal", "Cargando..."))
+        self.btnReload.setText(_translate("AgregarVariableModal", "Reintentar"))

@@ -3,7 +3,7 @@ from PyQt5.QtWidgets import QMainWindow, QAction, QMenu, QMessageBox, QShortcut,
 from PyQt5.QtCore import Qt, pyqtSlot
 from PyQt5.QtGui import QKeySequence, QMovie
 from classes import form, Worker, Logica, device, workSpace,container
-from forms import UIAbrirModal,UIDispositivoWidget, UIConfiguracionesModal, UIDispositvoModal
+from forms import UIAbrirModal,UIDispositivoWidget, UIConfiguracionesModal, UIDispositvoModal, UIAgregarDispositvoModal
 from resources import *
 from bson import ObjectId
 from functools import partial
@@ -344,7 +344,6 @@ class UIMainWindow(form):
     # methods of reports:menu
     def reports_Callback(self):
             print("reportes")
-
     # methods of settings:menu
     def configuracionesMenu_Default(self):
         print("settings")
@@ -353,6 +352,7 @@ class UIMainWindow(form):
         UI.show()
     def devices_Callback(self):
         UI = UIDispositvoModal(self,self.session,self.__containers)
+        #UI = UIAgregarDispositvoModal(self,self.session)
         UI.show()
     def api_Callback(self):
         print("api")

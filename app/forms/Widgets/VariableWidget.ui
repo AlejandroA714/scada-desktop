@@ -6,14 +6,20 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>490</width>
-    <height>39</height>
+    <width>455</width>
+    <height>41</height>
    </rect>
   </property>
   <property name="minimumSize">
    <size>
     <width>150</width>
-    <height>25</height>
+    <height>41</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>16777215</width>
+    <height>41</height>
    </size>
   </property>
   <property name="windowTitle">
@@ -24,20 +30,20 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>491</width>
+     <width>455</width>
      <height>41</height>
     </rect>
    </property>
    <property name="minimumSize">
     <size>
-     <width>150</width>
-     <height>25</height>
+     <width>450</width>
+     <height>41</height>
     </size>
    </property>
    <property name="maximumSize">
     <size>
      <width>16666</width>
-     <height>166672</height>
+     <height>41</height>
     </size>
    </property>
    <property name="styleSheet">
@@ -47,7 +53,7 @@
     <enum>QFrame::Panel</enum>
    </property>
    <property name="frameShadow">
-    <enum>QFrame::Raised</enum>
+    <enum>QFrame::Plain</enum>
    </property>
    <property name="lineWidth">
     <number>1</number>
@@ -55,9 +61,9 @@
    <widget class="QScrollArea" name="lblNombreScroll">
     <property name="geometry">
      <rect>
-      <x>0</x>
+      <x>1</x>
       <y>5</y>
-      <width>90</width>
+      <width>75</width>
       <height>25</height>
      </rect>
     </property>
@@ -96,7 +102,7 @@
       <rect>
        <x>0</x>
        <y>0</y>
-       <width>90</width>
+       <width>75</width>
        <height>25</height>
       </rect>
      </property>
@@ -158,9 +164,9 @@
    <widget class="QLabel" name="lblTipo">
     <property name="geometry">
      <rect>
-      <x>180</x>
+      <x>160</x>
       <y>5</y>
-      <width>61</width>
+      <width>60</width>
       <height>20</height>
      </rect>
     </property>
@@ -191,9 +197,9 @@
    <widget class="QLabel" name="lblColor">
     <property name="geometry">
      <rect>
-      <x>250</x>
+      <x>230</x>
       <y>5</y>
-      <width>61</width>
+      <width>75</width>
       <height>20</height>
      </rect>
     </property>
@@ -224,9 +230,9 @@
    <widget class="QLabel" name="lblSel">
     <property name="geometry">
      <rect>
-      <x>325</x>
+      <x>310</x>
       <y>5</y>
-      <width>71</width>
+      <width>70</width>
       <height>20</height>
      </rect>
     </property>
@@ -254,10 +260,10 @@
      <number>-1</number>
     </property>
    </widget>
-   <widget class="QPushButton" name="btnAgregar_2">
+   <widget class="QPushButton" name="btnEditar">
     <property name="geometry">
      <rect>
-      <x>415</x>
+      <x>390</x>
       <y>0</y>
       <width>32</width>
       <height>32</height>
@@ -315,10 +321,10 @@
      <bool>true</bool>
     </property>
    </widget>
-   <widget class="QPushButton" name="btnAgregar_3">
+   <widget class="QPushButton" name="btnEliminar">
     <property name="geometry">
      <rect>
-      <x>445</x>
+      <x>420</x>
       <y>0</y>
       <width>32</width>
       <height>32</height>
@@ -379,9 +385,9 @@
    <widget class="QScrollArea" name="lblVariableScroll">
     <property name="geometry">
      <rect>
-      <x>90</x>
+      <x>75</x>
       <y>5</y>
-      <width>90</width>
+      <width>75</width>
       <height>25</height>
      </rect>
     </property>
@@ -420,7 +426,7 @@
       <rect>
        <x>0</x>
        <y>0</y>
-       <width>90</width>
+       <width>75</width>
        <height>25</height>
       </rect>
      </property>
