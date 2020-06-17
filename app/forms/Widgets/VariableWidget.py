@@ -182,6 +182,18 @@ class UIVariableWidget(widget):
 
         self.retranslateUi(VariableWidget)
         QtCore.QMetaObject.connectSlotsByName(VariableWidget)
+        self.btnEditar.clicked.connect(self.editarVariable)
+        self.btnEliminar.clicked.connect(self.eliminarVariable)
+
+    def editarVariable(self):
+        reply = self.prompt("Confirmacion","¿Editar esta variable?")
+        if reply == QtWidgets.QMessageBox.Yes:
+            self.signals.edit.emit(self.variable)
+        
+    def eliminarVariable(self):
+        reply = self.prompt("Confirmacion","¿Eliminar esta variable?")
+        if reply == QtWidgets.QMessageBox.Yes:
+            self.signals.delete.emit(self.variable)
 
     def updateUI(self,var:variable):
         _translate = QtCore.QCoreApplication.translate

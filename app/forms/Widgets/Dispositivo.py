@@ -219,9 +219,14 @@ class UIDispositivoWidget(widget):
         self.lblImagen.mouseDoubleClickEvent = self.actualizarImagen
 
     def actualizarImagen(self,event):
-        from PyQt5.QtCore import QByteArray
+        from PyQt5.QtCore import QByteArray, QFileInfo
+        from PyQt5.QtWidgets import QMessageBox
         fileName = QFileDialog.getOpenFileName(self,"Abrir",filter="Images (*.png *.jpg)")  # options=QtWidgets.QFileDialog.DontUseNativeDialog
         if all(fileName):
+            info = QFileInfo(fileName[0])
+            if info.size() > 32000:
+                QMessageBox.warning(self,"¡Error!","No se permite archivos de mas de 32kb")
+                return
             str_base64 = Logica.imageToByteArray(fileName[0])
             self.lblImagen.setPixmap( Logica.byteArrayToImage(str_base64) )
             self.__dispostivo.image = str_base64

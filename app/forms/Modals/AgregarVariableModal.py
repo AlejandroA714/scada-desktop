@@ -5,10 +5,12 @@ from resources import *
 
 class UIAgregarVariableModal(modal):
 
-    def __init__(self,Parent,ID,Token):
+    def __init__(self,Parent,var:variable = variable(),IsEdit = False,**kwargs):
         super(UIAgregarVariableModal,self).__init__(Parent)
-        self.ID = ID
-        self.Token = Token
+        self.ID = kwargs["ID"]
+        self.Token = kwargs["Token"]
+        self.variable = var
+        self.IsEdit = IsEdit
         self.setupUi()
 
     def setupUi(self):
@@ -406,14 +408,14 @@ class UIAgregarVariableModal(modal):
         self.btnAceptar_2.clicked.disconnect(self.btnAceptar_Click)
 
     def btnAceptar_Click(self):
-        var = variable()
+        var = self.variable
         try:
             var.nombre = self.txtNombre.text()
+            var.expresion = self.txtExpresion.text()
             var.pin = (self.cmbVariable.itemData(self.cmbVariable.currentIndex()))["PIN"]
             var.analogic = True if self.cmbSenal.currentText() == "Analogica" else False
             var.output = True if self.cmbTipo.currentText() == "Escritura" else False
             var.displayColor = None if not self.cmbColor.isEnabled() else self.cmbColor.currentText()
-            var.expresion = self.txtExpresion.text()
             var.notify = None if not self.boxNotificar.isChecked() else self.cmbNotificar.currentText().rjust(2,"-") + self.txtNotificar.value().__str__()
             var.nivel = None if not self.boxNotificar.isChecked() else self.cmbNivel.itemData(self.cmbNivel.currentIndex())["color"]
         except ValueError as vError:
@@ -480,16 +482,36 @@ class UIAgregarVariableModal(modal):
             return
         self.btnReload.clicked.disconnect(self.obtenerVariablesFunciones)
         self.UtilsFrame.deleteLater()
-        self.ContentLayout.addWidget(self.ContentFrame)
         self.variablesFunciones = response
         self.updateVariablesFunciones()
+        if self.IsEdit:
+            self.txtNombre.setText(self.variable.nombre)
+            self.txtExpresion.setText("" if self.variable.expresion is None else  self.variable.expresion)
+            self.cmbSenal.setCurrentIndex(self.cmbSenal.findText("Analogica" if self.variable.analogic else "Digital"))
+            self.cmbTipo.setCurrentIndex(self.cmbTipo.findText("Lectura" if not self.variable.output else "Escritura"))
+            self.cmbColor.setCurrentIndex(self.cmbColor.findText(self.variable.displayColor) if self.variable.displayColor != None else 0 )
+            self.boxNotificar.setChecked(True if self.variable.notify != None else False)
+            self.cmbVariable.setCurrentIndex(self.cmbVariable.findText(self.variable.pin))
+            self.cmbNotificar.setCurrentIndex(self.cmbNotificar.findText(self.variable.notify.replace("-"," ")[0:2].strip()) if self.variable.notify != None else 0 )
+            self.txtNotificar.setValue(int(self.variable.notify[2:]) if self.variable.notify != None else 0 )
+            self.cmbNivel.setCurrentIndex(self.cmbNivel.findText( self.findNotify(self.variable.nivel) if self.variable.nivel != None else 0))
+        self.ContentLayout.addWidget(self.ContentFrame)
+
+    def findNotify(self,color):
+        switcher = {
+            "aqua":"Informativa",
+            "orange":"Advertencia",
+            "green":"Normal",
+            "red":"Grave"
+        }
+        return switcher.get(color,"Informativa")
 
     def updateVariablesFunciones(self):
         self.cmbSenal_CurrentIndexChange()
         self.cmbVariable.clear()
         variables = list(self.filterVars(True if self.cmbTipo.currentText() == "Escritura" else False))
         for v in variables:
-            self.cmbVariable.addItem(v["Nombre"],v)
+            self.cmbVariable.addItem(v["PIN"],v)
 
     def boxNotificar_StateChange(self,status):
         if status == 0:

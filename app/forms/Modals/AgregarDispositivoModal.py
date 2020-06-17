@@ -1,16 +1,17 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from classes import modal,Logica, variable, device
 from PyQt5.QtCore import Qt
+from PyQt5.QtWidgets import QMessageBox
 from resources import *
 from .AgregarVariableModal import UIAgregarVariableModal
 from ..Widgets.VariableWidget import UIVariableWidget
 
 class UIAgregarDispositvoModal(modal): # To add or update and device
 
-    def __init__(self,Parent):
+    def __init__(self,Parent, dev = device()):
         super(UIAgregarDispositvoModal,self).__init__(Parent)
         self.setupUi()
-        self.dispositivo = device()
+        self.dispositivo = dev
         self.__UIVariablesContainer = dict()
 
     def setupUi(self):
@@ -408,22 +409,65 @@ class UIAgregarDispositvoModal(modal): # To add or update and device
         self.lblImagen.mouseDoubleClickEvent =  self.actualizarImagen
         self.btnVariableAgregar.clicked.connect(self.agregarVariable)
 
+    def mostrarVariables(self):
+        self.lblVariablesCount.setText("Variables %s/12" % str(len(self.dispositivo.variables)))
+        for v in self.dispositivo.variables:
+            UIVariable = UIVariableWidget(v)
+            self.VariablesLayout.addWidget(UIVariable,0,Qt.AlignTop)
+            self.__UIVariablesContainer[v.unicID] = UIVariable
+            UIVariable.signals.edit.connect(self.editarVariable)
+            UIVariable.signals.delete.connect(self.eliminarVariable)
+
     def agregarVariable(self):
-            UIAgregarVariable = UIAgregarVariableModal(self.parent,"230037001347343438323536","57f539fb1a8cc926f59ee72f3fd69e4c5adc3945")
-            UIAgregarVariable.show()
-            UIAgregarVariable.signals.success.connect(self.agregarVariable_Callback)
+        #if self.txtID.text() == "" or self.txtToken.text() == "":
+        #   QMessageBox.warning(self,"¡Error!","Ingrese un ID y token para continuar")
+        #   return
+        if len(self.dispositivo.variables) == 12:
+           QMessageBox.warning(self,"¡Error!","No puede agregar mas variables")
+        UIAgregarVariable = UIAgregarVariableModal(self.parent,**{"ID":"230037001347343438323536","Token":"57f539fb1a8cc926f59ee72f3fd69e4c5adc3945"})
+        UIAgregarVariable.show()
+        UIAgregarVariable.signals.success.connect(self.agregarVariable_Callback)
 
     def agregarVariable_Callback(self,var:variable):
-            UIVariable = UIVariableWidget(var)
-            self.VariablesLayout.addWidget(UIVariable,0,Qt.AlignTop)
-            self.__UIVariablesContainer[var.unicID] = UIVariable
-            self.dispositivo.variables.append(var)
+        self.dispositivo.variables.append(var)
+        UIVariable = UIVariableWidget(var)
+        UIVariable.signals.edit.connect(self.editarVariable)
+        UIVariable.signals.delete.connect(self.eliminarVariable)
+        self.VariablesLayout.addWidget(UIVariable,0,Qt.AlignTop)
+        self.__UIVariablesContainer[var.unicID] = UIVariable
+        self.lblVariablesCount.setText("Variables %s/12" % str(len(self.dispositivo.variables)))
+        
+    def editarVariable(self,v:variable):
+        #if self.txtID.text() == "" or self.txtToken.text() == "":
+        #   QMessageBox.warning(self,"¡Error!","Ingrese un ID y token para continuar")
+        #   return
+        UIVariable = UIAgregarVariableModal(self.parent,v,True,**{"ID":"230037001347343438323536","Token":"57f539fb1a8cc926f59ee72f3fd69e4c5adc3945"})
+        UIVariable.show()
+        UIVariable.signals.success.connect(self.editarVariable_Callback)
+
+    def editarVariable_Callback(self,v:variable):
+        for var in self.dispositivo.variables:
+            print(var)
+        UIVariable = self.__UIVariablesContainer[v.unicID]
+        UIVariable.updateUI(v) # if success then must update the UI to show the changes
+
+    def eliminarVariable(self,v:variable):
+        self.dispositivo.variables.remove(v)
+        UIVariable:UIVariableWidget = self.__UIVariablesContainer[v.unicID]
+        UIVariable.deleteLater()
+        del self.__UIVariablesContainer[v.unicID]
+        del v
+        self.lblVariablesCount.setText("Variables %s/12" % str(len(self.dispositivo.variables)))
             
     def actualizarImagen(self,event):
-        from PyQt5.QtCore import QByteArray
-        from PyQt5.QtWidgets import QFileDialog
+        from PyQt5.QtCore import QByteArray, QFileInfo
+        from PyQt5.QtWidgets import QFileDialog, QMessageBox
         fileName = QFileDialog.getOpenFileName(self,"Abrir",filter="Images (*.png *.jpg)")  # options=QtWidgets.QFileDialog.DontUseNativeDialog
         if all(fileName):
+            info = QFileInfo(fileName[0])
+            if info.size() > 32000:
+                QMessageBox.warning(self,"¡Error!","No se permite archivos de mas de 32kb")
+                return
             str_base64 = Logica.imageToByteArray(fileName[0])
             self.lblImagen.setPixmap( Logica.byteArrayToImage(str_base64) )
             self.__dispostivo.image = str_base64

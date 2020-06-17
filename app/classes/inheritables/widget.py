@@ -5,6 +5,8 @@ from ..utils.session import session
 class widgetSignals(QObject):
 
     sucess = pyqtSignal(object)
+    edit = pyqtSignal(object)
+    delete = pyqtSignal(object)
 
 class widget(QWidget):
 
@@ -27,4 +29,9 @@ class widget(QWidget):
         else:
             pass
 
-
+    def prompt(self,title,text):
+        reply = QMessageBox.question(
+            self, title,
+            text,
+            QMessageBox.Yes | QMessageBox.No)
+        return reply
