@@ -196,13 +196,13 @@ class UILogin(form):
         if isinstance(s,Exception):
             QMessageBox.information(self,"¡Error!", "¡Error! %s" % str(s))
             return
-        if(s["Id"] is None): # If returns None, API is online, but mongodb isnt
+        if(s.id is None): # If returns None, API is online, but mongodb isnt
             QMessageBox.warning(self,"¡Error!", "No se pudo iniciar sesion")
             return
-        if(s["Id"] == ""): # If returns an empty string, credentials are bad
+        if(s.id == ""): # If returns an empty string, credentials are bad
             QMessageBox.warning(self,"¡Error!", "Usuario y/o contraseña incorrectos")
             return
-        if(s["Id"] != "" and s["Enabled"] == False): # If Enabled is false, then cannot login
+        if(s.id != "" and s.enabled == False): # If Enabled is false, then cannot login
             QMessageBox.warning(self,"¡Advertencia!", "Usuario no tiene permitido iniciar sesion")
             return
         self.txtUsuario.setText("")
@@ -210,7 +210,6 @@ class UILogin(form):
         self.btnAceptar.clicked.disconnect(self.btnAceptar_Click)
         self.btnExit.clicked.disconnect(self.exit)
         self.signals.login.emit(s)
-        self.signals = None
         self.close()
                 
     def mousePressEvent(self, event):

@@ -7,9 +7,8 @@ from resources import *
 
 class UIConfiguracionesModal(modal):
 
-    def __init__(self,MainWindow,session:object):
-        super(UIConfiguracionesModal,self).__init__(MainWindow,session)
-        self.__parent = MainWindow
+    def __init__(self,MainWindow):
+        super(UIConfiguracionesModal,self).__init__(MainWindow)
         self.setupUi()
     
     def setupUi(self):
@@ -436,13 +435,13 @@ class UIConfiguracionesModal(modal):
         self.ContentLayout.addWidget(self.UtilsFrame, 0, QtCore.Qt.AlignHCenter)
 
         # listener
-        self.__parent.signals.resize.connect(lambda : self.center(self.__parent))
+        self.__parent.signals.resize.connect(self.center)
         self.btnExit.clicked.connect(self.exit)
         self.btnAceptar.clicked.connect(self.btnAceptar_Click)
         self.btnReload.clicked.connect(self.ObtenerConfguraciones)
 
     def showEvent(self,event):
-        self.center(self.__parent)
+        self.center()
         self.ObtenerConfguraciones()
 
     def ObtenerConfguraciones(self):
@@ -452,7 +451,7 @@ class UIConfiguracionesModal(modal):
         self.movie.setScaledSize(QtCore.QSize(64,64))
         self.movie.start()
         self.Status.setMovie(self.movie)
-        worker = Worker(Logica.ObtenerConfiguraciones,**{"access_token":self.getAccessToken()})
+        worker = Worker(Logica.ObtenerConfiguraciones,**{"access_token":self.session.access_token})
         worker.signals.result.connect(self.obtenerConfiguracionesCallBack)
         worker.signals.error.connect(self.obtenerConfiguracionesCallBack)
         self.threadpool.start(worker)
@@ -474,6 +473,7 @@ class UIConfiguracionesModal(modal):
             self.movie.start()
             self.Status.setMovie(self.movie)
             return
+        self.btnReload.clicked.disconnect(self.ObtenerConfguraciones)
         self.UtilsFrame.deleteLater()
         self.config = configuracion(response)
         self.txtIPLocal.setText(response["APISCADA"]["Host"])
@@ -535,11 +535,10 @@ class UIConfiguracionesModal(modal):
             QMessageBox.information(self,"¡Exito!","¡Exito! Configuraciones actualizadas\nSurtiran efecto la proxima vez que\nse inicie el servicio API SCADA")
             self.success(None)
 
-
     def disconnectSignals(self):
-        self.__parent.signals.resize.disconnect()
-        self.btnExit.clicked.disconnect()
-        self.btnAceptar.clicked.disconnect()
+        self.parent.signals.resize.disconnect(self.center)
+        self.btnExit.clicked.disconnect(self.exit)
+        self.btnAceptar.clicked.disconnect(self.btnAceptar_Click)
 
     def retranslateUi(self, ConfiguracionesModal):
         _translate = QtCore.QCoreApplication.translate
@@ -549,17 +548,13 @@ class UIConfiguracionesModal(modal):
         self.ContentBox.setTitle(_translate("ConfiguracionesModal", "Conexión"))
         self.ContentAPILocal.setTitle(_translate("ConfiguracionesModal", "API Local"))
         self.lblIPLocal.setText(_translate("ConfiguracionesModal", "Dirección IP:"))
-        #self.txtIPLocal.setInputMask(_translate("ConfiguracionesModal", "127.0.0.1"))
         self.txtIPLocal.setText(_translate("ConfiguracionesModal", "127.0.0.1"))
         self.lblPuertoLocal.setText(_translate("ConfiguracionesModal", "Puerto:"))
-        #self.txtPuertoLocal.setInputMask(_translate("ConfiguracionesModal", "8080"))
         self.txtPuertoLocal.setText(_translate("ConfiguracionesModal", "8080"))
         self.ContentMongoDB.setTitle(_translate("ConfiguracionesModal", "MongoDB"))
         self.lblIPMongo.setText(_translate("ConfiguracionesModal", "Dirección IP:"))
-        #self.txtIPMongo.setInputMask(_translate("ConfiguracionesModal", "127.0.0.1"))
         self.txtIPMongo.setText(_translate("ConfiguracionesModal", "127.0.0.1"))
         self.lblPuertoMOngo.setText(_translate("ConfiguracionesModal", "Puerto:"))
-        #self.txtPuertoMongo.setInputMask(_translate("ConfiguracionesModal", "8080"))
         self.txtPuertoMongo.setText(_translate("ConfiguracionesModal", "8080"))
         self.lblUsuarioMongo.setText(_translate("ConfiguracionesModal", "Usuario:"))
         self.lblPasswordMongo.setText(_translate("ConfiguracionesModal", "Contraseña:"))

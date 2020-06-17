@@ -12,10 +12,9 @@ from resources.resources import *
 
 class UIAbrirModal(modal):
 
-    def __init__(self,MainWindow,session:object,IsDelete = False):
-        super(UIAbrirModal,self).__init__(MainWindow,session)
+    def __init__(self,MainWindow,IsDelete = False):
+        super(UIAbrirModal,self).__init__(MainWindow)
         self.__IsDelete = IsDelete
-        self.__parent = MainWindow
         self.setupUi()
     
     def setupUi(self):
@@ -263,18 +262,18 @@ class UIAbrirModal(modal):
         self.Status.setMovie(self.movie)
         
         # listener
-        self.__parent.signals.resize.connect(lambda : self.center(self.__parent))
+        self.parent.signals.resize.connect(self.center)
         self.btnExit.clicked.connect(self.exit)
-        self.btnReload.clicked.connect(self.btnReload_click)
+        self.btnReload.clicked.connect(self.obtenerProyectos)
 
     def showEvent(self,event):
-        self.center(self.__parent)
+        self.center()
         self.obtenerProyectos()
 
     def disconnectSignals(self):
         self.signals.success.disconnect()
-        self.__parent.signals.resize.disconnect()
-        self.btnExit.clicked.disconnect()
+        self.parent.signals.resize.disconnect(self.center)
+        self.btnExit.clicked.disconnect(self.exit)
 
     def obtenerProyectos(self):
         self.btnReload.hide()
@@ -282,7 +281,7 @@ class UIAbrirModal(modal):
         self.movie = QMovie(":/source/img/Cargando.gif")
         self.movie.start()
         self.Status.setMovie(self.movie)
-        worker = Worker(Logica.ObtenerProyectos,**{"access_token":self.getAccessToken()})
+        worker = Worker(Logica.ObtenerProyectos,**{"access_token":self.session.access_token})
         worker.signals.result.connect(self.showCallback)
         worker.signals.error.connect(self.showCallback)
         self.threadpool.start(worker)
@@ -302,6 +301,7 @@ class UIAbrirModal(modal):
             self.movie.start()
             self.Status.setMovie(self.movie)
             return
+        self.btnReload.clicked.disconnect(self.obtenerProyectos)
         self.UtilsFrame.deleteLater()
         self.LayoutScroll.setAlignment(Qt.AlignTop)
         for workSpace in _data:
@@ -310,9 +310,6 @@ class UIAbrirModal(modal):
             self.LayoutScroll.addWidget(WidgetP,0,QtCore.Qt.AlignTop)
         if (len(_data)*96) > 390:
             self.ContainerScroll.setGeometry(QtCore.QRect(0, 0, 377, (len(_data)*108) ))
-
-    def btnReload_click(self):
-        self.obtenerProyectos()
 
     def retranslateUi(self, AbrirModal):
         _translate = QtCore.QCoreApplication.translate

@@ -1,5 +1,6 @@
 from PyQt5.QtWidgets import QDialog, QMainWindow, QMessageBox
 from PyQt5.QtCore import Qt,QObject, pyqtSlot, pyqtSignal, QThreadPool
+from ..utils.session import session
 
 
 class modalSignals(QObject): # A class to emit signals at execution
@@ -9,10 +10,10 @@ class modalSignals(QObject): # A class to emit signals at execution
 
 class modal(QDialog): # Class to be inherit to convert a window into a modal
     
-    def __init__(self,Parent,session = None): #Parent must be a QMainWindow
+    def __init__(self,Parent): #Parent must be a QMainWindow
+        self.session = session() # Automatic get session from program
         self.signals = modalSignals() # Instance signals to be emited
         self.threadpool = QThreadPool() #QThearPool object to execute work class
-        self.session = session # session object, gonna to be replaced
         self.parent = Parent
         self.weight = 480
         self.height = 720
@@ -21,11 +22,11 @@ class modal(QDialog): # Class to be inherit to convert a window into a modal
         self.setAttribute(Qt.WA_TranslucentBackground) # Making it translucent to make a trick with the shadows
         self.setAttribute( Qt.WA_DeleteOnClose) # this should liberate ram
 
-    def center(self,parent:QMainWindow): # this function is responsible for centering the modal with respect its father
+    def center(self): # this function is responsible for centering the modal with respect its father
         qr = self.frameGeometry()
-        pr = parent.geometry()
-        x = (parent.width() - qr.width()) / 2
-        y = (parent.height() - qr.height()) / 2 
+        pr = self.parent.geometry()
+        x = (self.parent.width() - qr.width()) / 2
+        y = (self.parent.height() - qr.height()) / 2 
         self.setGeometry(x,y,qr.width(),qr.height())
 
     def exit(self): # this function is responsible to emit a cancelation signal if exit button was clicked
@@ -40,6 +41,13 @@ class modal(QDialog): # Class to be inherit to convert a window into a modal
             self.deleteLater()
         else:
             pass
+
+    def prompt(self,title,text):
+        reply = QMessageBox.question(
+            self, title,
+            text,
+            QMessageBox.Yes | QMessageBox.No)
+        return reply
 
     def disconnectSignals(self): # virtual method, that should be implement for each class that inherit
         raise NotImplementedError()

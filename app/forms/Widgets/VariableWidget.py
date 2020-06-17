@@ -1,17 +1,16 @@
-# -*- coding: utf-8 -*-
-
-# Form implementation generated from reading ui file 'VariableWidget.ui'
-#
-# Created by: PyQt5 UI code generator 5.14.1
-#
-# WARNING! All changes made in this file will be lost!
-
-
 from PyQt5 import QtCore, QtGui, QtWidgets
+from classes import widget, variable
+from resources import *
 
+class UIVariableWidget(widget):
 
-class Ui_VariableWidget(object):
-    def setupUi(self, VariableWidget):
+    def __init__(self,var:variable):
+        super(UIVariableWidget,self).__init__()
+        self.variable = var
+        self.setupUi()
+
+    def setupUi(self):
+        VariableWidget = self
         VariableWidget.setObjectName("VariableWidget")
         VariableWidget.resize(455, 41)
         VariableWidget.setMinimumSize(QtCore.QSize(150, 41))
@@ -98,7 +97,7 @@ class Ui_VariableWidget(object):
         self.lblSel.setIndent(-1)
         self.lblSel.setObjectName("lblSel")
         self.btnEditar = QtWidgets.QPushButton(self.MainFrame)
-        self.btnEditar.setGeometry(QtCore.QRect(390, 0, 32, 32))
+        self.btnEditar.setGeometry(QtCore.QRect(390, 5, 32, 32))
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -123,7 +122,7 @@ class Ui_VariableWidget(object):
         self.btnEditar.setFlat(True)
         self.btnEditar.setObjectName("btnEditar")
         self.btnEliminar = QtWidgets.QPushButton(self.MainFrame)
-        self.btnEliminar.setGeometry(QtCore.QRect(420, 0, 32, 32))
+        self.btnEliminar.setGeometry(QtCore.QRect(420, 5, 32, 32))
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
@@ -184,12 +183,20 @@ class Ui_VariableWidget(object):
         self.retranslateUi(VariableWidget)
         QtCore.QMetaObject.connectSlotsByName(VariableWidget)
 
+    def updateUI(self,var:variable):
+        _translate = QtCore.QCoreApplication.translate
+        self.variable = var
+        self.lblNombre.setText(_translate("VariableWidget", self.variable.nombre))
+        self.lblTipo.setText(_translate("VariableWidget","Lectura" if not self.variable.output else "Escritura"))
+        self.lblColor.setText(_translate("VariableWidget", "-" if self.variable.displayColor == None else self.variable.displayColor))
+        self.lblSel.setText(_translate("VariableWidget", "Analogica" if self.variable.analogic else "Digital"))
+        self.lblVariable.setText(_translate("VariableWidget", self.variable.pin))
+
     def retranslateUi(self, VariableWidget):
         _translate = QtCore.QCoreApplication.translate
         VariableWidget.setWindowTitle(_translate("VariableWidget", "Form"))
-        self.lblNombre.setText(_translate("VariableWidget", "AI0"))
-        self.lblTipo.setText(_translate("VariableWidget", "Escritura"))
-        self.lblColor.setText(_translate("VariableWidget", "-"))
-        self.lblSel.setText(_translate("VariableWidget", "Analogica"))
-        self.lblVariable.setText(_translate("VariableWidget", "AI0"))
-import resources_rc
+        self.lblNombre.setText(_translate("VariableWidget", self.variable.nombre))
+        self.lblTipo.setText(_translate("VariableWidget","Lectura" if not self.variable.output else "Escritura"))
+        self.lblColor.setText(_translate("VariableWidget", "-" if self.variable.displayColor == None else self.variable.displayColor))
+        self.lblSel.setText(_translate("VariableWidget", "Analogica" if self.variable.analogic else "Digital"))
+        self.lblVariable.setText(_translate("VariableWidget", self.variable.pin))

@@ -2,6 +2,7 @@ import PyQt5
 from PyQt5.QtCore import Qt,QObject, pyqtSlot, pyqtSignal, QThreadPool
 from PyQt5.QtWidgets import QMainWindow, QDesktopWidget, QMessageBox, QApplication
 from PyQt5.QtGui import QIcon
+from ..utils.session import session
 from resources.resources import *
 
 class formSignals(QObject):
@@ -16,7 +17,6 @@ class form(QMainWindow): # class to be inherit to make a main window
 
     threadpool = QThreadPool()
     signals = formSignals()
-    session = None
 
     def __init__(self):
         QMainWindow.__init__(self)

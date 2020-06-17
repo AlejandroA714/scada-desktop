@@ -83,8 +83,8 @@ class device(object):
 
     def __init__(self,dict = None):
         if dict is None:
-            self.unicID = uuid4()
-            self.nombre = "dispositivo"
+            self.unicID = uuid4().__str__()
+            self.nombre = "dev1"
             self.empty = True
             self.time = 30
             self.x = 0
@@ -253,14 +253,13 @@ class device(object):
 
 class variable(object):
 
-    def __init__(self, dict):
+    def __init__(self, dict = None):
         if dict is None:
-            self.unicID = uuid4()
-            self.nombre = "variable"
+            self.unicID = uuid4().__str__()
+            self.nombre = "var1"
             self.pin = "AI0"
             self.value = "0"
             self.analogic = True
-            self.displayColor = None
             self.displayColor = None
             self.notify  = None
             self.nivel = None
@@ -296,7 +295,7 @@ class variable(object):
     @nombre.setter
     def nombre(self,value):
         if len(value) < 3 or value is None:
-            raise ValueError("¡Error! %s no es un nombre valido, Min 3" % value.__str__())
+            raise ValueError("¡Error! \"%s\" no es un nombre valido, Min 3" % value.__str__())
         self.__nombre = value
 
     @property
@@ -324,7 +323,7 @@ class variable(object):
     @analogic.setter
     def analogic(self,value):
         if not isinstance(value,bool):
-            raise ValueError("¡Error! Propiedad analogic solo admite booleanos" % value)
+            raise ValueError("¡Error! Propiedad \"analogic\" solo admite booleanos" % value)
         self.__analogic = value
     
     @property
@@ -342,8 +341,8 @@ class variable(object):
         return self.__expresion
 
     @expresion.setter
-    def expresion(self,value):
-        if value == "" or value == "null":
+    def expresion(self,value): #pending
+        if value == "" or value == "null" or value == " ":
             self.__expresion = None
         self.__expresion = value
 
@@ -353,10 +352,12 @@ class variable(object):
 
     @notify.setter
     def notify(self,value):
-        if value == "" or value == "null":
-            self.__expresion = None
-        if value != "->" and value != "-<" and value != "!=" and value != "==":
-            raise ValueError("¡Error! %s no es una expresión valida" % value)
+        import re
+        if value == "" or value == "null" or value == None:
+            self.__notify = None
+            return
+        if not re.search("^((->|-<|==|!=)[0-9]{1,}$)",value):
+            raise ValueError("¡Error! \"%s\" no es un comparador valido" % value)
         self.__notify = value
 
     @property
@@ -367,8 +368,8 @@ class variable(object):
     def nivel(self,value):
         if value == "" or value == "null":
             self.__expresion = None
-        if value != "aqua" and value != "green" and value != "orange" and value != "red":
-            raise ValueError("¡Error! %s no es un nivel valido" % value)
+        if value != "aqua" and value != "green" and value != "orange" and value != "red" and value != None:
+            raise ValueError("¡Error! \"%s\" no es un nivel valido" % value)
         self.__nivel = value
 
     @property

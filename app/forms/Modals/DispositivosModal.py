@@ -7,10 +7,10 @@ from resources import *
 
 class UIDispositvoModal(modal):
 
-    def __init__(self,MainWindow,session:object,workSpaces:dict):
+    def __init__(self,MainWindow,workSpaces:dict):
         self.workSpaces = workSpaces
         self.UIContainer = []
-        super(UIDispositvoModal,self).__init__(MainWindow,session)
+        super(UIDispositvoModal,self).__init__(MainWindow)
         self.setupUi()
 
     def setupUi(self):
@@ -333,18 +333,22 @@ class UIDispositvoModal(modal):
         self.btnExportar.setEnabled(False)
         
         #listener
-        self.parent.signals.resize.connect(lambda : self.center(self.parent))
+        self.parent.signals.resize.connect(self.center)
         self.btnExit.clicked.connect(self.exit)
         self.btnAgregar.clicked.connect(self.agregarDispositivo)
         self.btnImportar.clicked.connect(self.importarDispositivos)
         self.btnExportar.clicked.connect(self.exportarDispositivos)
+        self.comboBox.currentIndexChanged.connect(self.mostrarDispositivos)
 
     def disconnectSignals(self):
-        self.parent.signals.resize.disconnect()
+        self.parent.signals.resize.disconnect(self.center)
         self.btnExit.clicked.disconnect(self.exit)
+        self.btnImportar.clicked.disconnect(self.importarDispositivos)
+        self.btnExportar.clicked.disconnect(self.exportarDispositivos)
+        self.comboBox.currentIndexChanged.disconnect(self.mostrarDispositivos)
 
     def showEvent(self,event):
-        self.center(self.parent)
+        self.center()
         self.movie = QMovie(":/source/img/Cargando.gif")
         self.movie.setScaledSize(QtCore.QSize(64,64))
         self.movie.start()
@@ -369,7 +373,6 @@ class UIDispositvoModal(modal):
         for w in self.workSpaces.items():
             self.comboBox.addItem(w[1].workSpace.nombre,w[1])
         self.comboBox.setCurrentIndex(0)
-        self.comboBox.currentIndexChanged.connect(self.mostrarDispositivos)
         self.mostrarDispositivos(0)
 
     def editarDispositivio(self,dev:device):
@@ -382,7 +385,7 @@ class UIDispositvoModal(modal):
         print(dev.__dict__)
     
     def agregarDispositivo(self):
-        UIAgregar = UIAgregarDispositvoModal(self.parent,self.session)
+        UIAgregar = UIAgregarDispositvoModal(self.parent)
         UIAgregar.show()
 
     def importarDispositivos(self):

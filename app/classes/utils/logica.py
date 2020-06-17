@@ -1,5 +1,6 @@
 from classes.utils.logger import logger
-from classes.objects.workSpace import workSpace,device,variable
+from classes.objects.workSpace import workSpace,device
+from ..objects.usuario import usuario
 import requests, json, os
 
 class Logica():
@@ -12,11 +13,12 @@ class Logica():
             "Port":"8080"
         }
     }
+    
     @staticmethod
     def IniciarSesion(**kwargs):
         _data = {"Usuario":kwargs["Usuario"],"Password":kwargs["Password"]}
-        _answer = (requests.post("http://%s:%s/Sesion/IniciarSesion" % (Logica.settings["APISCADA"]["Host"],Logica.settings["APISCADA"]["Port"]), timeout = 45,json=_data)).json()
-        return _answer
+        _response =  requests.post("http://%s:%s/Sesion/IniciarSesion" % (Logica.settings["APISCADA"]["Host"],Logica.settings["APISCADA"]["Port"]), timeout = 45,json=_data)
+        return json.loads(_response.content,object_hook=usuario)
 
     @staticmethod
     def ObtenerProyectos(**kwargs): # returns a list with all project in database

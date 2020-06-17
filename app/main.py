@@ -1,6 +1,6 @@
 from PyQt5.QtWidgets import QApplication
 from forms import UILogin, UIMainWindow
-from classes import logger,timer
+from classes import logger,timer,session
 from functools import partial
 import sip,sys
 
@@ -24,13 +24,13 @@ class application(QApplication):
         self.mainWindow.signals.finish.connect(self.exit)
         self.mainWindow.show()
 
-    def showMainForm(self,session):
+    def showMainForm(self,s):
+        self.session = session(s)
         self.mainWindow.signals.login.disconnect(self.showMainForm)
         self.mainWindow.signals.finish.disconnect(self.exit)
         self.mainWindow.deleteLater()
         self.processEvents()
         self.mainWindow = UIMainWindow()
-        self.mainWindow.session = session
         self.mainWindow.show()
         timerid = self.timer.startTimer(1000)
         self.mainWindow.signals.logout.connect(partial(self.showLoginForm,True,timerid))

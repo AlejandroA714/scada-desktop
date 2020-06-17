@@ -1,12 +1,12 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtGui import QMovie, QPixmap, QColor, QIcon
-from classes import modal,Logica, Worker
+from classes import modal,Logica, Worker, variable
 from resources import *
 
 class UIAgregarVariableModal(modal):
 
-    def __init__(self,Parent,session,ID,Token):
-        super(UIAgregarVariableModal,self).__init__(Parent,session)
+    def __init__(self,Parent,ID,Token):
+        super(UIAgregarVariableModal,self).__init__(Parent)
         self.ID = ID
         self.Token = Token
         self.setupUi()
@@ -294,8 +294,10 @@ class UIAgregarVariableModal(modal):
         self.label_13.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
         self.label_13.setObjectName("label_13")
         self.txtNotificar = QtWidgets.QSpinBox(self.ContentFrame)
-        self.txtNotificar.setGeometry(QtCore.QRect(240, 225, 45, 26))
+        self.txtNotificar.setGeometry(QtCore.QRect(240, 225, 60, 26))
         self.txtNotificar.setObjectName("txtNotificar")
+        self.txtNotificar.setMaximum(999999)
+        self.txtNotificar.setMinimum(0)
         self.cmbSenal = QtWidgets.QComboBox(self.ContentFrame)
         self.cmbSenal.setGeometry(QtCore.QRect(140, 51, 101, 25))
         self.cmbSenal.setObjectName("cmbSenal")
@@ -383,7 +385,7 @@ class UIAgregarVariableModal(modal):
 
         self.retranslateUi(AgregarVariableModal)
         QtCore.QMetaObject.connectSlotsByName(AgregarVariableModal)
-        self.parent.signals.resize.connect(lambda : self.center(self.parent ))
+        self.parent.signals.resize.connect(self.center)
         self.btnExit.clicked.connect(self.exit)
         self.btnReload.clicked.connect(self.obtenerVariablesFunciones)
         self.btnReload.hide()
@@ -393,13 +395,36 @@ class UIAgregarVariableModal(modal):
         self.cmbTipo.currentIndexChanged.connect(self.updateVariablesFunciones)
         self.cmbSenal.currentIndexChanged.connect(self.cmbSenal_CurrentIndexChange)
         self.boxNotificar.stateChanged.connect(self.boxNotificar_StateChange)
+        self.btnAceptar_2.clicked.connect(self.btnAceptar_Click)
 
     def disconnectSignals(self):
-        self.parent.signals.resize.disconnect()
+        self.parent.signals.resize.disconnect(self.center)
         self.btnExit.clicked.disconnect(self.exit)
+        self.cmbTipo.currentIndexChanged.disconnect(self.updateVariablesFunciones)
+        self.cmbSenal.currentIndexChanged.disconnect(self.cmbSenal_CurrentIndexChange)
+        self.boxNotificar.stateChanged.disconnect(self.boxNotificar_StateChange)
+        self.btnAceptar_2.clicked.disconnect(self.btnAceptar_Click)
+
+    def btnAceptar_Click(self):
+        var = variable()
+        try:
+            var.nombre = self.txtNombre.text()
+            var.pin = (self.cmbVariable.itemData(self.cmbVariable.currentIndex()))["PIN"]
+            var.analogic = True if self.cmbSenal.currentText() == "Analogica" else False
+            var.output = True if self.cmbTipo.currentText() == "Escritura" else False
+            var.displayColor = None if not self.cmbColor.isEnabled() else self.cmbColor.currentText()
+            var.expresion = self.txtExpresion.text()
+            var.notify = None if not self.boxNotificar.isChecked() else self.cmbNotificar.currentText().rjust(2,"-") + self.txtNotificar.value().__str__()
+            var.nivel = None if not self.boxNotificar.isChecked() else self.cmbNivel.itemData(self.cmbNivel.currentIndex())["color"]
+        except ValueError as vError:
+            QtWidgets.QMessageBox.warning(self,"¡Error!",vError.__str__())
+            return
+        response = self.prompt("Confirmacion","¿Son estos datos correctos?")
+        if response == QtWidgets.QMessageBox.Yes:
+            self.success(var)
         
     def showEvent(self,ev):
-        self.center(self.parent)
+        self.center()
         self.obtenerVariablesFunciones()
         
     def obtenerVariablesFunciones(self):
@@ -408,7 +433,7 @@ class UIAgregarVariableModal(modal):
         self.movie = QMovie(":/source/img/Cargando.gif")
         self.movie.start()
         self.Status.setMovie(self.movie)
-        worker = Worker(Logica.ObtenerVariablesFunciones,**{"ID":self.ID,"Token":self.Token,"access_token":self.getAccessToken()})
+        worker = Worker(Logica.ObtenerVariablesFunciones,**{"ID":self.ID,"Token":self.Token,"access_token":self.session.access_token})
         worker.signals.result.connect(self.obtenerVariablesFuncionesCallback)
         worker.signals.error.connect(self.obtenerVariablesFuncionesCallback)
         self.threadpool.start(worker)
@@ -421,7 +446,6 @@ class UIAgregarVariableModal(modal):
             "skyblue","slateblue","springgreen","tomato","turquoise","violet","wheat","yellow","yellowgreen"}
 
         for color in colors:
-            print(color)
             pixmap = QPixmap(25,25)
             pixmap.fill(QColor(color))
             Icon = QIcon(pixmap)
@@ -434,7 +458,6 @@ class UIAgregarVariableModal(modal):
                 {"color":"red","text":"Grave"}]
 
         for c in colors:
-            print(c)
             pixmap = QPixmap(25,25)
             pixmap.fill(QColor(c["color"]))
             Icon = QIcon(pixmap)
@@ -455,6 +478,7 @@ class UIAgregarVariableModal(modal):
             self.movie.start()
             self.Status.setMovie(self.movie)
             return
+        self.btnReload.clicked.disconnect(self.obtenerVariablesFunciones)
         self.UtilsFrame.deleteLater()
         self.ContentLayout.addWidget(self.ContentFrame)
         self.variablesFunciones = response
@@ -486,7 +510,7 @@ class UIAgregarVariableModal(modal):
         self.boxNotificar.setEnabled(False)
         self.cmbNotificar.setEnabled(False)
         self.txtNotificar.setEnabled(False)
-
+        self.boxNotificar.setChecked(False)
         if not IsOutput and Analogic: # Lectura analogica
            self.txtExpresion.setEnabled(True)
            self.boxNotificar.setEnabled(True)

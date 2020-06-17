@@ -2,7 +2,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QMainWindow, QAction, QMenu, QMessageBox, QShortcut, QInputDialog
 from PyQt5.QtCore import Qt, pyqtSlot
 from PyQt5.QtGui import QKeySequence, QMovie
-from classes import form, Worker, Logica, device, workSpace,container
+from classes import form, Worker, Logica, device, workSpace,container, session
 from forms import UIAbrirModal,UIDispositivoWidget, UIConfiguracionesModal, UIDispositvoModal, UIAgregarDispositvoModal
 from resources import *
 from bson import ObjectId
@@ -14,6 +14,7 @@ class UIMainWindow(form):
         super(UIMainWindow,self).__init__()
         self.__containers = dict()
         self.setupUi()
+        self.session = session()
 
     def setupUi(self):
         MainWindow = self
@@ -230,6 +231,42 @@ class UIMainWindow(form):
             
         # listener
 
+    def defineMenuArchivo(self):
+        # Definicion de menus
+        archivoMenu = QMenu()
+        archivoMenu.addAction("{:13s} {:6s}".format("Nuevo","Ctrl+N"),self.new_Callback)
+        archivoMenu.addAction("{:13s} {:6s}".format("Abrir","Ctrl+A"),self.open_Callback)
+        archivoMenu.addAction("{:13s} {:6s}".format("Guardar","Ctrl+S"),self.save_Callback)
+        archivoMenu.addAction("{:13s} {:6s}".format("Guardar Como","Ctrl+G"),self.saveAs_Callback)
+        archivoMenu.addAction("{:13s} {:6s}".format("Cerrar","Ctrl+E"),self.close_Callback)
+        archivoMenu.addAction("{:13s} {:6s}".format("Eliminar","Ctrl+X"), self.delete_Callback)
+        archivoMenu.addAction("{:13s} {:6s}".format("Cerrar Sesiòn","Ctrl+Z"),self.logout_CallbacK)
+        archivoMenu.addAction("{:13s} {:6s}".format("Sair","Alt+f4"),self.exit_Callback)
+
+        self.MenuArchivo.setMenu(archivoMenu)
+        self.MenuArchivo.setDefaultAction(QAction("Abrir",self.MainFrame))
+        #self.MenuArchivo.triggered.connect(self.archivoMenu_Default)   
+
+    def defineMenuConfiguraciones(self):
+        configuracionesMenu = QMenu()
+        configuracionesMenu.addAction("{:15s} {:6s}".format("Configuraciones","Ctrl+C"),self.settings_Callback)
+        configuracionesMenu.addAction("{:15s} {:6s}".format("Dispostivos","Ctrl+D"),self.devices_Callback)
+        configuracionesMenu.addAction("{:15s} {:6s}".format("API Local","Ctrl+H"),self.api_Callback)
+        configuracionesMenu.addAction("{:15s} {:6s}".format("Usuarios","Ctrl+U"),self.users_Callback)
+        configuracionesMenu.addAction("{:15s} {:6s}".format("Cuenta","Ctrl+P"),self.account_Callback)
+        configuracionesMenu.addAction("{:15s} {:6s}".format("Acerca de",""), self.about_Callback)
+
+        self.MenuConfiguraciones.setMenu(configuracionesMenu)
+        #self.MenuArchivo.setDefaultAction(QAction("Abrir",self))
+        #self.MenuConfiguraciones.triggered.connect(self.configuracionesMenu_Default)
+
+    def defineMenuReportes(self):
+        ReportesMenu = QMenu()
+        ReportesMenu.addAction("{:15s} {:6s}".format("Reportes","Ctrl+R"),self.reports_Callback)
+        self.MenuReportes.setMenu(ReportesMenu)
+        #self.MenuArchivo.setDefaultAction(QAction("Abrir",self))
+        #self.MenuReportes.triggered.connect(self.reports_Callback)
+
     def closeEvent(self,event): # asks if user wants to close application
         if (event.spontaneous()) == False: 
             event.accept() 
@@ -237,7 +274,7 @@ class UIMainWindow(form):
         self.exit(event)
 
     def openMenu_Callback(self,workSpace):
-        worker = Worker(Logica.AbrirProyecto,**{"access_token":self.session["access_token"],"id":workSpace.id})
+        worker = Worker(Logica.AbrirProyecto,**{"access_token":self.session.access_token,"id":workSpace.id})
         worker.signals.result.connect(self.MostrarDispositivos)
         worker.signals.error.connect(self.MostrarDispositivos)
         self.threadpool.start(worker)
@@ -248,7 +285,7 @@ class UIMainWindow(form):
                QMessageBox.warning(self,"¡Error!","¡Error! El proyecto que intenta eliminar se encuentra abierto\nCierre dicho proyecto antes de continuar")
                return
         self.actualizarEstado("Eliminado...","white","slategray",self.movie)
-        worker = Worker(Logica.EliminarProyecto,**{"access_token":self.session["access_token"],"id":workSpace.id})
+        worker = Worker(Logica.EliminarProyecto,**{"access_token":self.session.access_token,"id":workSpace.id})
         worker.signals.result.connect(self.deleteCallback)
         worker.signals.error.connect(self.deleteCallback)
         self.threadpool.start(worker)
@@ -305,42 +342,6 @@ class UIMainWindow(form):
             del device
         QtWidgets.QApplication.processEvents()
 
-    def defineMenuArchivo(self):
-        # Definicion de menus
-        archivoMenu = QMenu()
-        archivoMenu.addAction("{:13s} {:6s}".format("Nuevo","Ctrl+N"),self.new_Callback)
-        archivoMenu.addAction("{:13s} {:6s}".format("Abrir","Ctrl+A"),self.open_Callback)
-        archivoMenu.addAction("{:13s} {:6s}".format("Guardar","Ctrl+S"),self.save_Callback)
-        archivoMenu.addAction("{:13s} {:6s}".format("Guardar Como","Ctrl+G"),self.saveAs_Callback)
-        archivoMenu.addAction("{:13s} {:6s}".format("Cerrar","Ctrl+E"),self.close_Callback)
-        archivoMenu.addAction("{:13s} {:6s}".format("Eliminar","Ctrl+X"), self.delete_Callback)
-        archivoMenu.addAction("{:13s} {:6s}".format("Cerrar Sesiòn","Ctrl+Z"),self.logout_CallbacK)
-        archivoMenu.addAction("{:13s} {:6s}".format("Sair","Alt+f4"),self.exit_Callback)
-
-        self.MenuArchivo.setMenu(archivoMenu)
-        self.MenuArchivo.setDefaultAction(QAction("Abrir",self.MainFrame))
-        #self.MenuArchivo.triggered.connect(self.archivoMenu_Default)   
-
-    def defineMenuConfiguraciones(self):
-        configuracionesMenu = QMenu()
-        configuracionesMenu.addAction("{:15s} {:6s}".format("Configuraciones","Ctrl+C"),self.settings_Callback)
-        configuracionesMenu.addAction("{:15s} {:6s}".format("Dispostivos","Ctrl+D"),self.devices_Callback)
-        configuracionesMenu.addAction("{:15s} {:6s}".format("API Local","Ctrl+H"),self.api_Callback)
-        configuracionesMenu.addAction("{:15s} {:6s}".format("Usuarios","Ctrl+U"),self.users_Callback)
-        configuracionesMenu.addAction("{:15s} {:6s}".format("Cuenta","Ctrl+P"),self.account_Callback)
-        configuracionesMenu.addAction("{:15s} {:6s}".format("Acerca de",""), self.about_Callback)
-
-        self.MenuConfiguraciones.setMenu(configuracionesMenu)
-        #self.MenuArchivo.setDefaultAction(QAction("Abrir",self))
-        #self.MenuConfiguraciones.triggered.connect(self.configuracionesMenu_Default)
-
-    def defineMenuReportes(self):
-        ReportesMenu = QMenu()
-        ReportesMenu.addAction("{:15s} {:6s}".format("Reportes","Ctrl+R"),self.reports_Callback)
-        self.MenuReportes.setMenu(ReportesMenu)
-        #self.MenuArchivo.setDefaultAction(QAction("Abrir",self))
-        #self.MenuReportes.triggered.connect(self.reports_Callback)
-
     # methods of reports:menu
     def reports_Callback(self):
             print("reportes")
@@ -348,10 +349,10 @@ class UIMainWindow(form):
     def configuracionesMenu_Default(self):
         print("settings")
     def settings_Callback(self):
-        UI = UIConfiguracionesModal(self,self.session)
+        UI = UIConfiguracionesModal(self)
         UI.show()
     def devices_Callback(self):
-        UI = UIDispositvoModal(self,self.session,self.__containers)
+        UI = UIDispositvoModal(self,self.__containers)
         #UI = UIAgregarDispositvoModal(self,self.session)
         UI.show()
     def api_Callback(self):
@@ -384,7 +385,7 @@ class UIMainWindow(form):
         self.workSpaceTab.setTabText(self.workSpaceTab.indexOf(self.workSpaceTab.currentWidget()),work.nombre)
         print(self.__containers)
     def open_Callback(self):
-        dialog = UIAbrirModal(self,self.session)
+        dialog = UIAbrirModal(self)
         dialog.show()
         dialog.signals.success.connect(self.openMenu_Callback)
     def save_Callback(self):
@@ -454,7 +455,7 @@ class UIMainWindow(form):
             self.__containers.pop(tabName)
             self.workSpaceTab.setTabText(self.workSpaceTab.indexOf(self.workSpaceTab.currentWidget()),"Tab %s" % (self.workSpaceTab.indexOf(self.workSpaceTab.currentWidget()) + 1) )
     def delete_Callback(self):
-        dialog = UIAbrirModal(self,self.session,True)
+        dialog = UIAbrirModal(self,True)
         dialog.show()
         dialog.signals.success.connect(self.deleteMenu_Callback)
     def logout_CallbacK(self):

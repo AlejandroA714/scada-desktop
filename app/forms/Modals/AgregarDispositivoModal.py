@@ -1,13 +1,17 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
-from classes import modal,Logica
+from classes import modal,Logica, variable, device
+from PyQt5.QtCore import Qt
 from resources import *
 from .AgregarVariableModal import UIAgregarVariableModal
+from ..Widgets.VariableWidget import UIVariableWidget
 
-class UIAgregarDispositvoModal(modal):
+class UIAgregarDispositvoModal(modal): # To add or update and device
 
-    def __init__(self,Parent,session):
-        super(UIAgregarDispositvoModal,self).__init__(Parent,session)
+    def __init__(self,Parent):
+        super(UIAgregarDispositvoModal,self).__init__(Parent)
         self.setupUi()
+        self.dispositivo = device()
+        self.__UIVariablesContainer = dict()
 
     def setupUi(self):
         AgregarDispositvoModal = self
@@ -398,16 +402,23 @@ class UIAgregarDispositvoModal(modal):
 
         self.retranslateUi(AgregarDispositvoModal)
         QtCore.QMetaObject.connectSlotsByName(AgregarDispositvoModal)
-        self.center(self.parent)
-        self.parent.signals.resize.connect(lambda : self.center(self.parent ))
+        self.center()
+        self.parent.signals.resize.connect(self.center)
         self.btnExit.clicked.connect(self.exit)
         self.lblImagen.mouseDoubleClickEvent =  self.actualizarImagen
         self.btnVariableAgregar.clicked.connect(self.agregarVariable)
 
     def agregarVariable(self):
-            UIVar = UIAgregarVariableModal(self.parent,self.session,"230037001347343438323536","57f539fb1a8cc926f59ee72f3fd69e4c5adc3945")
-            UIVar.show()
+            UIAgregarVariable = UIAgregarVariableModal(self.parent,"230037001347343438323536","57f539fb1a8cc926f59ee72f3fd69e4c5adc3945")
+            UIAgregarVariable.show()
+            UIAgregarVariable.signals.success.connect(self.agregarVariable_Callback)
 
+    def agregarVariable_Callback(self,var:variable):
+            UIVariable = UIVariableWidget(var)
+            self.VariablesLayout.addWidget(UIVariable,0,Qt.AlignTop)
+            self.__UIVariablesContainer[var.unicID] = UIVariable
+            self.dispositivo.variables.append(var)
+            
     def actualizarImagen(self,event):
         from PyQt5.QtCore import QByteArray
         from PyQt5.QtWidgets import QFileDialog
@@ -418,7 +429,7 @@ class UIAgregarDispositvoModal(modal):
             self.__dispostivo.image = str_base64
 
     def disconnectSignals(self):
-        self.parent.signals.resize.disconnect()
+        self.parent.signals.resize.disconnect(self.center)
         self.btnExit.clicked.disconnect(self.exit)
 
     def retranslateUi(self, AgregarDispositvoModal):
