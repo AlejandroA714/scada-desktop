@@ -485,6 +485,7 @@ class UIAgregarVariableModal(modal):
         self.variablesFunciones = response
         self.updateVariablesFunciones()
         if self.IsEdit:
+            self.lblTitle.setText("Editar Variable")
             self.txtNombre.setText(self.variable.nombre)
             self.txtExpresion.setText("" if self.variable.expresion is None else  self.variable.expresion)
             self.cmbSenal.setCurrentIndex(self.cmbSenal.findText("Analogica" if self.variable.analogic else "Digital"))

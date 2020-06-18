@@ -8,12 +8,13 @@ from ..Widgets.VariableWidget import UIVariableWidget
 
 class UIAgregarDispositvoModal(modal): # To add or update and device
 
-    def __init__(self,Parent, dev = device()):
+    def __init__(self,Parent, dev = device(),isEdit = False):
         super(UIAgregarDispositvoModal,self).__init__(Parent)
-        self.setupUi()
         self.dispositivo = dev
+        self.IsEdit = isEdit
         self.__UIVariablesContainer = dict()
-
+        self.setupUi()
+        
     def setupUi(self):
         AgregarDispositvoModal = self
         AgregarDispositvoModal.setObjectName("AgregarDispositvoModal")
@@ -33,7 +34,7 @@ class UIAgregarDispositvoModal(modal): # To add or update and device
         AgregarDispositvoModal.setFont(font)
         AgregarDispositvoModal.setContextMenuPolicy(QtCore.Qt.NoContextMenu)
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap("../../../../../.designer/if_16_1751363.ico"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        icon.addPixmap(QtGui.QPixmap(":/source/img/if_16_1751363.ico"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
         AgregarDispositvoModal.setWindowIcon(icon)
         AgregarDispositvoModal.setStyleSheet("background-color: rgb(255, 255, 255);")
         AgregarDispositvoModal.setInputMethodHints(QtCore.Qt.ImhSensitiveData)
@@ -194,6 +195,7 @@ class UIAgregarDispositvoModal(modal): # To add or update and device
         self.txtTime = QtWidgets.QSpinBox(self.InformacionContent)
         self.txtTime.setGeometry(QtCore.QRect(320, 155, 45, 26))
         self.txtTime.setObjectName("txtTime")
+        self.txtTime.setMinimum(1)
         self.label = QtWidgets.QLabel(self.InformacionContent)
         self.label.setGeometry(QtCore.QRect(250, 63, 61, 20))
         font = QtGui.QFont()
@@ -408,6 +410,17 @@ class UIAgregarDispositvoModal(modal): # To add or update and device
         self.btnExit.clicked.connect(self.exit)
         self.lblImagen.mouseDoubleClickEvent =  self.actualizarImagen
         self.btnVariableAgregar.clicked.connect(self.agregarVariable)
+        self.btnAceptar.clicked.connect(self.btnAceptar_Click)
+
+        if self.IsEdit:
+            self.txtNombre.setText(self.dispositivo.nombre)
+            self.txtID.setText(self.dispositivo.id)
+            self.txtToken.setText(self.dispositivo.token)
+            self.txtTime.setValue(self.dispositivo.time)
+            self.lblImagen.setPixmap( Logica.byteArrayToImage(self.dispositivo.image) )
+            self.btnImportar.hide()
+            self.lblTitle.setText("Editar Dispositivo")
+        self.mostrarVariables()
 
     def mostrarVariables(self):
         self.lblVariablesCount.setText("Variables %s/12" % str(len(self.dispositivo.variables)))
@@ -470,11 +483,27 @@ class UIAgregarDispositvoModal(modal): # To add or update and device
                 return
             str_base64 = Logica.imageToByteArray(fileName[0])
             self.lblImagen.setPixmap( Logica.byteArrayToImage(str_base64) )
-            self.__dispostivo.image = str_base64
+            self.dispositivo.image = str_base64
+
+    def btnAceptar_Click(self):
+        try:
+            self.dispositivo.nombre = self.txtNombre.text()
+            self.dispositivo.id = self.txtID.text()
+            self.dispositivo.token = self.txtToken.text()
+            self.dispositivo.time = self.txtTime.value()
+        except ValueError as vError:
+            QtWidgets.QMessageBox.warning(self,"¡Error!",vError.__str__())
+            return
+        response = self.prompt("Confirmacion","¿Son estos datos correctos?")
+        if response == QtWidgets.QMessageBox.Yes:
+            self.success(self.dispositivo)
 
     def disconnectSignals(self):
         self.parent.signals.resize.disconnect(self.center)
         self.btnExit.clicked.disconnect(self.exit)
+        self.btnAceptar.clicked.disconnect(self.btnAceptar_Click)
+        self.lblImagen.mouseDoubleClickEvent = None
+        self.btnVariableAgregar.clicked.disconnect(self.agregarVariable)
 
     def retranslateUi(self, AgregarDispositvoModal):
         _translate = QtCore.QCoreApplication.translate

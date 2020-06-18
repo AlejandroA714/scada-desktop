@@ -64,8 +64,7 @@ class UIDispositvoModal(modal):
         self.lblUDB.setSizePolicy(sizePolicy)
         self.lblUDB.setMinimumSize(QtCore.QSize(0, 116))
         self.lblUDB.setMaximumSize(QtCore.QSize(16777215, 116))
-        self.lblUDB.setStyleSheet("background-color: rgb(65, 105, 225);\n"
-"margin:0px;")
+        self.lblUDB.setStyleSheet("background-color: rgb(65, 105, 225);margin:0px;")
         self.lblUDB.setFrameShape(QtWidgets.QFrame.NoFrame)
         self.lblUDB.setText("")
         self.lblUDB.setPixmap(QtGui.QPixmap(":/source/img/logo.png"))
@@ -112,8 +111,7 @@ class UIDispositvoModal(modal):
         sizePolicy.setHeightForWidth(self.lblIIE.sizePolicy().hasHeightForWidth())
         self.lblIIE.setSizePolicy(sizePolicy)
         self.lblIIE.setMaximumSize(QtCore.QSize(16777215, 116))
-        self.lblIIE.setStyleSheet("background-color: rgb(65, 105, 225);\n"
-"margin:0px;")
+        self.lblIIE.setStyleSheet("background-color: rgb(65, 105, 225);margin:0px;")
         self.lblIIE.setText("")
         self.lblIIE.setPixmap(QtGui.QPixmap(":/source/img/iiie.png"))
         self.lblIIE.setScaledContents(False)
@@ -135,8 +133,7 @@ class UIDispositvoModal(modal):
         font.setWeight(75)
         self.lblSCADA.setFont(font)
         self.lblSCADA.setAutoFillBackground(False)
-        self.lblSCADA.setStyleSheet("color: rgb(255, 255, 0);background-color: rgb(65, 105, 225);\n"
-"margin:0px;")
+        self.lblSCADA.setStyleSheet("color: rgb(255, 255, 0);background-color: rgb(65, 105, 225);margin:0px;")
         self.lblSCADA.setObjectName("lblSCADA")
         self.gridLayout.addWidget(self.lblSCADA, 0, 1, 1, 1)
         self.verticalLayout_2.addWidget(self.TitleFrame)
@@ -374,19 +371,39 @@ class UIDispositvoModal(modal):
             self.comboBox.addItem(w[1].workSpace.nombre,w[1])
         self.comboBox.setCurrentIndex(0)
         self.mostrarDispositivos(0)
+    
+    def agregarDispositivo(self):
+        UIAgregar = UIAgregarDispositvoModal(self.parent)
+        UIAgregar.show()
+        UIAgregar.signals.success.connect(self.agregarDispositivo_Callback)
 
-    def editarDispositivio(self,dev:device):
-        print(dev.__dict__)
+    def agregarDispositivo_Callback(self,d:device):
+        c = self.comboBox.itemData(self.comboBox.currentIndex())
+        c.workSpace.devices.append(d)
+        UI = UIDispositivoModalWidget(d)
+        self.verticalLayout_3.addWidget(UI,0,QtCore.Qt.AlignTop | QtCore.Qt.AlignHCenter)
+        UI.deviceSignals.edit.connect(self.editarDispositivo)
+        UI.deviceSignals.delete.connect(self.eliminarDispositivo)
+        UI.deviceSignals.copy.connect(self.copiarDispositivo)
+        self.UIContainer.append(UI)
+        if len(c.workSpace.devices)*200 > 399:
+           self.ScrollContainer.setGeometry(QtCore.QRect(5,45,660,(len(c.workSpace.devices)*200)+35))
+
+    def editarDispositivo(self,dev:device):
+        from copy import copy
+        UIAgregar = UIAgregarDispositvoModal(self.parent,copy(dev),True)
+        UIAgregar.show()
+        UIAgregar.signals.success.connect(self.editarDispositivo_Callback)
+    
+    def editarDispositivo_Callback(self,d:device):
+        c = self.comboBox.itemData(self.comboBox.currentIndex())
+        devices = c.workSpace.devices
 
     def eliminarDispositivo(self,dev:device):
         print(dev.__dict__)
 
     def copiarDispositivo(self,dev:device):
         print(dev.__dict__)
-    
-    def agregarDispositivo(self):
-        UIAgregar = UIAgregarDispositvoModal(self.parent)
-        UIAgregar.show()
 
     def importarDispositivos(self):
         pass
@@ -405,7 +422,7 @@ class UIDispositvoModal(modal):
         for d in container.workSpace.devices:
             UI = UIDispositivoModalWidget(d)
             self.verticalLayout_3.addWidget(UI,0,QtCore.Qt.AlignTop | QtCore.Qt.AlignHCenter)
-            UI.deviceSignals.edit.connect(self.editarDispositivio)
+            UI.deviceSignals.edit.connect(self.editarDispositivo)
             UI.deviceSignals.delete.connect(self.eliminarDispositivo)
             UI.deviceSignals.copy.connect(self.copiarDispositivo)
             self.UIContainer.append(UI)

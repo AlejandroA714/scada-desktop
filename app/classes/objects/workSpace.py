@@ -126,7 +126,7 @@ class device(object):
     @nombre.setter
     def nombre(self,value:str):
         if len(value) < 3 or value is None:
-            raise ValueError("¡Error! %s no es un nombre valido, Min 3" % value.__str__())
+            raise ValueError("¡Error! \"%s\" no es un nombre valido, Min 3" % value.__str__())
         self.__nombre = value
 
     @property
@@ -135,9 +135,9 @@ class device(object):
 
     @time.setter
     def time(self,value):
-        if (value <= 0 or value > 999):
+        if (int(value) <= 0 or int(value > 999)):
             raise ValueError("¡Error! Rango de tiempo adminitdo 1-999")
-        self.__time = value
+        self.__time = int(value)
     
     @property
     def empty(self):
@@ -157,7 +157,7 @@ class device(object):
     def x(self,value:int):
         if value < 0 or value is None:
             self.__x = 0
-            raise TypeError("¡Error! Coordenada X no puede ser negativa o nula, Reestablaciendo a 0")
+            #raise AttributeError("¡Error! Coordenada X no puede ser negativa o nula, Reestablaciendo a 0")
         self.__x = value
     
     @property
@@ -168,7 +168,7 @@ class device(object):
     def y(self,value:int):
         if value < 0 or value is None:
             self.__y = 0
-            raise TypeError("¡Error! Coordenada Y no puede ser negativa o nula, Reestablaciendo a 0")
+            #raise AttributeError("¡Error! Coordenada Y no puede ser negativa o nula, Reestablaciendo a 0")
         self.__y = value
 
     @property
@@ -178,7 +178,7 @@ class device(object):
     @id.setter
     def id(self,value):
         if len(value) < 3 or None:
-            raise ValueError("¡Error! %s no es ID valido" % value.__str__())
+            raise ValueError("¡Error! \"%s\" no es ID valido" % value.__str__())
         self.__id = value
 
     @property
@@ -188,7 +188,7 @@ class device(object):
     @token.setter
     def token(self,value):
         if len(value) < 3 or None:
-            raise ValueError("¡Error! %s no es Token valido" % value.__str__())
+            raise ValueError("¡Error! \"%s\" no es Token valido" % value.__str__())
         self.__token = value
 
     @property
@@ -199,7 +199,7 @@ class device(object):
     def image(self,value):
         if value is None:
             self.__image = "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"
-            raise  TypeError("¡Error! Imagen no valida, Reestrableciendo por defecto")
+            #raise  AttributeError("¡Error! Imagen no valida, Reestrableciendo por defecto")
         self.__image = value
 
     @property
@@ -223,7 +223,7 @@ class device(object):
     def lastUpdate(self,value):
         if value is None or value == "":
             self.__lastUpdate = "Nunca"
-            raise TypeError("¡Error! Ultima actualizacion no puede ser nulo o vacio, Reestableciendo")
+            #raise TypeError("¡Error! Ultima actualizacion no puede ser nulo o vacio, Reestableciendo")
         self.__lastUpdate = value
 
     def toJSON(self):

@@ -1,7 +1,10 @@
+from classes import device
+from copy import copy
 
+dev = device()
 
-string = "!=2555555"
+def test(dev):
+    print(dev)
 
-temp = string.replace("-"," ")[0:2].strip()
-
-print(string[2:])
+test(copy(dev))
+print(dev)
