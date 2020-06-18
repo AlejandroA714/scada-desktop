@@ -271,7 +271,6 @@ class UIAbrirModal(modal):
         self.obtenerProyectos()
 
     def disconnectSignals(self):
-        self.signals.success.disconnect()
         self.parent.signals.resize.disconnect(self.center)
         self.btnExit.clicked.disconnect(self.exit)
 

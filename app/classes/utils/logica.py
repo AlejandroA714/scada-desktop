@@ -1,5 +1,5 @@
 from classes.utils.logger import logger
-from classes.objects.workSpace import workSpace,device
+from classes.objects.workSpace import workSpace,device, variable
 from ..objects.usuario import usuario
 import requests, json, os
 
@@ -51,7 +51,7 @@ class Logica():
         drivers = []
         for x in result.json()["Drivers"]:
             dev = device(x)
-            dev.variables = json.loads( json.dumps(x["variables"]), object_hook=variable )
+            dev.variables = json.loads( json.dumps(x["Variables"]), object_hook=variable )
             drivers.append(dev)
         work = workSpace({"Id":result.json()["Id"],"Nombre":result.json()["Nombre"], "DriversCount": len(drivers) })
         work.devices = drivers

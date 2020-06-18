@@ -324,7 +324,7 @@ class UIMainWindow(form):
         parent = self.workSpaceTab.currentWidget()
         devicesContainer = dict()
         for device in devices:
-            UIDevice = UIDispositivoWidget(parent,device,self.session["access_token"])
+            UIDevice = UIDispositivoWidget(parent,device)
             devicesContainer[device.unicID] = UIDevice
         containerObject = container({"tab":self.workSpaceTab.currentWidget(),"workSpace":workSpace,"devicesContainer":devicesContainer })
         self.__containers[parent.objectName()] = containerObject
@@ -395,7 +395,7 @@ class UIMainWindow(form):
             return
         self.actualizarEstado("Guardando...","white","slategray",self.movie)
         workSpace = self.serializeWorkSpace(self.workSpaceTab.currentWidget().objectName())
-        worker = Worker(Logica.Guardar,**{"access_token":self.session["access_token"],"data":workSpace})
+        worker = Worker(Logica.Guardar,**{"access_token":self.session.access_token,"data":workSpace})
         worker.signals.result.connect(self.GuardarCallback)
         worker.signals.error.connect(self.GuardarCallback)
         self.threadpool.start(worker)
@@ -412,7 +412,7 @@ class UIMainWindow(form):
         workSpace.nombre = name[0]
         self.workSpaceTab.setTabText(self.workSpaceTab.indexOf(self.workSpaceTab.currentWidget()),workSpace.nombre)
         workSpace = self.serializeWorkSpace(self.workSpaceTab.currentWidget().objectName())
-        worker = Worker(Logica.Guardar,**{"access_token":self.session["access_token"],"data":workSpace})
+        worker = Worker(Logica.Guardar,**{"access_token":self.session.access_token,"data":workSpace})
         worker.signals.result.connect(self.GuardarCallback)
         worker.signals.error.connect(self.GuardarCallback)
         self.threadpool.start(worker)

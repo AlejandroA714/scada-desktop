@@ -1,6 +1,7 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5 import QtCore, QtGui, QtWidgets
 from classes import widget, workSpace
+from functools import partial
 from resources import *
 
 class UIWidgetP(widget):
@@ -85,10 +86,13 @@ class UIWidgetP(widget):
         QtCore.QMetaObject.connectSlotsByName(Form)
 
         #listener
-        self.btnAbrir.clicked.connect(lambda : self.sucess(self.__workSpace,"¿Abrir este proyecto?" if not self.__IsDelete else "¿Eliminar este proyecto?"))
+        self.btnAbrir.clicked.connect(partial(self.sucess,self.__workSpace,"¿Abrir este proyecto?" if not self.__IsDelete else "¿Eliminar este proyecto?"))
 
     def sizeHint(self):
         return QtCore.QSize(350,96)
+    
+    def disconnectSignals(self):
+        self.btnAbrir.clicked.disconnect()
 
     def retranslateUi(self, Form):
         _translate = QtCore.QCoreApplication.translate

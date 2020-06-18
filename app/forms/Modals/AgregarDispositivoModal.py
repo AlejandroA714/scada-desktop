@@ -5,12 +5,16 @@ from PyQt5.QtWidgets import QMessageBox
 from resources import *
 from .AgregarVariableModal import UIAgregarVariableModal
 from ..Widgets.VariableWidget import UIVariableWidget
+from copy import copy
 
 class UIAgregarDispositvoModal(modal): # To add or update and device
 
-    def __init__(self,Parent, dev = device(),isEdit = False):
+    def __init__(self,Parent, dev = None,isEdit = False):
         super(UIAgregarDispositvoModal,self).__init__(Parent)
-        self.dispositivo = dev
+        if not dev is None:
+            self.dispositivo = dev
+        else:
+            self.dispositivo = device()
         self.IsEdit = isEdit
         self.__UIVariablesContainer = dict()
         self.setupUi()
@@ -196,6 +200,7 @@ class UIAgregarDispositvoModal(modal): # To add or update and device
         self.txtTime.setGeometry(QtCore.QRect(320, 155, 45, 26))
         self.txtTime.setObjectName("txtTime")
         self.txtTime.setMinimum(1)
+        self.txtTime.setValue(30)
         self.label = QtWidgets.QLabel(self.InformacionContent)
         self.label.setGeometry(QtCore.QRect(250, 63, 61, 20))
         font = QtGui.QFont()
@@ -457,7 +462,7 @@ class UIAgregarDispositvoModal(modal): # To add or update and device
         UIVariable = UIAgregarVariableModal(self.parent,v,True,**{"ID":"230037001347343438323536","Token":"57f539fb1a8cc926f59ee72f3fd69e4c5adc3945"})
         UIVariable.show()
         UIVariable.signals.success.connect(self.editarVariable_Callback)
-
+        
     def editarVariable_Callback(self,v:variable):
         for var in self.dispositivo.variables:
             print(var)
@@ -467,7 +472,7 @@ class UIAgregarDispositvoModal(modal): # To add or update and device
     def eliminarVariable(self,v:variable):
         self.dispositivo.variables.remove(v)
         UIVariable:UIVariableWidget = self.__UIVariablesContainer[v.unicID]
-        UIVariable.deleteLater()
+        UIVariable.close()
         del self.__UIVariablesContainer[v.unicID]
         del v
         self.lblVariablesCount.setText("Variables %s/12" % str(len(self.dispositivo.variables)))
@@ -504,6 +509,13 @@ class UIAgregarDispositvoModal(modal): # To add or update and device
         self.btnAceptar.clicked.disconnect(self.btnAceptar_Click)
         self.lblImagen.mouseDoubleClickEvent = None
         self.btnVariableAgregar.clicked.disconnect(self.agregarVariable)
+        for UI in self.__UIVariablesContainer.items():
+            UIVariable = UI[1]
+            UIVariable.signals.edit.disconnect(self.editarVariable)
+            UIVariable.signals.delete.disconnect(self.eliminarVariable)
+            UIVariable.close()
+        self.__UIVariablesContainer.clear()
+        del self.dispositivo
 
     def retranslateUi(self, AgregarDispositvoModal):
         _translate = QtCore.QCoreApplication.translate

@@ -77,7 +77,7 @@ class UIDIVariable(widget):
         else:
             self.lblValue.setStyleSheet("background-color:gray;border-radius:8px;")
 
-    def disconnectSlots(self): # used to disconnect all slots to delete all references
+    def disconnectSignals(self): # used to disconnect all slots to delete all references
         pass
         
     def getVariable(self):

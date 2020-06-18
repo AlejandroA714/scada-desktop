@@ -1,7 +1,7 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtGui import QMovie
 from classes import modal, device
-from forms.Widgets import UIDispositivoModalWidget
+from forms.Widgets import UIDispositivoModalWidget, UIDispositivoWidget
 from forms.Modals.AgregarDispositivoModal import UIAgregarDispositvoModal
 from resources import *
 
@@ -343,6 +343,10 @@ class UIDispositvoModal(modal):
         self.btnImportar.clicked.disconnect(self.importarDispositivos)
         self.btnExportar.clicked.disconnect(self.exportarDispositivos)
         self.comboBox.currentIndexChanged.disconnect(self.mostrarDispositivos)
+        for ui in self.UIContainer:
+            ui.close()
+        self.UIContainer.clear()
+        QtWidgets.QApplication.processEvents()
 
     def showEvent(self,event):
         self.center()
@@ -350,7 +354,6 @@ class UIDispositvoModal(modal):
         self.movie.setScaledSize(QtCore.QSize(64,64))
         self.movie.start()
         self.Status.setMovie(self.movie)
-        
         if len(self.workSpaces) == 0:
             self.movie = QMovie(":/source/img/Empty.png")
             self.movie.start()
@@ -380,14 +383,19 @@ class UIDispositvoModal(modal):
     def agregarDispositivo_Callback(self,d:device):
         c = self.comboBox.itemData(self.comboBox.currentIndex())
         c.workSpace.devices.append(d)
+        self.addDevice(d)
+        if len(c.workSpace.devices)*200 > 399:
+           self.ScrollContainer.setGeometry(QtCore.QRect(5,45,660,(len(c.workSpace.devices)*200)+35))
+        UIDevice = UIDispositivoWidget(c.tab,d)
+        c.devicesContainer[d.unicID] = UIDevice
+
+    def addDevice(self,d:device):
         UI = UIDispositivoModalWidget(d)
         self.verticalLayout_3.addWidget(UI,0,QtCore.Qt.AlignTop | QtCore.Qt.AlignHCenter)
         UI.deviceSignals.edit.connect(self.editarDispositivo)
         UI.deviceSignals.delete.connect(self.eliminarDispositivo)
         UI.deviceSignals.copy.connect(self.copiarDispositivo)
         self.UIContainer.append(UI)
-        if len(c.workSpace.devices)*200 > 399:
-           self.ScrollContainer.setGeometry(QtCore.QRect(5,45,660,(len(c.workSpace.devices)*200)+35))
 
     def editarDispositivo(self,dev:device):
         from copy import copy
@@ -398,6 +406,10 @@ class UIDispositvoModal(modal):
     def editarDispositivo_Callback(self,d:device):
         c = self.comboBox.itemData(self.comboBox.currentIndex())
         devices = c.workSpace.devices
+        for dev in devices:
+            if dev.unicID == d.unicID:
+                dev = d
+        UIDevice = c.devicesContainer[d.unicID]
 
     def eliminarDispositivo(self,dev:device):
         print(dev.__dict__)
@@ -413,19 +425,12 @@ class UIDispositvoModal(modal):
     
     def mostrarDispositivos(self,index):
         for ui in self.UIContainer:
-            ui.disconnectSignals()
             ui.close()
-            ui.deleteLater()
         self.UIContainer.clear()
         QtWidgets.QApplication.processEvents()
         container = self.comboBox.itemData(index)
         for d in container.workSpace.devices:
-            UI = UIDispositivoModalWidget(d)
-            self.verticalLayout_3.addWidget(UI,0,QtCore.Qt.AlignTop | QtCore.Qt.AlignHCenter)
-            UI.deviceSignals.edit.connect(self.editarDispositivo)
-            UI.deviceSignals.delete.connect(self.eliminarDispositivo)
-            UI.deviceSignals.copy.connect(self.copiarDispositivo)
-            self.UIContainer.append(UI)
+            self.addDevice(d)
         if len(container.workSpace.devices)*200 > 399:
            self.ScrollContainer.setGeometry(QtCore.QRect(5,45,660,(len(container.workSpace.devices)*200)+35))
 

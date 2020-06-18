@@ -274,7 +274,7 @@
     <widget class="QLabel" name="Last">
      <property name="geometry">
       <rect>
-       <x>86</x>
+       <x>78</x>
        <y>175</y>
        <width>171</width>
        <height>17</height>

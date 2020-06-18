@@ -237,7 +237,7 @@ class device(object):
             "ID":self.id,
             "Token":self.token,
             "Image":self.image,
-            "variables":list(self.varToJSON()),
+            "Variables":list(self.varToJSON()),
             "LastUpdate":self.lastUpdate
         }
 

@@ -1,5 +1,6 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from classes import widget, variable
+from functools import partial
 from resources import *
 
 class UIVariableWidget(widget):
@@ -182,18 +183,13 @@ class UIVariableWidget(widget):
 
         self.retranslateUi(VariableWidget)
         QtCore.QMetaObject.connectSlotsByName(VariableWidget)
-        self.btnEditar.clicked.connect(self.editarVariable)
-        self.btnEliminar.clicked.connect(self.eliminarVariable)
+        self.btnEditar.clicked.connect(partial(self.edit,"Confirmacion","¿Editar esta variable?"))
+        self.btnEliminar.clicked.connect(partial(self.delete,"Confirmacion","¿Eliminar esta variable?"))
 
-    def editarVariable(self):
-        reply = self.prompt("Confirmacion","¿Editar esta variable?")
-        if reply == QtWidgets.QMessageBox.Yes:
-            self.signals.edit.emit(self.variable)
-        
-    def eliminarVariable(self):
-        reply = self.prompt("Confirmacion","¿Eliminar esta variable?")
-        if reply == QtWidgets.QMessageBox.Yes:
-            self.signals.delete.emit(self.variable)
+    def disconnectSignals(self):
+        self.btnEditar.clicked.disconnect()
+        self.btnEliminar.clicked.disconnect()
+        del self.variable
 
     def updateUI(self,var:variable):
         _translate = QtCore.QCoreApplication.translate

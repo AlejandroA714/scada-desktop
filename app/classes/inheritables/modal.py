@@ -1,4 +1,4 @@
-from PyQt5.QtWidgets import QDialog, QMainWindow, QMessageBox
+from PyQt5.QtWidgets import QDialog, QMainWindow, QMessageBox, QApplication
 from PyQt5.QtCore import Qt,QObject, pyqtSlot, pyqtSignal, QThreadPool
 from ..utils.session import session
 
@@ -35,10 +35,8 @@ class modal(QDialog): # Class to be inherit to convert a window into a modal
             "¿Seguro que desea cancelar?",
             QMessageBox.Yes | QMessageBox.No)
         if reply == QMessageBox.Yes:
-            self.disconnectSignals()
             self.signals.canceled.emit()
             self.close()
-            self.deleteLater()
         else:
             pass
 
@@ -51,12 +49,26 @@ class modal(QDialog): # Class to be inherit to convert a window into a modal
 
     def disconnectSignals(self): # virtual method, that should be implement for each class that inherit
         raise NotImplementedError()
+
+    def disconnectSucces(self,handler):
+        self.signals.success.disconnect(handler)
+    def disconnectCancelled(self,handler):
+        self.signals.canceled.disconnect(handler)
+
+    def close(self):
+        super().close()
+        self.disconnectSignals()
+        self.deleteLater()
+        QApplication.processEvents()
+        
+    def success(self,_x:object): # this function is responsible to emit a success signal, if dialog was success
+        self.signals.success.emit(_x)
+        self.signals.success.disconnect()
+        self.close()
     
-    def getAccessToken(self):
-        if self.session != None:
-            return self.session["access_token"]
-        else:
-            return None
+    def cancel(self):
+        self.disconnectSignals()
+        self.close()
 
     def mousePressEvent(self, event):
         if event.buttons() == Qt.LeftButton:
@@ -72,13 +84,3 @@ class modal(QDialog): # Class to be inherit to convert a window into a modal
             else:
                 self.move(self.pos() + event.globalPos() - self.dragPos)
                 self.dragPos = event.globalPos()
-
-    def success(self,_x:object): # this function is responsible to emit a success signal, if dialog was success
-        self.signals.success.emit(_x)
-        self.disconnectSignals()
-        self.close()
-        self.deleteLater()
-    
-    def cancel(self):
-        self.disconnectSignals()
-        self.signals.canceled.emit()

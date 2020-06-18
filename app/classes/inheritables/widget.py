@@ -1,6 +1,7 @@
-from PyQt5.QtWidgets import QWidget, QMessageBox
+from PyQt5.QtWidgets import QWidget, QMessageBox, QApplication
 from PyQt5.QtCore import Qt, QObject, pyqtSlot, pyqtSignal, QThreadPool
 from ..utils.session import session
+from functools import partial
 
 class widgetSignals(QObject):
 
@@ -25,9 +26,36 @@ class widget(QWidget):
             QMessageBox.Yes | QMessageBox.No)
         if reply == QMessageBox.Yes:
             self.signals.sucess.emit(result)
+            self.signals.sucess.disconnect()
             self.close()
         else:
             pass
+
+    def edit(self,tilte:str,text:str):
+        reply = self.prompt(tilte,text)
+        if reply == QMessageBox.Yes:
+            self.signals.edit.emit(self.variable)
+
+    def delete(self,title:str,text:str):
+        reply = self.prompt(title,text)
+        if reply == QMessageBox.Yes:
+            self.signals.delete.emit(self.variable)
+
+    def close(self):
+        super().close()
+        self.disconnectSignals()
+        self.deleteLater()
+        QApplication.processEvents()
+
+    def disconnectSignals(self):
+        raise NotImplementedError
+
+    def disconnectSuccess(self,handler):
+        self.signals.sucess.disconnect(handler)
+    def disconnectEdit(self,handler):
+        self.signals.edit.disconnect(handler)
+    def disconnectDelete(self,handler):
+        self.signals.delete.disconnect(handler)
 
     def prompt(self,title,text):
         reply = QMessageBox.question(

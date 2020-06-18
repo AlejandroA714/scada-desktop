@@ -1,10 +1,20 @@
-from classes import device
+from classes import device, variable
 from copy import copy
 
-dev = device()
+class A:
 
-def test(dev):
-    print(dev)
+    def over(self):
+        print("super method called")
 
-test(copy(dev))
-print(dev)
+    def callover(self):
+        self.over()
+
+class B(A):
+    
+    def over(self):
+        super().over()
+        print("children called")
+
+
+b = B()
+b.callover()

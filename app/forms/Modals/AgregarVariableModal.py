@@ -5,11 +5,14 @@ from resources import *
 
 class UIAgregarVariableModal(modal):
 
-    def __init__(self,Parent,var:variable = variable(),IsEdit = False,**kwargs):
+    def __init__(self,Parent,var:variable = None,IsEdit = False,**kwargs):
         super(UIAgregarVariableModal,self).__init__(Parent)
         self.ID = kwargs["ID"]
         self.Token = kwargs["Token"]
-        self.variable = var
+        if not var is None:
+            self.variable = var
+        else:
+            self.variable = variable()
         self.IsEdit = IsEdit
         self.setupUi()
 
@@ -495,7 +498,7 @@ class UIAgregarVariableModal(modal):
             self.cmbVariable.setCurrentIndex(self.cmbVariable.findText(self.variable.pin))
             self.cmbNotificar.setCurrentIndex(self.cmbNotificar.findText(self.variable.notify.replace("-"," ")[0:2].strip()) if self.variable.notify != None else 0 )
             self.txtNotificar.setValue(int(self.variable.notify[2:]) if self.variable.notify != None else 0 )
-            self.cmbNivel.setCurrentIndex(self.cmbNivel.findText( self.findNotify(self.variable.nivel) if self.variable.nivel != None else 0))
+            self.cmbNivel.setCurrentIndex(self.cmbNivel.findText( self.findNotify(self.variable.nivel) ) if self.variable.nivel != None else 0)
         self.ContentLayout.addWidget(self.ContentFrame)
 
     def findNotify(self,color):
