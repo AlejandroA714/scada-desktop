@@ -1,20 +1,21 @@
-from classes import device, variable
-from copy import copy
+from classes import device, timer, timerSignals
+from PyQt5 import QtCore
+from PyQt5.QtCore import QObject, pyqtSignal
 
-class A:
+class clase(QObject):
 
-    def over(self):
-        print("super method called")
+    def __init__(self):
+        self.__private = 0
+        back =  self.__private
+        self.__private = 1
+        print(self.__private)
+        print(back)
 
-    def callover(self):
-        self.over()
+    def second(self):
+        print("one second")
 
-class B(A):
-    
-    def over(self):
-        super().over()
-        print("children called")
+    def countSlots(self):   
+        pass
 
+c = clase()
 
-b = B()
-b.callover()

@@ -2,6 +2,8 @@ from PyQt5.QtCore import QTimer, pyqtSignal, QObject
 from classes.objects.time import time
 
 class timerSignals(QObject):
+    def __init__(self):
+        super(timerSignals,self).__init__()
     
     time_elapsed = pyqtSignal() # each second
     access_token_expired = pyqtSignal() # each 23 hours

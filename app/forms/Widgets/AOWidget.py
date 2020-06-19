@@ -77,7 +77,7 @@ class UIAOVariable(widget):
         self.__variable.value = int(self.SpinValue.value())
         self.variableSignals.update.emit(self.__variable)
 
-    def actualizarVariable(self,var:variable):
+    def updateUI(self,var:variable):
         self.__variable = var
         self.SpinValue.setProperty("value", str(self.__variable.value))
 

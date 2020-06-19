@@ -78,7 +78,7 @@ class UIDOVariable(widget):
         self.__variable.value = 0 if int(self.__variable.value) > 0 else 1
         self.variableSignals.update.emit(self.__variable)
 
-    def actualizarVariable(self,var:variable):
+    def updateUI(self,var:variable):
         self.__variable = var
         self.btnValue.setText("on" if int(self.__variable.value) >= 1 else "off")
         self.btnValue.setStyleSheet("color:white;background-color:%s" % "green" if int(self.__variable.value) >= 1 else "red")

@@ -12,38 +12,22 @@ from datetime import datetime
 from functools import partial
 from base64 import b64decode,b64encode
 
-
 class UIDispositivoWidget(widget):
 
-    def __init__(self,Parent,dispositivo:device): #1: waiting, 2: updating, 3: writing
+    # Status
+    # State 0: Device is only write, never update
+    # State 1: Device is read/write, waits to update itself
+    # State 2: Device is updating his variables
+    # State 3: Device is updating his UI
+
+    def __init__(self,Parent,dispositivo:device):
         self.__dispostivo = dispositivo
-        self.__parent = Parent
         self.deviceSignals = deviceSignals()
-        self.__status = 1
+        self.__status = 0
         self.__variablesContainer = dict()
         super(UIDispositivoWidget,self).__init__(Parent)
         self.setupUi()
     
-    def disconnectSignals(self):
-        #self.deviceSignals.disconnect()
-        timer.signals.time_elapsed.disconnect(self.time)
-        self.lblImagen.mouseDoubleClickEvent = None
-        for v in self.__variablesContainer.items():
-            variable = v[1]
-            if (variable.getVariable())["IsOutput"] == True:
-                variable.variableSignals.update.disconnect(self.actualizarVariable)
-            variable.close()
-            del variable
-        del self.__variablesContainer
-
-    def getDevice(self):
-        variables = []
-        for v in self.__variablesContainer.items():
-            variables.append(v[1].getVariable())
-        device = self.__dispostivo.toJSON()
-        device["variables"] = variables
-        return device
-
     def setupUi(self):
         DispositivoWidget = self
         DispositivoWidget.setObjectName("DispositivoWidget")
@@ -90,7 +74,7 @@ class UIDispositivoWidget(widget):
         self.lblStatus.setFrameShadow(QtWidgets.QFrame.Sunken)
         self.lblStatus.setObjectName("lblStatus")
         self.lblTime = QtWidgets.QLabel(self.StatusFrame)
-        self.lblTime.setGeometry(QtCore.QRect(170, 5, 110, 16))
+        self.lblTime.setGeometry(QtCore.QRect(170, 5, 115, 16))
         font = QtGui.QFont()
         font.setFamily("Roboto")
         font.setPointSize(10)
@@ -186,15 +170,58 @@ class UIDispositivoWidget(widget):
         self.VariablesFrame.setObjectName("VariablesFrame")
         self.verticalLayout = QtWidgets.QVBoxLayout(self.VariablesFrame)
         self.verticalLayout.setContentsMargins(0, 0, 0, 0)
-        self.verticalLayout.setSpacing(5)
+        self.verticalLayout.setSpacing(0)
         self.verticalLayout.setObjectName("verticalLayout")
         self.VariablesScroll.setWidget(self.VariablesFrame)
         self.movie = QMovie(":/source/img/Cargando.gif")
         self.movie.setScaledSize(QtCore.QSize(64,64))
         self.retranslateUi(DispositivoWidget)
         QtCore.QMetaObject.connectSlotsByName(DispositivoWidget)
+        self.show()
 
+        if len(self.__dispostivo.variables) == 0 or len(list(filter(lambda var:(not var.output) ,self.__dispostivo.variables))) == 0:
+            self.lblTime.setText("¡No hay variables!")
+            self.Time.hide()
+        else:
+            timer.signals.time_elapsed.connect(self.time) # Signal emitted each second
+            self.__status = 1
+        self.lblImagen.mouseDoubleClickEvent = self.actualizarImagen
         for var in self.__dispostivo.variables:
+            self.mostrarVariable(var)
+        if (len(self.__dispostivo.variables)*25) > 115:
+            self.VariablesFrame.setGeometry(0,0,175,len(self.__dispostivo.variables)*25)
+
+    def updateUI(self,dev:device):
+        self.__dispostivo = dev
+        _translate = QtCore.QCoreApplication.translate
+        self.Container.setTitle(_translate("DispositivoWidget", self.__dispostivo.nombre))
+        self.lblImagen.setPixmap(Logica.byteArrayToImage(self.__dispostivo.image))
+        if self.__status == 2: # if updating then wait untill finish and update
+            self.deviceSignals.updated.connect(self.updateVariables)
+            return
+        self.updateVariables()
+
+    def updateVariables(self):
+        previousState = self.__status
+        self.__status = 3
+        self.updateState("Actualizando UI...",self.movie)
+        self.cleanVariables()
+        for var in self.__dispostivo.variables:
+            self.mostrarVariable(var)
+        if (len(self.__dispostivo.variables)*25) > 115:
+            self.VariablesFrame.setGeometry(0,0,175,len(self.__dispostivo.variables)*25)
+        if len(self.__dispostivo.variables) == 0 or len(list(filter(lambda var:(not var.output) ,self.__dispostivo.variables))) == 0:
+            self.updateState("¡No hay variables!",subText=None)
+            if previousState == 1 or previousState == 2:
+                timer.signals.time_elapsed.disconnect(self.time)
+            self.__status = 0
+        else:
+            self.updateState("Actualizando en ",subText=str(self.__dispostivo.time))
+            if previousState == 0: # previousState 0 is device only write
+                timer.signals.time_elapsed.connect(self.time) # Signal emitted each second
+            self.__status = 1
+
+    def mostrarVariable(self,var:variable):
             UIvariable = None
             if (var.analogic and not var.output):
                 UIvariable = UIAIVariable(var)
@@ -206,20 +233,8 @@ class UIDispositivoWidget(widget):
             if(not var.analogic and var.output):
                 UIvariable = UIDOVariable(var)
                 UIvariable.variableSignals.update.connect(self.actualizarVariable)
-            self.verticalLayout.addWidget(UIvariable)
+            self.verticalLayout.addWidget(UIvariable,0,Qt.AlignTop)
             self.__variablesContainer[var.unicID] = UIvariable
-        if (len(self.__dispostivo.variables)*25) > 115:
-                self.VariablesFrame.setGeometry(0,0,175,len(self.__dispostivo.variables)*25)
-        self.show()
-        if len(self.__dispostivo.variables) == 0 or len(list(filter(lambda var:(not var.output) ,self.__dispostivo.variables))) == 0:
-            self.lblTime.setText("¡No hay variables!")
-            self.Time.hide()
-        else:
-            timer.signals.time_elapsed.connect(self.time) # Signal emitted each second
-        self.lblImagen.mouseDoubleClickEvent = self.actualizarImagen
-
-    def updateUI(self,dev):
-        pass
 
     def actualizarImagen(self,event):
         from PyQt5.QtCore import QByteArray, QFileInfo
@@ -234,15 +249,33 @@ class UIDispositivoWidget(widget):
             self.lblImagen.setPixmap( Logica.byteArrayToImage(str_base64) )
             self.__dispostivo.image = str_base64
 
+    def disconnectSignals(self):
+        if self.__status != 0:
+            timer.signals.time_elapsed.disconnect(self.time)
+        self.lblImagen.mouseDoubleClickEvent = None
+        self.cleanVariables()
+    
+    def cleanVariables(self):
+        for v in self.__variablesContainer.items():
+            variable = v[1]
+            if (variable.getVariable())["IsOutput"] == True:
+                variable.variableSignals.update.disconnect(self.actualizarVariable)
+            variable.close()
+        self.__variablesContainer.clear()
+        
+    def getDevice(self):
+        variables = []
+        for v in self.__variablesContainer.items():
+            variables.append(v[1].getVariable())
+        device = self.__dispostivo.toJSON()
+        device["variables"] = variables
+        return device
+
     def time(self):
         if self.__status == 1:
             time = int(self.Time.text())-1
             if time == 0:
                 self.__status = 2
-                self.movie.start()
-                self.lblTime.setText("Actualizando...")
-                self.Time.show()
-                self.Time.setMovie(self.movie)
                 self.actualizarVariables(self.__dispostivo.variables)
             else:
                 self.Time.setText(str(time))
@@ -250,6 +283,8 @@ class UIDispositivoWidget(widget):
     def actualizarVariables(self,variablesList:list): # Updates all input variables
         variablesList = list(filter(lambda var: (not var.output) ,variablesList))
         variablesList = list(self.variablesListToJSON(variablesList))
+        self.updateState("Actualizando...",self.movie)
+        self.deviceSignals.updating.emit()
         worker = Worker(Logica.LeerSensor,**{"access_token":self.session.access_token,"ID":self.__dispostivo.id,"Token":self.__dispostivo.token,"data":variablesList})
         worker.signals.result.connect(self.actualizarVariables_Callback)
         worker.signals.error.connect(self.actualizarVariables_Callback)
@@ -258,39 +293,31 @@ class UIDispositivoWidget(widget):
     def actualizarVariables_Callback(self,variablesList:list): # callback for worker
         if isinstance(variablesList,Exception):
             self.deviceSignals.error.emit(variablesList)
-            self.Status.setText("Sin Conexion")
-            self.Status.setStyleSheet("color:gray")
-            self.StatusCircle.setStyleSheet("background-color:gray;border-radius:5px;")
+            self.updateDeviceState("Sin Conexion")
         else:
             if len(variablesList) == 0:
                 self.deviceSignals.error.emit(Exception("No hay acceso a internet"))
-                self.Status.setText("Desconectado")
-                self.Status.setStyleSheet("color:red")
-                self.StatusCircle.setStyleSheet("background-color:red;border-radius:5px;")
+                self.updateDeviceState("Desconectado","red")
             else:
                 for v in variablesList:
-                    self.__variablesContainer[v.unicID].update(v)
-                    self.Status.setText("Conectado")
-                    self.Status.setStyleSheet("color:green")
-                    self.StatusCircle.setStyleSheet("background-color:green;border-radius:5px;")
+                    self.__variablesContainer[v.unicID].updateUI(v)
+                    self.updateDeviceState("Conectado","green")
                     self.Last.setText(datetime.now().strftime("%d/%m/%Y %I:%M:%S %p"))
                     self.__dispostivo.lastUpdate = datetime.now().strftime("%d/%m/%Y %I:%M:%S %p")
         if len(list(filter(lambda var:(not var.output) ,self.__dispostivo.variables))) == 0:
-            self.lblTime.setText("¡No Hay variables!")
-            self.Time.hide()
+            self.updateState("¡No hay variables!",subText=None)
+            self.__status = 0
         else:
-            self.lblTime.setText("Actualizando en")
-            self.Time.setText(str(self.__dispostivo.time))
-        self.__status = 1
+            self.updateState("Actualizando en ",subText=str(self.__dispostivo.time))
+            self.__status = 1
+        self.deviceSignals.updated.emit()
 
     def actualizarVariable(self,var:variable):
         self.__status = 2
         current_time =  int(self.Time.text()) if self.Time.text() != '' else self.__dispostivo.time
         self.VariablesFrame.setEnabled(False)
-        self.movie.start()
-        self.lblTime.setText("Actualizando...")
-        self.Time.show()
-        self.Time.setMovie(self.movie)
+        self.updateState("Actualizando...",self.movie)
+        self.deviceSignals.updating.emit()
         worker = Worker(Logica.ActualizarSensor,**{"access_token":self.session.access_token,"ID":self.__dispostivo.id,"Token":self.__dispostivo.token,"data":var.toJSON() })
         worker.signals.result.connect(partial(self.actualizarVariable_Callback,var,current_time))
         worker.signals.error.connect(partial(self.actualizarVariable_Callback,var,current_time))
@@ -299,34 +326,40 @@ class UIDispositivoWidget(widget):
     def actualizarVariable_Callback(self,var:variable,current_time,response):
         if isinstance(response,Exception):
             self.deviceSignals.error.emit(response)
-            self.Status.setText("Sin Conexion")
-            self.Status.setStyleSheet("color:gray")
-            self.StatusCircle.setStyleSheet("background-color:gray;border-radius:5px;")
+            self.updateDeviceState("Sin Conexion")
         else:
             if response["success"] == "false" :
                 self.deviceSignals.error.emit(Exception("No hay acceso a internet"))
-                self.Status.setText("Desconectado")
-                self.Status.setStyleSheet("color:red")
-                self.StatusCircle.setStyleSheet("background-color:red;border-radius:5px;")
+                self.updateDeviceState("Desconectado","red")
             else:
-                self.Status.setText("Conectado")
-                self.Status.setStyleSheet("color:green")
-                self.StatusCircle.setStyleSheet("background-color:green;border-radius:5px;")
+                self.updateDeviceState("Conectado","green")
                 self.Last.setText(datetime.now().strftime("%d/%m/%Y %I:%M:%S %p"))
                 self.__dispostivo.lastUpdate = datetime.now().strftime("%d/%m/%Y %I:%M:%S %p")
-                self.__variablesContainer[var.unicID].actualizarVariable(var)
+                self.__variablesContainer[var.unicID].updateUI(var)
         self.VariablesFrame.setEnabled(True)
         if len(list(filter(lambda var:(not var.output) ,self.__dispostivo.variables))) == 0:
-            self.lblTime.setText("¡No Hay variables!")
-            self.Time.hide()
+            self.updateState("¡No hay variables!",subText=None)
+            self.__status = 0
         else:
-            self.lblTime.setText("Actualizando en")
-            self.Time.setText(str(current_time))
-        self.__status = 1
+            self.updateState("Actualizando en",subText=str(current_time))
+            self.__status = 1
+        self.movie.stop()
+        self.deviceSignals.updated.emit()
 
     def variablesListToJSON(self,variablesList:list):
         for var in variablesList:
             yield var.toJSON()
+    
+    def updateState(self,text,Movie = None,subText = ""):
+        self.Time.setMovie(Movie) if not Movie is None else self.Time.setText(subText)
+        self.Time.hide() if subText is None else self.Time.show()
+        self.lblTime.setText(text)
+        self.movie.start() if Movie != None else self.movie.stop()
+
+    def updateDeviceState(self,text="Desconocido",color="gray"):
+        self.Status.setText(text)
+        self.Status.setStyleSheet("color:%s" % color)
+        self.StatusCircle.setStyleSheet("background-color:%s;border-radius:5px;" % color)
 
     def mousePressEvent(self, event):
         if event.buttons() == Qt.LeftButton:
@@ -335,7 +368,7 @@ class UIDispositivoWidget(widget):
     def mouseMoveEvent(self, event):
         if event.buttons() == Qt.LeftButton:
             point = self.pos() + event.globalPos() - self.dragPos
-            if ((point.x() <= 0 or point.x() >= self.__parent.frameSize().width() - 330 ) or (point.y() <= 0 or point.y() >= self.__parent.frameSize().height() - 200)) :
+            if ((point.x() <= 0 or point.x() >= self.Parent.frameSize().width() - 330 ) or (point.y() <= 0 or point.y() >= self.Parent.frameSize().height() - 200)) :
                 event.ignore()
             else:
                 self.move(self.pos() + event.globalPos() - self.dragPos)
@@ -346,8 +379,36 @@ class UIDispositivoWidget(widget):
         DispositivoWidget.setWindowTitle(_translate("DispositivoWidget", "Form"))
         self.Container.setTitle(_translate("DispositivoWidget", self.__dispostivo.nombre))
         self.lblStatus.setText(_translate("DispositivoWidget", "Estado:"))
-        self.lblTime.setText(_translate("DispositivoWidget", "Actualizando en"))
+        self.lblTime.setText(_translate("DispositivoWidget", "Actualizando en "))
         self.Time.setText(_translate("DispostivoWidget", str(self.__dispostivo.time)))
         self.Status.setText(_translate("DispositivoWidget", "Desconocido"))
         self.lblLast.setText(_translate("DispositivoWidget", "Ultima Vez:"))
         self.Last.setText(_translate("DispositivoWidget", self.__dispostivo.lastUpdate))
+
+        """     def updateVariables(self):
+        previousState = self.__status
+        self.__status = 3
+        self.movie.start()
+        self.lblTime.setText("Actualizando UI...")
+        self.Time.show()
+        self.Time.setMovie(self.movie)
+        unicIDs = dict() # to manage all unicsID from the new variables list
+        for var in self.__dispostivo.variables:
+            if var.unicID not in self.__variablesContainer.keys(): # if new variable was created
+                self.mostrarVariable(var)
+            if var.unicID in self.__variablesContainer.keys(): # if already exists then update
+                self.__variablesContainer[var.unicID].updateUI(var)
+            unicIDs[var.unicID] = var
+        keysDeleted = []
+        for key in self.__variablesContainer.keys(): # if variable was deleted
+            if key not in unicIDs.keys():
+                self.__variablesContainer[key].close()
+                keysDeleted.append(key)
+        for k in keysDeleted:
+            del self.__variablesContainer[k]
+        unicIDs.clear()
+        del unicIDs
+        if (len(self.__dispostivo.variables)*25) > 115:
+            self.VariablesFrame.setGeometry(0,0,175,len(self.__dispostivo.variables)*25)
+        
+        self.movie.stop() """

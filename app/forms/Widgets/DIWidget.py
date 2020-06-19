@@ -70,9 +70,9 @@ class UIDIVariable(widget):
             self.lblValue.setStyleSheet("background-color:gray;border-radius:8px;")
         self.show()
 
-    def update(self,var:variable):
+    def updateUI(self,var:variable):
         self.__variable = var
-        if int(self.__variable.value > 0):
+        if int(self.__variable.value) > 0:
             self.lblValue.setStyleSheet("background-color:%s; border-radius:8px;" % webcolors.name_to_hex(self.__variable.displayColor))
         else:
             self.lblValue.setStyleSheet("background-color:gray;border-radius:8px;")

@@ -74,7 +74,7 @@ class UIAIVariable(widget):
         QtCore.QMetaObject.connectSlotsByName(AIVariable)
         self.show()
 
-    def update(self,var:variable):
+    def updateUI(self,var:variable):
         self.__variable = var
         self.lblValue.setText(str(self.__variable.value))
 

@@ -131,7 +131,7 @@
        <rect>
         <x>180</x>
         <y>5</y>
-        <width>100</width>
+        <width>105</width>
         <height>16</height>
        </rect>
       </property>
@@ -144,7 +144,7 @@
        </font>
       </property>
       <property name="text">
-       <string>Actualizando en</string>
+       <string>Actualizando en    </string>
       </property>
       <property name="alignment">
        <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>

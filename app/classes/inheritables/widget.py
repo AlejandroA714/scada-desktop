@@ -14,6 +14,7 @@ class widget(QWidget):
     threadpool = QThreadPool()
 
     def __init__(self,Parent=None):
+        self.Parent = Parent
         self.signals = widgetSignals()
         QWidget.__init__(self,Parent)
         self.setAttribute(Qt.WA_DeleteOnClose)

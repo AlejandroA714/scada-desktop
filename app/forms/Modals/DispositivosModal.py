@@ -410,13 +410,15 @@ class UIDispositvoModal(modal):
             if dev.unicID == d.unicID:
                 dev = d
         UIDevice = c.devicesContainer[d.unicID]
+        UIDevice.updateUI(d)
+        self.mostrarDispositivos(self.comboBox.currentIndex())
 
     def eliminarDispositivo(self,dev:device):
         print(dev.__dict__)
 
     def copiarDispositivo(self,dev:device):
         print(dev.__dict__)
-
+        
     def importarDispositivos(self):
         pass
 
