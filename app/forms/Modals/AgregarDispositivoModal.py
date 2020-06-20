@@ -350,6 +350,8 @@ class UIAgregarDispositvoModal(modal): # To add or update and device
         self.VariablesLayout = QtWidgets.QVBoxLayout(self.VariableScrollContent)
         self.VariablesLayout.setContentsMargins(5, 5, 9, -1)
         self.VariablesLayout.setObjectName("VariablesLayout")
+        self.VariablesLayout.setAlignment(Qt.AlignTop)
+        self.VariablesLayout.setSpacing(5)
         self.variablesScroll.setWidget(self.VariableScrollContent)
         self.lblVariableNombre = QtWidgets.QLabel(self.VariablesContent)
         self.lblVariableNombre.setGeometry(QtCore.QRect(45, 45, 65, 17))
@@ -425,6 +427,10 @@ class UIAgregarDispositvoModal(modal): # To add or update and device
             self.lblImagen.setPixmap( Logica.byteArrayToImage(self.dispositivo.image) )
             self.btnImportar.hide()
             self.lblTitle.setText("Editar Dispositivo")
+        
+        self.shortcut = QtWidgets.QShortcut(Qt.Key_Return,self)
+        self.shortcut.activated.connect(self.btnAceptar_Click)
+
         self.mostrarVariables()
 
     def mostrarVariables(self):
@@ -437,12 +443,12 @@ class UIAgregarDispositvoModal(modal): # To add or update and device
             UIVariable.signals.delete.connect(self.eliminarVariable)
 
     def agregarVariable(self):
-        #if self.txtID.text() == "" or self.txtToken.text() == "":
-        #   QMessageBox.warning(self,"¡Error!","Ingrese un ID y token para continuar")
-        #   return
+        if self.txtID.text() == "" or self.txtToken.text() == "":
+           QMessageBox.warning(self,"¡Error!","Ingrese un ID y token para continuar")
+           return
         if len(self.dispositivo.variables) == 12:
            QMessageBox.warning(self,"¡Error!","No puede agregar mas variables")
-        UIAgregarVariable = UIAgregarVariableModal(self.parent,**{"ID":"230037001347343438323536","Token":"57f539fb1a8cc926f59ee72f3fd69e4c5adc3945"})
+        UIAgregarVariable = UIAgregarVariableModal(self.parent,**{"ID":self.txtID.text(),"Token":self.txtToken.text()})
         UIAgregarVariable.show()
         UIAgregarVariable.signals.success.connect(self.agregarVariable_Callback)
 
@@ -456,10 +462,10 @@ class UIAgregarDispositvoModal(modal): # To add or update and device
         self.lblVariablesCount.setText("Variables %s/12" % str(len(self.dispositivo.variables)))
         
     def editarVariable(self,v:variable):
-        #if self.txtID.text() == "" or self.txtToken.text() == "":
-        #   QMessageBox.warning(self,"¡Error!","Ingrese un ID y token para continuar")
-        #   return
-        UIVariable = UIAgregarVariableModal(self.parent,v,True,**{"ID":"230037001347343438323536","Token":"57f539fb1a8cc926f59ee72f3fd69e4c5adc3945"})
+        if self.txtID.text() == "" or self.txtToken.text() == "":
+           QMessageBox.warning(self,"¡Error!","Ingrese un ID y token para continuar")
+           return
+        UIVariable = UIAgregarVariableModal(self.parent,v,True,**{"ID":self.txtID.text(),"Token":self.txtToken.text()})
         UIVariable.show()
         UIVariable.signals.success.connect(self.editarVariable_Callback)
         

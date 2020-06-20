@@ -390,6 +390,9 @@ class UIAgregarVariableModal(modal):
 
         self.retranslateUi(AgregarVariableModal)
         QtCore.QMetaObject.connectSlotsByName(AgregarVariableModal)
+
+        # listener
+
         self.parent.signals.resize.connect(self.center)
         self.btnExit.clicked.connect(self.exit)
         self.btnReload.clicked.connect(self.obtenerVariablesFunciones)
@@ -401,6 +404,9 @@ class UIAgregarVariableModal(modal):
         self.cmbSenal.currentIndexChanged.connect(self.cmbSenal_CurrentIndexChange)
         self.boxNotificar.stateChanged.connect(self.boxNotificar_StateChange)
         self.btnAceptar_2.clicked.connect(self.btnAceptar_Click)
+
+        self.shortcut = QtWidgets.QShortcut(QtCore.Qt.Key_Return,self)
+        self.shortcut.activated.connect(self.btnAceptar_Click)
 
     def disconnectSignals(self):
         self.parent.signals.resize.disconnect(self.center)
@@ -439,8 +445,7 @@ class UIAgregarVariableModal(modal):
         self.movie.start()
         self.Status.setMovie(self.movie)
         worker = Worker(Logica.ObtenerVariablesFunciones,**{"ID":self.ID,"Token":self.Token,"access_token":self.session.access_token})
-        worker.signals.result.connect(self.obtenerVariablesFuncionesCallback)
-        worker.signals.error.connect(self.obtenerVariablesFuncionesCallback)
+        worker.signals.finished.connect(self.obtenerVariablesFuncionesCallback)
         self.threadpool.start(worker)
 
     def addColorItems(self):

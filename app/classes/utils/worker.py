@@ -9,10 +9,9 @@ from requests.exceptions import HTTPError
 
 class WorkerSignals(QObject): # Class to emit signals at execute a thread
 
-    finished = pyqtSignal() # returns no data
+    finished = pyqtSignal(object) # returns no data
     error = pyqtSignal(Exception) # return a tuple with error
     result = pyqtSignal(object) # if success return data, json object
-    #progress = pyqtSignal(int) # returns an int with progress, not should be used
 
 class Worker(QRunnable): # Class to execute a function inside a thread
 
@@ -32,6 +31,7 @@ class Worker(QRunnable): # Class to execute a function inside a thread
         # Retrieve args/kwargs here; and processing using them
         try:
             result = self.fn(*self.args, **self.kwargs) #Execute function, passing args and kwargs, always recibe **kwargs as json object
+            self.signals.finished.emit(result)  # Return the result of the processing
         except Exception as e:
             self.logger.log_error(e)
             if isinstance(e,HTTPError):#
@@ -39,16 +39,5 @@ class Worker(QRunnable): # Class to execute a function inside a thread
                     QMessageBox.warning(None,"¡Error!","Sesión expirada\nCerrando Aplicación")
                     QApplication.exit()
             traceback.print_exc()
-            self.signals.error.emit(e)   
-            #self.disconnectSignals()
-        else:
-            self.signals.result.emit(result)  # Return the result of the processing
-            #self.disconnectSignals()
-        finally:
-            self.signals.finished.emit()  # Done
-            #self.disconnectSignals()
-
-    def disconnectSignals(self):
-        self.signals.result.disconnect()
-        self.signals.error.disconnect()
+            self.signals.finished.emit(e) # Returns an object exception
 

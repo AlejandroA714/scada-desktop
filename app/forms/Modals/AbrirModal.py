@@ -15,6 +15,7 @@ class UIAbrirModal(modal):
     def __init__(self,MainWindow,IsDelete = False):
         super(UIAbrirModal,self).__init__(MainWindow)
         self.__IsDelete = IsDelete
+        self.__UIContainer = []
         self.setupUi()
     
     def setupUi(self):
@@ -281,8 +282,7 @@ class UIAbrirModal(modal):
         self.movie.start()
         self.Status.setMovie(self.movie)
         worker = Worker(Logica.ObtenerProyectos,**{"access_token":self.session.access_token})
-        worker.signals.result.connect(self.showCallback)
-        worker.signals.error.connect(self.showCallback)
+        worker.signals.finished.connect(self.showCallback)
         self.threadpool.start(worker)
 
     def showCallback(self,_data):
@@ -307,6 +307,7 @@ class UIAbrirModal(modal):
             WidgetP = UIWidgetP(workSpace,self.__IsDelete)
             WidgetP.signals.sucess.connect(self.success)
             self.LayoutScroll.addWidget(WidgetP,0,QtCore.Qt.AlignTop)
+            self.__UIContainer.append(WidgetP)
         if (len(_data)*96) > 390:
             self.ContainerScroll.setGeometry(QtCore.QRect(0, 0, 377, (len(_data)*108) ))
 

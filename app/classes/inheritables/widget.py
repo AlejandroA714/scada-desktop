@@ -8,6 +8,7 @@ class widgetSignals(QObject):
     sucess = pyqtSignal(object)
     edit = pyqtSignal(object)
     delete = pyqtSignal(object)
+    copy = pyqtSignal(object)
 
 class widget(QWidget):
 

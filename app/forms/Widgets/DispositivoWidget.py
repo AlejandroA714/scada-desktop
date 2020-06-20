@@ -296,6 +296,7 @@ class UIDispositivoModalWidget(widget):
         QtCore.QMetaObject.connectSlotsByName(DispositivoWidget)
 
         self.lblImagen.setPixmap(Logica.byteArrayToImage(self.dispositivo.image))
+
         #listener
         self.btnEditar.clicked.connect(self.btnEditar_Click)
         self.btnEliminar.clicked.connect(self.btnEliminar_Click)
@@ -305,17 +306,17 @@ class UIDispositivoModalWidget(widget):
     def btnEditar_Click(self):
         reply = self.prompt("Confirmación","¿Editar este Dispositivo?")
         if reply == QMessageBox.Yes:
-            self.deviceSignals.edit.emit(self.dispositivo)
+            self.signals.edit.emit(self.dispositivo)
 
     def btnEliminar_Click(self):
         reply = self.prompt("Confirmación","¿Eliminar este Dispositivo?")
         if reply == QMessageBox.Yes:
-            self.deviceSignals.delete.emit(self.dispositivo)
+            self.signals.delete.emit(self.dispositivo)
 
     def btnCopiar_Click(self):
         reply = self.prompt("Confirmación","¿Copiar este Dispositivo?")
         if reply == QMessageBox.Yes:
-            self.deviceSignals.copy.emit(self.dispositivo)
+            self.signals.copy.emit(self.dispositivo)
 
     def prompt(self,title,msg):
         return QMessageBox.question(

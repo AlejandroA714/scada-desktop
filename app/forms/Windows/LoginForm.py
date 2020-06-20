@@ -186,8 +186,7 @@ class UILogin(form):
         self.lblmovie.show()
         self.movie.start()
         worker = Worker(Logica.IniciarSesion ,**{"Usuario":self.txtUsuario.text(),"Password":self.txtPassword.text()})
-        worker.signals.result.connect(self.btnAceptar_CallBack)
-        worker.signals.error.connect(self.btnAceptar_CallBack)
+        worker.signals.finished.connect(self.btnAceptar_CallBack)
         self.threadpool.start(worker)
 
     def btnAceptar_CallBack(self,s):

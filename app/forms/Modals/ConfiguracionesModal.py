@@ -440,6 +440,9 @@ class UIConfiguracionesModal(modal):
         self.btnAceptar.clicked.connect(self.btnAceptar_Click)
         self.btnReload.clicked.connect(self.ObtenerConfguraciones)
 
+        self.shortcut = QtWidgets.QShortcut(QtCore.Qt.Key_Return,self)
+        self.shortcut.activated.connect(self.btnAceptar_Click)
+
     def showEvent(self,event):
         self.center()
         self.ObtenerConfguraciones()
@@ -452,8 +455,7 @@ class UIConfiguracionesModal(modal):
         self.movie.start()
         self.Status.setMovie(self.movie)
         worker = Worker(Logica.ObtenerConfiguraciones,**{"access_token":self.session.access_token})
-        worker.signals.result.connect(self.obtenerConfiguracionesCallBack)
-        worker.signals.error.connect(self.obtenerConfiguracionesCallBack)
+        worker.signals.finished.connect(self.obtenerConfiguracionesCallBack)
         self.threadpool.start(worker)
         
     def obtenerConfiguracionesCallBack(self,response):
@@ -517,8 +519,7 @@ class UIConfiguracionesModal(modal):
         self.Status.setMovie(self.movie)
         self.ContentLayout.addWidget(self.Status, 0, QtCore.Qt.AlignHCenter)
         worker = Worker(Logica.GuardarConfiguraciones,**{"access_token":self.getAccessToken(),"data":self.config.toJSON() } )
-        worker.signals.result.connect(self.guardarConfiguracionesCallback)
-        worker.signals.error.connect(self.guardarConfiguracionesCallback)
+        worker.signals.finished.connect(self.guardarConfiguracionesCallback)
         self.threadpool.start(worker)
 
     def guardarConfiguracionesCallback(self,response):

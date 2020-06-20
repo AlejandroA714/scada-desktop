@@ -7,8 +7,5 @@ class deviceSignals(QObject):
     report_emitted = pyqtSignal()
     status_changes = pyqtSignal()
     error = pyqtSignal(Exception)
-    edit = pyqtSignal(device)
-    copy = pyqtSignal(device)
-    delete = pyqtSignal(device)
 
 

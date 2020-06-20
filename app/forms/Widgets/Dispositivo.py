@@ -170,8 +170,9 @@ class UIDispositivoWidget(widget):
         self.VariablesFrame.setObjectName("VariablesFrame")
         self.verticalLayout = QtWidgets.QVBoxLayout(self.VariablesFrame)
         self.verticalLayout.setContentsMargins(0, 0, 0, 0)
-        self.verticalLayout.setSpacing(0)
+        self.verticalLayout.setSpacing(5)
         self.verticalLayout.setObjectName("verticalLayout")
+        self.verticalLayout.setAlignment(Qt.AlignTop)
         self.VariablesScroll.setWidget(self.VariablesFrame)
         self.movie = QMovie(":/source/img/Cargando.gif")
         self.movie.setScaledSize(QtCore.QSize(64,64))
@@ -286,8 +287,7 @@ class UIDispositivoWidget(widget):
         self.updateState("Actualizando...",self.movie)
         self.deviceSignals.updating.emit()
         worker = Worker(Logica.LeerSensor,**{"access_token":self.session.access_token,"ID":self.__dispostivo.id,"Token":self.__dispostivo.token,"data":variablesList})
-        worker.signals.result.connect(self.actualizarVariables_Callback)
-        worker.signals.error.connect(self.actualizarVariables_Callback)
+        worker.signals.finished.connect(self.actualizarVariables_Callback)
         self.threadpool.start(worker)  
 
     def actualizarVariables_Callback(self,variablesList:list): # callback for worker
@@ -319,8 +319,7 @@ class UIDispositivoWidget(widget):
         self.updateState("Actualizando...",self.movie)
         self.deviceSignals.updating.emit()
         worker = Worker(Logica.ActualizarSensor,**{"access_token":self.session.access_token,"ID":self.__dispostivo.id,"Token":self.__dispostivo.token,"data":var.toJSON() })
-        worker.signals.result.connect(partial(self.actualizarVariable_Callback,var,current_time))
-        worker.signals.error.connect(partial(self.actualizarVariable_Callback,var,current_time))
+        worker.signals.finished.connect(partial(self.actualizarVariable_Callback,var,current_time))
         self.threadpool.start(worker)
 
     def actualizarVariable_Callback(self,var:variable,current_time,response):
@@ -372,6 +371,8 @@ class UIDispositivoWidget(widget):
                 event.ignore()
             else:
                 self.move(self.pos() + event.globalPos() - self.dragPos)
+                self.__dispostivo.x = self.pos().x()
+                self.__dispostivo.y = self.pos().y()
                 self.dragPos = event.globalPos()
 
     def retranslateUi(self, DispositivoWidget):
@@ -384,31 +385,3 @@ class UIDispositivoWidget(widget):
         self.Status.setText(_translate("DispositivoWidget", "Desconocido"))
         self.lblLast.setText(_translate("DispositivoWidget", "Ultima Vez:"))
         self.Last.setText(_translate("DispositivoWidget", self.__dispostivo.lastUpdate))
-
-        """     def updateVariables(self):
-        previousState = self.__status
-        self.__status = 3
-        self.movie.start()
-        self.lblTime.setText("Actualizando UI...")
-        self.Time.show()
-        self.Time.setMovie(self.movie)
-        unicIDs = dict() # to manage all unicsID from the new variables list
-        for var in self.__dispostivo.variables:
-            if var.unicID not in self.__variablesContainer.keys(): # if new variable was created
-                self.mostrarVariable(var)
-            if var.unicID in self.__variablesContainer.keys(): # if already exists then update
-                self.__variablesContainer[var.unicID].updateUI(var)
-            unicIDs[var.unicID] = var
-        keysDeleted = []
-        for key in self.__variablesContainer.keys(): # if variable was deleted
-            if key not in unicIDs.keys():
-                self.__variablesContainer[key].close()
-                keysDeleted.append(key)
-        for k in keysDeleted:
-            del self.__variablesContainer[k]
-        unicIDs.clear()
-        del unicIDs
-        if (len(self.__dispostivo.variables)*25) > 115:
-            self.VariablesFrame.setGeometry(0,0,175,len(self.__dispostivo.variables)*25)
-        
-        self.movie.stop() """

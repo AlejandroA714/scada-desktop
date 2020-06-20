@@ -246,8 +246,9 @@ class UIDispositvoModal(modal):
         self.ScrollContainer.setObjectName("ScrollContainer")
         self.verticalLayout_3 = QtWidgets.QVBoxLayout(self.ScrollContainer)
         self.verticalLayout_3.setContentsMargins(0, 10, 0, 0)
-        self.verticalLayout_3.setSpacing(0)
+        self.verticalLayout_3.setSpacing(5)
         self.verticalLayout_3.setObjectName("verticalLayout_3")
+        self.verticalLayout_3.setAlignment(QtCore.Qt.AlignTop)
         self.UtilsFrame = QtWidgets.QFrame(self.ScrollContainer)
         self.UtilsFrame.setMinimumSize(QtCore.QSize(256, 132))
         self.UtilsFrame.setMaximumSize(QtCore.QSize(128, 128))
@@ -392,9 +393,9 @@ class UIDispositvoModal(modal):
     def addDevice(self,d:device):
         UI = UIDispositivoModalWidget(d)
         self.verticalLayout_3.addWidget(UI,0,QtCore.Qt.AlignTop | QtCore.Qt.AlignHCenter)
-        UI.deviceSignals.edit.connect(self.editarDispositivo)
-        UI.deviceSignals.delete.connect(self.eliminarDispositivo)
-        UI.deviceSignals.copy.connect(self.copiarDispositivo)
+        UI.signals.edit.connect(self.editarDispositivo)
+        UI.signals.delete.connect(self.eliminarDispositivo)
+        UI.signals.copy.connect(self.copiarDispositivo)
         self.UIContainer.append(UI)
 
     def editarDispositivo(self,dev:device):
