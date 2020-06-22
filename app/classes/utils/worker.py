@@ -36,7 +36,7 @@ class Worker(QRunnable): # Class to execute a function inside a thread
             self.logger.log_error(e)
             if isinstance(e,HTTPError):#
                 if e.response.status_code == 401:
-                    QMessageBox.warning(None,"¡Error!","Sesión expirada\nCerrando Aplicación")
+                    QMessageBox.warning(None,"¡Error!","Sesión expirada o Invalida\nCerrando Aplicación")
                     QApplication.exit()
             traceback.print_exc()
             self.signals.finished.emit(e) # Returns an object exception

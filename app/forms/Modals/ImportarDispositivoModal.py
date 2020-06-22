@@ -1,44 +1,43 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtGui import QMovie
-from classes import modal, device, Logica
-from forms.Widgets import UIDispositivoModalWidget, UIDispositivoWidget
-from forms.Modals.AgregarDispositivoModal import UIAgregarDispositvoModal
+from classes import modal, device, Logica, Worker
+from forms.Widgets import UIDispositivoModalWidget
 from resources import *
 
-class UIDispositvoModal(modal):
+class UIImportarDispositivoModal(modal):
 
-    def __init__(self,MainWindow,workSpaces:dict):
-        self.workSpaces = workSpaces
+    def __init__(self,MainWindow):
+        self.workSpaces = dict()
         self.UIContainer = []
-        super(UIDispositvoModal,self).__init__(MainWindow)
+        super(UIImportarDispositivoModal,self).__init__(MainWindow)
         self.setupUi()
 
     def setupUi(self):
-        DispositvoModal = self
-        DispositvoModal.setObjectName("DispositvoModal")
-        DispositvoModal.setWindowModality(QtCore.Qt.WindowModal)
-        DispositvoModal.resize(720, 739)
+        ImportarDispositivo = self
+        ImportarDispositivo.setObjectName("ImportarDispositivo")
+        ImportarDispositivo.setWindowModality(QtCore.Qt.WindowModal)
+        ImportarDispositivo.resize(719, 719)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Maximum)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(DispositvoModal.sizePolicy().hasHeightForWidth())
-        DispositvoModal.setSizePolicy(sizePolicy)
-        DispositvoModal.setMinimumSize(QtCore.QSize(480, 720))
+        sizePolicy.setHeightForWidth(ImportarDispositivo.sizePolicy().hasHeightForWidth())
+        ImportarDispositivo.setSizePolicy(sizePolicy)
+        ImportarDispositivo.setMinimumSize(QtCore.QSize(480, 620))
         font = QtGui.QFont()
         font.setFamily("Noto Serif")
         font.setPointSize(11)
         font.setBold(True)
         font.setWeight(75)
-        DispositvoModal.setFont(font)
-        DispositvoModal.setContextMenuPolicy(QtCore.Qt.NoContextMenu)
+        ImportarDispositivo.setFont(font)
+        ImportarDispositivo.setContextMenuPolicy(QtCore.Qt.NoContextMenu)
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap("../../../../../.designer/if_16_1751363.ico"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        DispositvoModal.setWindowIcon(icon)
-        DispositvoModal.setStyleSheet("background-color: rgb(255, 255, 255);")
-        DispositvoModal.setInputMethodHints(QtCore.Qt.ImhSensitiveData)
-        self.verticalLayout = QtWidgets.QVBoxLayout(DispositvoModal)
+        icon.addPixmap(QtGui.QPixmap(":/source/img/if_16_1751363.ico"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        ImportarDispositivo.setWindowIcon(icon)
+        ImportarDispositivo.setStyleSheet("background-color: rgb(255, 255, 255);")
+        ImportarDispositivo.setInputMethodHints(QtCore.Qt.ImhSensitiveData)
+        self.verticalLayout = QtWidgets.QVBoxLayout(ImportarDispositivo)
         self.verticalLayout.setObjectName("verticalLayout")
-        self.MainFrame = QtWidgets.QFrame(DispositvoModal)
+        self.MainFrame = QtWidgets.QFrame(ImportarDispositivo)
         self.MainFrame.setMinimumSize(QtCore.QSize(360, 0))
         self.MainFrame.setFrameShape(QtWidgets.QFrame.StyledPanel)
         self.MainFrame.setFrameShadow(QtWidgets.QFrame.Raised)
@@ -48,7 +47,7 @@ class UIDispositvoModal(modal):
         self.verticalLayout_2.setSpacing(0)
         self.verticalLayout_2.setObjectName("verticalLayout_2")
         self.TitleFrame = QtWidgets.QFrame(self.MainFrame)
-        self.TitleFrame.setMaximumSize(QtCore.QSize(16777215, 16777215))
+        self.TitleFrame.setMaximumSize(QtCore.QSize(16777215, 116))
         self.TitleFrame.setFrameShape(QtWidgets.QFrame.NoFrame)
         self.TitleFrame.setFrameShadow(QtWidgets.QFrame.Plain)
         self.TitleFrame.setObjectName("TitleFrame")
@@ -64,7 +63,8 @@ class UIDispositvoModal(modal):
         self.lblUDB.setSizePolicy(sizePolicy)
         self.lblUDB.setMinimumSize(QtCore.QSize(0, 116))
         self.lblUDB.setMaximumSize(QtCore.QSize(16777215, 116))
-        self.lblUDB.setStyleSheet("background-color: rgb(65, 105, 225);margin:0px;")
+        self.lblUDB.setStyleSheet("background-color: rgb(65, 105, 225);\n"
+"margin:0px;")
         self.lblUDB.setFrameShape(QtWidgets.QFrame.NoFrame)
         self.lblUDB.setText("")
         self.lblUDB.setPixmap(QtGui.QPixmap(":/source/img/logo.png"))
@@ -111,7 +111,8 @@ class UIDispositvoModal(modal):
         sizePolicy.setHeightForWidth(self.lblIIE.sizePolicy().hasHeightForWidth())
         self.lblIIE.setSizePolicy(sizePolicy)
         self.lblIIE.setMaximumSize(QtCore.QSize(16777215, 116))
-        self.lblIIE.setStyleSheet("background-color: rgb(65, 105, 225);margin:0px;")
+        self.lblIIE.setStyleSheet("background-color: rgb(65, 105, 225);\n"
+"margin:0px;")
         self.lblIIE.setText("")
         self.lblIIE.setPixmap(QtGui.QPixmap(":/source/img/iiie.png"))
         self.lblIIE.setScaledContents(False)
@@ -133,7 +134,8 @@ class UIDispositvoModal(modal):
         font.setWeight(75)
         self.lblSCADA.setFont(font)
         self.lblSCADA.setAutoFillBackground(False)
-        self.lblSCADA.setStyleSheet("color: rgb(255, 255, 0);background-color: rgb(65, 105, 225);margin:0px;")
+        self.lblSCADA.setStyleSheet("color: rgb(255, 255, 0);background-color: rgb(65, 105, 225);\n"
+"margin:0px;")
         self.lblSCADA.setObjectName("lblSCADA")
         self.gridLayout.addWidget(self.lblSCADA, 0, 1, 1, 1)
         self.verticalLayout_2.addWidget(self.TitleFrame)
@@ -160,7 +162,7 @@ class UIDispositvoModal(modal):
         sizePolicy.setVerticalStretch(0)
         sizePolicy.setHeightForWidth(self.ContentBox.sizePolicy().hasHeightForWidth())
         self.ContentBox.setSizePolicy(sizePolicy)
-        self.ContentBox.setMinimumSize(QtCore.QSize(672, 535))
+        self.ContentBox.setMinimumSize(QtCore.QSize(672, 520))
         font = QtGui.QFont()
         font.setFamily("Roboto")
         font.setPointSize(11)
@@ -169,71 +171,9 @@ class UIDispositvoModal(modal):
         self.ContentBox.setFont(font)
         self.ContentBox.setStyleSheet("background-color: rgb(255, 255, 255);")
         self.ContentBox.setObjectName("ContentBox")
-        self.btnAgregar = QtWidgets.QPushButton(self.ContentBox)
-        self.btnAgregar.setGeometry(QtCore.QRect(390, 0, 95, 40))
-        sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Fixed, QtWidgets.QSizePolicy.Fixed)
-        sizePolicy.setHorizontalStretch(0)
-        sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(self.btnAgregar.sizePolicy().hasHeightForWidth())
-        self.btnAgregar.setSizePolicy(sizePolicy)
-        self.btnAgregar.setMinimumSize(QtCore.QSize(92, 38))
-        self.btnAgregar.setMaximumSize(QtCore.QSize(128, 48))
-        font = QtGui.QFont()
-        font.setFamily("Roboto")
-        font.setPointSize(11)
-        font.setBold(True)
-        font.setWeight(75)
-        self.btnAgregar.setFont(font)
-        self.btnAgregar.setStyleSheet("border:1px solid green;top:0px;")
-        icon2 = QtGui.QIcon()
-        icon2.addPixmap(QtGui.QPixmap(":/source/img/Agregar.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.btnAgregar.setIcon(icon2)
-        self.btnAgregar.setIconSize(QtCore.QSize(24, 24))
-        self.btnAgregar.setShortcut("")
-        self.btnAgregar.setCheckable(False)
-        self.btnAgregar.setFlat(True)
-        self.btnAgregar.setObjectName("btnAgregar")
-        self.btnExportar = QtWidgets.QPushButton(self.ContentBox)
-        self.btnExportar.setGeometry(QtCore.QRect(185, 0, 95, 40))
-        self.btnExportar.setMinimumSize(QtCore.QSize(92, 38))
-        self.btnExportar.setMaximumSize(QtCore.QSize(128, 48))
-        font = QtGui.QFont()
-        font.setFamily("Roboto")
-        font.setPointSize(11)
-        font.setBold(True)
-        font.setWeight(75)
-        self.btnExportar.setFont(font)
-        self.btnExportar.setStyleSheet("border:1px solid green;")
-        icon3 = QtGui.QIcon()
-        icon3.addPixmap(QtGui.QPixmap(":/source/img/Exportar.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.btnExportar.setIcon(icon3)
-        self.btnExportar.setIconSize(QtCore.QSize(24, 24))
-        self.btnExportar.setShortcut("")
-        self.btnExportar.setCheckable(False)
-        self.btnExportar.setFlat(True)
-        self.btnExportar.setObjectName("btnExportar")
-        self.btnImportar = QtWidgets.QPushButton(self.ContentBox)
-        self.btnImportar.setGeometry(QtCore.QRect(290, 0, 95, 40))
-        self.btnImportar.setMinimumSize(QtCore.QSize(92, 38))
-        self.btnImportar.setMaximumSize(QtCore.QSize(128, 48))
-        font = QtGui.QFont()
-        font.setFamily("Roboto")
-        font.setPointSize(11)
-        font.setBold(True)
-        font.setWeight(75)
-        self.btnImportar.setFont(font)
-        self.btnImportar.setStyleSheet("border:1px solid green;")
-        icon4 = QtGui.QIcon()
-        icon4.addPixmap(QtGui.QPixmap(":/source/img/Importar-SM.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.btnImportar.setIcon(icon4)
-        self.btnImportar.setIconSize(QtCore.QSize(24, 24))
-        self.btnImportar.setShortcut("")
-        self.btnImportar.setCheckable(False)
-        self.btnImportar.setFlat(True)
-        self.btnImportar.setObjectName("btnImportar")
         self.ContainerScroll = QtWidgets.QScrollArea(self.ContentBox)
-        self.ContainerScroll.setGeometry(QtCore.QRect(5, 45, 660, 470))
-        self.ContainerScroll.setMinimumSize(QtCore.QSize(660, 470))
+        self.ContainerScroll.setGeometry(QtCore.QRect(5, 45, 660, 471))
+        self.ContainerScroll.setMinimumSize(QtCore.QSize(660, 0))
         self.ContainerScroll.setMaximumSize(QtCore.QSize(16777215, 167777))
         self.ContainerScroll.setFrameShape(QtWidgets.QFrame.NoFrame)
         self.ContainerScroll.setLineWidth(0)
@@ -245,7 +185,7 @@ class UIDispositvoModal(modal):
         self.ScrollContainer.setMinimumSize(QtCore.QSize(0, 470))
         self.ScrollContainer.setObjectName("ScrollContainer")
         self.verticalLayout_3 = QtWidgets.QVBoxLayout(self.ScrollContainer)
-        self.verticalLayout_3.setContentsMargins(0, 10, 0, 0)
+        self.verticalLayout_3.setContentsMargins(0, 10, 0, 10)
         self.verticalLayout_3.setSpacing(5)
         self.verticalLayout_3.setObjectName("verticalLayout_3")
         self.verticalLayout_3.setAlignment(QtCore.Qt.AlignTop)
@@ -267,7 +207,7 @@ class UIDispositvoModal(modal):
         self.Status.setPixmap(QtGui.QPixmap(":/source/img/Cargando.gif"))
         self.Status.setScaledContents(True)
         self.Status.setObjectName("Status")
-        self.utilsLayout.addWidget(self.Status, 0, QtCore.Qt.AlignCenter)
+        self.utilsLayout.addWidget(self.Status, 0, QtCore.Qt.AlignHCenter)
         self.lblStatus = QtWidgets.QLabel(self.UtilsFrame)
         self.lblStatus.setMaximumSize(QtCore.QSize(16777215, 24))
         font = QtGui.QFont()
@@ -289,9 +229,9 @@ class UIDispositvoModal(modal):
         font.setWeight(75)
         self.btnReload.setFont(font)
         self.btnReload.setStyleSheet("border: 1px solid rgb(0, 170, 255);padding:5px;")
-        icon5 = QtGui.QIcon()
-        icon5.addPixmap(QtGui.QPixmap(":/source/img/retry.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.btnReload.setIcon(icon5)
+        icon2 = QtGui.QIcon()
+        icon2.addPixmap(QtGui.QPixmap(":/source/img/retry.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.btnReload.setIcon(icon2)
         self.btnReload.setIconSize(QtCore.QSize(24, 24))
         self.btnReload.setFlat(True)
         self.btnReload.setObjectName("btnReload")
@@ -323,175 +263,81 @@ class UIDispositvoModal(modal):
         self.verticalLayout_2.addWidget(self.ContentBox, 0, QtCore.Qt.AlignHCenter)
         self.verticalLayout.addWidget(self.MainFrame)
 
-        self.retranslateUi(DispositvoModal)
-        QtCore.QMetaObject.connectSlotsByName(DispositvoModal)
-        self.btnReload.hide()
-        self.btnAgregar.setEnabled(False)
-        self.btnImportar.setEnabled(False)
-        self.btnExportar.setEnabled(False)
-        
-        #listener
+        self.retranslateUi(ImportarDispositivo)
+        QtCore.QMetaObject.connectSlotsByName(ImportarDispositivo)
+
+        # listener
         self.parent.signals.resize.connect(self.center)
         self.btnExit.clicked.connect(self.exit)
-        self.btnAgregar.clicked.connect(self.agregarDispositivo)
-        self.btnImportar.clicked.connect(self.importarDispositivos)
-        self.btnExportar.clicked.connect(self.exportarDispositivos)
         self.comboBox.currentIndexChanged.connect(self.mostrarDispositivos)
+        self.btnReload.clicked.connect(self.obtenerWorkSpaces)
 
     def disconnectSignals(self):
         self.parent.signals.resize.disconnect(self.center)
         self.btnExit.clicked.disconnect(self.exit)
-        self.btnImportar.clicked.disconnect(self.importarDispositivos)
-        self.btnExportar.clicked.disconnect(self.exportarDispositivos)
         self.comboBox.currentIndexChanged.disconnect(self.mostrarDispositivos)
-        for ui in self.UIContainer:
-            ui.close()
-        self.UIContainer.clear()
-        QtWidgets.QApplication.processEvents()
 
     def showEvent(self,event):
         self.center()
+        self.comboBox.setEnabled(False)
+        self.obtenerWorkSpaces()
+
+    def obtenerWorkSpaces(self):
         self.updateState("Cargando...",QMovie(":/source/img/Cargando.gif"))
+        worker = Worker(Logica.ObtenerWorkspaces,**{"access_token":self.session.access_token})
+        worker.signals.finished.connect(self.showAction)
+        self.threadpool.start(worker)
+        
+    def showAction(self,response):
+        if isinstance(response,Exception):
+            self.updateState("¡Error! Ha ocurrido un error",QMovie(":/source/img/Error.png"),True)
+            return
+        self.workSpaces = response
         if len(self.workSpaces) == 0:
             self.updateState("¡Vacio! Aqui no hay nada",QMovie(":/source/img/Empty.png"),True)
             return
-        if self.workSpaces is None:
-            self.updateState("¡Error! Ha ocurrido un error",QMovie(":/source/img/Error.png"),True)
-            return
+        self.btnReload.clicked.disconnect(self.obtenerWorkSpaces)
         self.UtilsFrame.hide()
-        self.btnAgregar.setEnabled(True)
-        self.btnExportar.setEnabled(True)
-        self.btnImportar.setEnabled(True)
-        for w in self.workSpaces.items():
-            self.comboBox.addItem(w[1].workSpace.nombre,w[1])
+        self.comboBox.setEnabled(True)
+        for w in self.workSpaces:
+            self.comboBox.addItem(w.nombre,w)
         self.comboBox.setCurrentIndex(0)
         self.mostrarDispositivos(0)
-    
-    def agregarDispositivo(self):
-        UIAgregar = UIAgregarDispositvoModal(self.parent)
-        UIAgregar.show()
-        UIAgregar.signals.success.connect(self.agregarDispositivoAction)
-
-    def agregarDispositivoAction(self,d:device):
-        c = self.comboBox.itemData(self.comboBox.currentIndex())
-        c.workSpace.devices.append(d)
-        UIDevice = UIDispositivoWidget(c.tab,d)
-        c.devicesContainer[d.unicID] = UIDevice
-        self.mostrarDispositivoAction(d)
-        if len(c.workSpace.devices)*200 > 399:
-           self.ScrollContainer.setGeometry(QtCore.QRect(5,45,660,(len(c.workSpace.devices)*200)+35))
 
     def mostrarDispositivos(self,index):
-        self.ScrollContainer.setGeometry(QtCore.QRect(5, 45, 660, 470))
+        self.ScrollContainer.setGeometry(QtCore.QRect(0, 0, 660, 470))
         for ui in self.UIContainer:
             ui.close()
         self.UIContainer.clear()
         QtWidgets.QApplication.processEvents()
-        container = self.comboBox.itemData(index)
-        if len(container.workSpace.devices) == 0:
+        workSpace = self.comboBox.itemData(index)
+        if len(workSpace.devices) == 0:
             self.UtilsFrame.show()
             self.updateState("¡Vacio! Aqui no hay nada",QMovie(":/source/img/Empty.png"),True)
             return
         else:
             self.UtilsFrame.hide()
-        for d in container.workSpace.devices:
-            self.mostrarDispositivoAction(d)
-        if len(container.workSpace.devices)*200 > 399:
-           self.ScrollContainer.setGeometry(QtCore.QRect(5,45,660,(len(container.workSpace.devices)*200)+35))
-
-    def mostrarDispositivoAction(self,d:device):
-        UI = UIDispositivoModalWidget(d)
-        self.verticalLayout_3.addWidget(UI,0,QtCore.Qt.AlignTop | QtCore.Qt.AlignHCenter)
-        UI.signals.edit.connect(self.editarDispositivo)
-        UI.signals.delete.connect(self.eliminarDispositivo)
-        UI.signals.copy.connect(self.copiarDispositivo)
-        self.UIContainer.append(UI)
-
-    def editarDispositivo(self,dev:device):
-        from copy import copy
-        UIAgregar = UIAgregarDispositvoModal(self.parent,copy(dev),True)
-        UIAgregar.show()
-        UIAgregar.signals.success.connect(self.editarDispositivo_Callback)
-    
-    def editarDispositivo_Callback(self,d:device):
-        c = self.comboBox.itemData(self.comboBox.currentIndex())
-        devices = c.workSpace.devices
-        for i,dev in enumerate(devices):
-            if dev.unicID == d.unicID:
-                devices[i] = d
-        UIDevice = c.devicesContainer[d.unicID]
-        UIDevice.updateUI(d)
-        self.mostrarDispositivos(self.comboBox.currentIndex())
-
-    def eliminarDispositivo(self,dev:device):
-        c = self.comboBox.itemData(self.comboBox.currentIndex())
-        c.workSpace.devices.remove(dev)
-        UI = c.devicesContainer[dev.unicID]
-        UI.close()
-        del c.devicesContainer[dev.unicID]
-        self.mostrarDispositivos(self.comboBox.currentIndex())
-
-    def copiarDispositivo(self,dev:device):
-        copyDev = device()
-        copyDev.nombre = ("%s-Copia" % dev.nombre)
-        copyDev.time = dev.time
-        copyDev.image = dev.image
-        copyDev.id = dev.id
-        copyDev.token = dev.token
-        UIAgregar = UIAgregarDispositvoModal(self.parent,copyDev,True)
-        UIAgregar.show()
-        UIAgregar.signals.success.connect(self.agregarDispositivo_Callback)
-        
-    def importarDispositivos(self):
-        from PyQt5.QtWidgets import QFileDialog, QMessageBox
-        from uuid import uuid4
-        fileName = QFileDialog.getOpenFileName(self,"Abrir",filter="JSON files (*.json)")  # options=QtWidgets.QFileDialog.DontUseNativeDialog
-        if all(fileName):
-            response = Logica.fileToJSON(fileName[0])
-            if response is None:
-                QMessageBox.warning(self,"¡Error!","Fallo al cargar")
-                return
-        for dev in response:
-            dev["UnicID"] = uuid4().__str__() # Generates a new unicID for each device
-            for i,var in enumerate(dev["Variables"]):
-                dev["Variables"][i]["UnicID"] = uuid4().__str__() # and each var to avoid any duplicate problem
-            self.agregarDispositivoAction(dev) # adds to current workspace
-            self.mostrarDispositivoAction(dev) # show into the devices modals
-        
-    def exportarDispositivos(self):
-        from PyQt5.QtWidgets import QFileDialog, QMessageBox
-        from copy import copy
-        c = self.comboBox.itemData(self.comboBox.currentIndex())
-        if len(c.workSpace.devices) == 0:
-            QMessageBox.information(self,"¡Aviso!","No hay nada que exportar en este proyecto")
-            return
-        tempWork = (copy(c.workSpace)).toJSON() # makes and copy to delete their image to save space
-        for i,dev in enumerate(tempWork["Drivers"]):
-            tempWork["Drivers"][i]["Image"] = None
-        fileName = QFileDialog.getSaveFileName(self,"Abrir",filter="JSON files (*.json)")  # options=QtWidgets.QFileDialog.DontUseNativeDialog
-        if all(fileName):
-            response = Logica.JSONToFile(fileName[0],tempWork["Drivers"])
-            if response is False:
-                QMessageBox.warning(self,"¡Error!","Fallo al guardar")
-                return
-            QMessageBox.information(self,"¡Exito!","Exportado exitosamente")
-        del tempWork # deletes the copy
+        for d in workSpace.devices:
+            UI = UIDispositivoModalWidget(d,True)
+            self.verticalLayout_3.addWidget(UI,0,QtCore.Qt.AlignTop | QtCore.Qt.AlignHCenter)
+            UI.signals.edit.connect(self.success) # signal indicates is import not edit really
+            self.UIContainer.append(UI)
+        if len(workSpace.devices)*200 > 399:
+           self.ScrollContainer.setGeometry(QtCore.QRect(5,45,660,(len(workSpace.devices)*200)+35))
 
     def updateState(self,text,Movie = None,Reload = False):
         self.Status.setMovie(Movie)
         self.lblStatus.setText(text)
         Movie.start() if Movie != None else None
         self.btnReload.hide() if Reload is False else self.btnReload.show()
-    
-    def retranslateUi(self, DispositvoModal):
+        Movie.setScaledSize(QtCore.QSize(64,64))
+
+    def retranslateUi(self, ImportarDispositivo):
         _translate = QtCore.QCoreApplication.translate
-        DispositvoModal.setWindowTitle(_translate("DispositvoModal", "Sistema SCADA"))
-        self.lblSCADA.setText(_translate("DispositvoModal", "SCADA"))
-        self.lblTitle.setText(_translate("DispositvoModal", "Gestión de Dispositivos"))
-        self.btnAgregar.setText(_translate("DispositvoModal", "Agregar"))
-        self.btnExportar.setText(_translate("DispositvoModal", "Exportar"))
-        self.btnImportar.setText(_translate("DispositvoModal", "Importar"))
-        self.lblStatus.setText(_translate("DispositvoModal", "Cargando..."))
-        self.btnReload.setText(_translate("DispositvoModal", "Reintentar"))
-        self.txtCount.setText(_translate("DispositvoModal", "Total: 0 Dispositivos"))
-        self.lblProyecto.setText(_translate("DispositvoModal", "Proyecto:"))
+        ImportarDispositivo.setWindowTitle(_translate("ImportarDispositivo", "Sistema SCADA"))
+        self.lblSCADA.setText(_translate("ImportarDispositivo", "SCADA"))
+        self.lblTitle.setText(_translate("ImportarDispositivo", "Importar Dispositivo"))
+        self.lblStatus.setText(_translate("ImportarDispositivo", "Cargando..."))
+        self.btnReload.setText(_translate("ImportarDispositivo", "Reintentar"))
+        self.txtCount.setText(_translate("ImportarDispositivo", "Total: 0 Dispositivos"))
+        self.lblProyecto.setText(_translate("ImportarDispositivo", "Proyecto:"))

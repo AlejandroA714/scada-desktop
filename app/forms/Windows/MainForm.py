@@ -346,7 +346,7 @@ class UIMainWindow(form):
             self.actualizarEstado("Guardando...","white","slategray",self.movie)
             workSpace = self.serializeWorkSpace(tabName)
             worker = Worker(Logica.Guardar,**{"access_token":self.session.access_token,"data":workSpace})
-            worker.signals.finished.connect(partial(self.GuardarAction,True,tabName ))
+            worker.signals.finished.connect(partial(self.GuardarAction,IsClose=True,Tab=self.workSpaceTab.currentWidget()))
             self.threadpool.start(worker)
         if reply == QMessageBox.No:
             self.cleanWorkSpace(self.workSpaceTab.currentWidget().objectName())
@@ -363,8 +363,10 @@ class UIMainWindow(form):
         if response["Success"] == 'true':
             self.actualizarEstado("¡Exito! Guardado exitoso a las %s" % datetime.now().strftime("%I:%M del dia %d/%m"),"green","green")
             if IsClose:
+                self.cleanWorkSpace(Tab.objectName())
                 self.__containers.pop(Tab.objectName())
                 self.workSpaceTab.setTabText(self.workSpaceTab.indexOf(Tab),"Tab %s" % (self.workSpaceTab.indexOf(Tab) + 1))
+                
         else:
             self.actualizarEstado("¡Error! Fallo al guardar a las %s" % datetime.now().strftime("%I:%M del dia %d/%m"),"red","red")
             if IsClose:

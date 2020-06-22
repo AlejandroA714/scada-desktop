@@ -420,7 +420,7 @@ class UIAgregarVariableModal(modal):
         var = self.variable
         try:
             var.nombre = self.txtNombre.text()
-            var.expresion = self.txtExpresion.text()
+            var.expresion = None if self.txtExpresion.text() == "" else self.txtExpresion.text()
             var.pin = (self.cmbVariable.itemData(self.cmbVariable.currentIndex()))["PIN"]
             var.analogic = True if self.cmbSenal.currentText() == "Analogica" else False
             var.output = True if self.cmbTipo.currentText() == "Escritura" else False

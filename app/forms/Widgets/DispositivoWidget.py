@@ -4,10 +4,11 @@ from PyQt5.QtWidgets import QMessageBox
 
 class UIDispositivoModalWidget(widget):
 
-    def __init__(self, device:device):
+    def __init__(self, device:device,IsImport = False):
         self.dispositivo = device
         super(UIDispositivoModalWidget,self).__init__()
         self.deviceSignals = deviceSignals()
+        self.IsImport = IsImport
         self.setupUi()
 
     def setupUi(self):
@@ -302,9 +303,16 @@ class UIDispositivoModalWidget(widget):
         self.btnEliminar.clicked.connect(self.btnEliminar_Click)
         self.btnCopiar.clicked.connect(self.btnCopiar_Click)
 
+        if self.IsImport:
+            self.btnEliminar.hide()
+            self.btnCopiar.hide()
+            self.btnEditar.setGeometry(23,60,48,48)
+            icon = QtGui.QIcon()
+            icon.addPixmap(QtGui.QPixmap(":/source/img/Importar.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+            self.btnEditar.setIcon(icon)
 
     def btnEditar_Click(self):
-        reply = self.prompt("Confirmación","¿Editar este Dispositivo?")
+        reply = self.prompt("Confirmación","¿Editar este Dispositivo?" if not self.IsImport else "¿Importar este Dispositivo?")
         if reply == QMessageBox.Yes:
             self.signals.edit.emit(self.dispositivo)
 

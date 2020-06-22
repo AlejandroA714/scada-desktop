@@ -5,6 +5,7 @@ from PyQt5.QtWidgets import QMessageBox
 from resources import *
 from .AgregarVariableModal import UIAgregarVariableModal
 from ..Widgets.VariableWidget import UIVariableWidget
+from .ImportarDispositivoModal import UIImportarDispositivoModal
 from copy import copy
 
 class UIAgregarDispositvoModal(modal): # To add or update and device
@@ -413,11 +414,14 @@ class UIAgregarDispositvoModal(modal): # To add or update and device
         self.retranslateUi(AgregarDispositvoModal)
         QtCore.QMetaObject.connectSlotsByName(AgregarDispositvoModal)
         self.center()
+        # listener
+
         self.parent.signals.resize.connect(self.center)
         self.btnExit.clicked.connect(self.exit)
         self.lblImagen.mouseDoubleClickEvent =  self.actualizarImagen
         self.btnVariableAgregar.clicked.connect(self.agregarVariable)
         self.btnAceptar.clicked.connect(self.btnAceptar_Click)
+        self.btnImportar.clicked.connect(self.btnImportar_Click) 
 
         if self.IsEdit:
             self.txtNombre.setText(self.dispositivo.nombre)
@@ -493,8 +497,24 @@ class UIAgregarDispositvoModal(modal): # To add or update and device
                 QMessageBox.warning(self,"¡Error!","No se permite archivos de mas de 32kb")
                 return
             str_base64 = Logica.imageToByteArray(fileName[0])
+            if str_base64 is None:
+                QMessageBox.warning(self,"¡Error!","Fallo al cargar la imagen")
+                return
             self.lblImagen.setPixmap( Logica.byteArrayToImage(str_base64) )
             self.dispositivo.image = str_base64
+
+    def btnImportar_Click(self):
+        UIImportar = UIImportarDispositivoModal(self.parent)
+        UIImportar.show()
+        UIImportar.signals.success.connect(self.importarAction)
+
+    def importarAction(self,d:device):
+        self.txtNombre.setText("%s-Copia" % d.nombre)
+        self.txtID.setText(d.id)
+        self.txtToken.setText(d.token)
+        self.txtTime.setValue(d.time)
+        self.lblImagen.setPixmap( Logica.byteArrayToImage(d.image) )
+        self.dispositivo.image = d.image
 
     def btnAceptar_Click(self):
         try:
@@ -515,6 +535,7 @@ class UIAgregarDispositvoModal(modal): # To add or update and device
         self.btnAceptar.clicked.disconnect(self.btnAceptar_Click)
         self.lblImagen.mouseDoubleClickEvent = None
         self.btnVariableAgregar.clicked.disconnect(self.agregarVariable)
+        self.btnImportar.clicked.disconnect(self.btnImportar_Click)
         for UI in self.__UIVariablesContainer.items():
             UIVariable = UI[1]
             UIVariable.signals.edit.disconnect(self.editarVariable)

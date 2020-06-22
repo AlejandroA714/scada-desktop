@@ -1,62 +1,10 @@
-from PyQt5.QtWidgets import QMainWindow, QApplication, QMenu, QAction
-from PyQt5 import QtWidgets,QtCore
+from classes import Logica,device
 
-class app(QApplication):
-
-    def __init__(self):
-        super(app,self).__init__([])
-
-class form(QMainWindow):
-    def __init__(self):
-        super(form,self).__init__()
-        self.setupUI()
-
-    def setupUI(self):
-        MainWindow = self
-        MainWindow.setObjectName("MainWindow")
-        MainWindow.resize(840, 740)
-        MainWindow.setMinimumSize(QtCore.QSize(840, 740))
-
-        self.MenuArchivo = QtWidgets.QToolButton(self)
-        self.MenuArchivo.setGeometry(QtCore.QRect(0, 0, 71, 24))
-        self.MenuArchivo.setStyleSheet("margin:0px;")
-        self.MenuArchivo.setPopupMode(QtWidgets.QToolButton.MenuButtonPopup)
-        self.MenuArchivo.setToolButtonStyle(QtCore.Qt.ToolButtonTextBesideIcon)
-        self.MenuArchivo.setAutoRaise(True)
-        self.MenuArchivo.setArrowType(QtCore.Qt.NoArrow)
-        self.MenuArchivo.setObjectName("MenuArchivo")
-
-        self.defineMenuArchivo()
-
-    def defineMenuArchivo(self):
-        # Definicion de menus
-        configuracionesMenu = QMenu()
-        configuracionesMenu.addAction("{:15s}{:>12s}".format("Configuraciones","Ctrl+C"),self.new_Callback)
-        configuracionesMenu.addAction("{:15s}{:>17s}".format("Dispostivos","Ctrl+D"),self.new_Callback)
-        configuracionesMenu.addAction("{:15s}{:>19s}".format("API Local","Ctrl+H"),self.new_Callback)
-        configuracionesMenu.addAction("{:15s}{:>19s}".format("Usuarios","Ctrl+U"),self.new_Callback)
-        configuracionesMenu.addAction("{:15s}{:>20s}".format("Cuenta","Ctrl+P"),self.new_Callback)
-        configuracionesMenu.addAction("{:15s}{:>20s}".format("Acerca de",""), self.new_Callback)
-
-        self.MenuArchivo.setMenu(configuracionesMenu)
-        defaultAction = QAction("Dispositivos",self)
-        defaultAction.triggered.connect(self.new_Callback)
-        self.MenuArchivo.setDefaultAction(defaultAction)
-
-    def new_Callback(self):
-        print("called nuevo")
-    
-    def open_Callback(self):
-        print("called open")
-    
-    def delete_Callback(self):
-        print("called delete")
-
-application = app()
-window = form()
-window.show()
-application.exec()
+access_token = "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE1OTI3Nzk5NzIsIm5iZiI6MTU5Mjc3OTk3MiwianRpIjoiMDEwYzg0NjYtYWI5OS00NWU1LWJiNDQtODdlNTk2NjNmYTcyIiwiZXhwIjoxNTkyODY2MzcyLCJpZGVudGl0eSI6eyJJZCI6IjVkYTlmOWIxZWYyOGJkMjEyMDkxMGI0ZSIsIlVzdWFyaW8iOiJhZG1pbmlzdHJhZG9yLnNjYWRhIiwiVGlwbyI6IkFkbWluaXN0cmFkb3IifSwiZnJlc2giOmZhbHNlLCJ0eXBlIjoiYWNjZXNzIiwidXNlcl9jbGFpbXMiOnsiVGlwbyI6IkFkbWluaXN0cmFkb3IiLCJJZCI6IjVkYTlmOWIxZWYyOGJkMjEyMDkxMGI0ZSJ9fQ.s-623eA5oyjWUtBWTwwfxYvUU0WRpVXq0ycnq8Ej0Yk"
 
 
-
-
+work = Logica.ObtenerWorkspaces(**{"access_token":access_token})
+#work = Logica.AbrirProyectoDebug(**{"access_token":access_token,"id":"5ee7e324604b0e6ce89d3f49"})
+print(work)
+#for x in work:
+#    print(x.__dict__)

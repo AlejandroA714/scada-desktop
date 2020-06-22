@@ -27,7 +27,21 @@ class Logica():
         result.raise_for_status()
         _answer:workSpace = json.loads( result.content ,object_hook=workSpace)
         return _answer
-    
+
+    @staticmethod
+    def ObtenerWorkspaces(**kwargs):
+        _headers = {'Authorization': 'Bearer ' + kwargs["access_token"]}
+        response  = requests.get("http://%s:%s/Controles/ObtenerTodos" % (Logica.settings["APISCADA"]["Host"],Logica.settings["APISCADA"]["Port"]), timeout = 45, headers=_headers)
+        response.raise_for_status()
+        return list(Logica.jsonToList(response.json(),workSpace))
+
+    @staticmethod
+    def jsonToList(y:list,type):
+        if y is None or len(y) == 0:
+            return []
+        for x in y:
+            yield type(x)
+
     @staticmethod
     def ObtenerConfiguraciones(**kwargs):
         _headers = {'Authorization': 'Bearer ' + kwargs["access_token"]}
@@ -41,10 +55,9 @@ class Logica():
         result  = requests.post("http://%s:%s/Configuraciones/Actualizar" % (Logica.settings["APISCADA"]["Host"],Logica.settings["APISCADA"]["Port"]), timeout = 45,json=kwargs["data"], headers=_headers)
         result.raise_for_status()
         return result.json()
-
         
     @staticmethod
-    def AbrirProyecto(**kwargs):
+    def AbrirProyectoBackup(**kwargs):
         _headers = {'Authorization': 'Bearer ' + kwargs["access_token"]}
         result  = requests.get("http://%s:%s/Controles/Abrir/%s" % (Logica.settings["APISCADA"]["Host"],Logica.settings["APISCADA"]["Port"],kwargs["id"]), timeout = 45, headers=_headers)
         result.raise_for_status()
@@ -58,28 +71,20 @@ class Logica():
         return work
 
     @staticmethod
+    def AbrirProyecto(**kwargs):
+        _headers = {'Authorization': 'Bearer ' + kwargs["access_token"]}
+        response  = requests.get("http://%s:%s/Controles/Abrir/%s" % (Logica.settings["APISCADA"]["Host"],Logica.settings["APISCADA"]["Port"],kwargs["id"]), timeout = 45, headers=_headers)
+        response.raise_for_status()
+        if response.json() == []:
+            raise Exception("¡Error! Proyecto no existe")
+        return workSpace(response.json())
+
+    @staticmethod
     def ObtenerVariablesFunciones(**kwargs):
         _headers = {'Authorization': 'Bearer ' + kwargs["access_token"]}
         result  = requests.get("http://%s:%s/Controles/ObtenerVariablesFunciones/%s/%s" % (Logica.settings["APISCADA"]["Host"],Logica.settings["APISCADA"]["Port"],kwargs["ID"],kwargs["Token"]), timeout = 45, headers=_headers)
         result.raise_for_status()
         return result.json()
-
-    @staticmethod
-    def AbrirProyectoDebug(**kwargs):
-        _headers = {'Authorization': 'Bearer ' + kwargs["access_token"]}
-        result  = requests.get("http://%s:%s/Controles/Abrir/%s" % (Logica.settings["APISCADA"]["Host"],Logica.settings["APISCADA"]["Port"],kwargs["id"]), timeout = 45, headers=_headers)
-        result.raise_for_status()
-        try:
-            work = json.loads(json.dumps(x["variables"]), object_hook=workSpace)
-        except ValueError as e:
-            print()
-        #for x in result.json()["Drivers"]:
-        #    dev = device(x)
-        #    dev.variables = json.loads( json.dumps(x["variables"]), object_hook=variable )
-        #    drivers.append(dev)
-        #work = workSpace({"Id":result.json()["Id"],"Nombre":result.json()["Nombre"], "DriversCount": len(drivers) })
-        #work.devices = drivers
-        return work
 
     @staticmethod
     def LeerSensor(**kwargs):
@@ -111,11 +116,42 @@ class Logica():
         return result.json()
 
     @staticmethod
+    def fileToJSON(fileName):
+        Logger = logger()
+        try:
+            with open(fileName,'r') as f:
+                file = json.loads(f.read())
+            return file
+        except Exception as e:
+            Logger.log_error(e)
+            return None
+
+    @staticmethod
+    def JSONToFile(fileName:str,jsonData):
+        Logger = logger()
+        try:
+            import os
+            with open(fileName,'w+') as f:
+                f.write(json.dumps(jsonData))
+                f.close()
+            fileNameStr = os.path.splitext(fileName)[0]
+            os.rename(fileName, fileNameStr + '.json')
+            return True
+        except Exception as e:
+            Logger.log_error(e)
+            return False
+
+    @staticmethod
     def imageToByteArray(fileName):
+        Logger = logger()
         from base64 import b64encode
-        with open(fileName,'rb') as f:
-            file = b64encode(f.read())
-        return file.decode()
+        try:
+            with open(fileName,'rb') as f:
+                file = b64encode(f.read())
+            return file.decode()
+        except Exception as e:
+            Logger.log_error(e)
+            return None
         
     @staticmethod
     def byteArrayToImage(file):

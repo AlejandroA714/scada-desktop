@@ -247,6 +247,9 @@ class UIDispositivoWidget(widget):
                 QMessageBox.warning(self,"¡Error!","No se permite archivos de mas de 32kb")
                 return
             str_base64 = Logica.imageToByteArray(fileName[0])
+            if str_base64 is None:
+                QMessageBox.warning(self,"¡Error!","Fallo al cargar la imagen")
+                return
             self.lblImagen.setPixmap( Logica.byteArrayToImage(str_base64) )
             self.__dispostivo.image = str_base64
 
@@ -318,7 +321,7 @@ class UIDispositivoWidget(widget):
         self.VariablesFrame.setEnabled(False)
         self.updateState("Actualizando...",self.movie)
         self.deviceSignals.updating.emit()
-        worker = Worker(Logica.ActualizarSensor,**{"access_token":self.session.access_token,"ID":self.__dispostivo.id,"Token":self.__dispostivo.token,"data":var.toJSON() })
+        worker = Worker(Logica.ActualizarSensor, **{"access_token":self.session.access_token,"ID":self.__dispostivo.id,"Token":self.__dispostivo.token,"data":var.toJSON() })
         worker.signals.finished.connect(partial(self.actualizarVariable_Callback,var,current_time))
         self.threadpool.start(worker)
 
@@ -340,7 +343,7 @@ class UIDispositivoWidget(widget):
             self.updateState("¡No hay variables!",subText=None)
             self.__status = 0
         else:
-            self.updateState("Actualizando en",subText=str(current_time))
+            self.updateState("Actualizando en ",subText=str(current_time))
             self.__status = 1
         self.movie.stop()
         self.deviceSignals.updated.emit()
