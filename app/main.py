@@ -15,7 +15,7 @@ class application(QApplication):
     def showLoginForm(self,sessionClosed = False,timerid = 0):
         if sessionClosed:
             self.mainWindow.signals.logout.disconnect()
-            del self.mainWindow.session
+            session().destroy()
             self.timer.restartTimer(timerid)
             self.mainWindow.deleteLater()
             self.processEvents()

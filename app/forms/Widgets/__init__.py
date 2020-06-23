@@ -6,3 +6,4 @@ from .Dispositivo import UIDispositivoWidget
 from .DispositivoWidget import UIDispositivoModalWidget
 from .ProyectoWidget import UIWidgetP
 from .VariableWidget import UIVariableWidget
+from .UsuarioWidget import UIUsuarioWidget

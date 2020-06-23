@@ -17,8 +17,10 @@ class usuario(object):
             self.usuario = dict["Usuario"]
             self.email = dict["Email"]
             self.enabled = dict["Enabled"]
-            self.access_token = dict["access_token"]
-            self.refresh_token = dict["refresh_token"]
+            if "access_token" in dict:
+                self.access_token = dict["access_token"]
+            if "refresh_token" in dict:
+                self.refresh_token = dict["refresh_token"]
 
     @property
     def id(self):
@@ -67,7 +69,7 @@ class usuario(object):
 
     @enabled.setter
     def enabled(self,value):
-        self.__enabled = value
+        self.__enabled = bool(value)
 
     @property
     def access_token(self):
