@@ -425,7 +425,7 @@ class UIAgregarVariableModal(modal):
             var.analogic = True if self.cmbSenal.currentText() == "Analogica" else False
             var.output = True if self.cmbTipo.currentText() == "Escritura" else False
             var.displayColor = None if not self.cmbColor.isEnabled() else self.cmbColor.currentText()
-            var.notify = None if not self.boxNotificar.isChecked() else self.cmbNotificar.currentText().rjust(2,"-") + self.txtNotificar.value().__str__()
+            var.notify = None if not self.boxNotificar.isChecked() else  "x%s%s" % (self.cmbNotificar.currentText().rjust(2,"-"),self.txtNotificar.value().__str__())
             var.nivel = None if not self.boxNotificar.isChecked() else self.cmbNivel.itemData(self.cmbNivel.currentIndex())["color"]
         except ValueError as vError:
             QtWidgets.QMessageBox.warning(self,"¡Error!",vError.__str__())
@@ -501,8 +501,8 @@ class UIAgregarVariableModal(modal):
             self.cmbColor.setCurrentIndex(self.cmbColor.findText(self.variable.displayColor) if self.variable.displayColor != None else 0 )
             self.boxNotificar.setChecked(True if self.variable.notify != None else False)
             self.cmbVariable.setCurrentIndex(self.cmbVariable.findText(self.variable.pin))
-            self.cmbNotificar.setCurrentIndex(self.cmbNotificar.findText(self.variable.notify.replace("-"," ")[0:2].strip()) if self.variable.notify != None else 0 )
-            self.txtNotificar.setValue(int(self.variable.notify[2:]) if self.variable.notify != None else 0 )
+            self.cmbNotificar.setCurrentIndex(self.cmbNotificar.findText(self.variable.notify.replace("-"," ")[1:3].strip()) if self.variable.notify != None else 0 ) # edited [0:2]
+            self.txtNotificar.setValue(int(self.variable.notify[3:]) if self.variable.notify != None else 0 )
             self.cmbNivel.setCurrentIndex(self.cmbNivel.findText( self.findNotify(self.variable.nivel) ) if self.variable.nivel != None else 0)
         self.ContentLayout.addWidget(self.ContentFrame)
 

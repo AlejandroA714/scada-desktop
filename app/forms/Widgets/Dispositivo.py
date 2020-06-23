@@ -2,11 +2,8 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtWidgets import QFileDialog
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QMovie, QPixmap, QImage
-from classes import workSpace, timer, widget, device, deviceSignals, Worker, Logica, variable
-from .AIWidget import UIAIVariable
-from .AOWidget import UIAOVariable
-from .DIWidget import UIDIVariable
-from .DOWidget import UIDOVariable
+from classes import workSpace, timer, widget, device, deviceSignals, Worker, Logica, variable, reporte
+from . import UIAIVariable,UIAOVariable,UIDIVariable,UIDOVariable
 from resources import *
 from datetime import datetime
 from functools import partial
@@ -294,19 +291,27 @@ class UIDispositivoWidget(widget):
         self.threadpool.start(worker)  
 
     def actualizarVariables_Callback(self,variablesList:list): # callback for worker
-        if isinstance(variablesList,Exception):
+        if isinstance(variablesList,Exception): # No connection with API SCADA
             self.deviceSignals.error.emit(variablesList)
             self.updateDeviceState("Sin Conexion")
         else:
             if len(variablesList) == 0:
-                self.deviceSignals.error.emit(Exception("No hay acceso a internet"))
+                self.deviceSignals.error.emit(Exception("No hay acceso a internet")) # No Internet connection
                 self.updateDeviceState("Desconectado","red")
             else:
                 for v in variablesList:
+                    if not v.expresion is None:
+                        v.value = Logica.evaluarExpresion(v.expresion,v.value)
+                    if not v.notify is None: # If notify option is active
+                        if Logica.evaluarExpresion(v.notify.replace("-","").strip(),v.value): # evaluate if condition is true
+                           self.nuevoReporte(v)
                     self.__variablesContainer[v.unicID].updateUI(v)
                     self.updateDeviceState("Conectado","green")
                     self.Last.setText(datetime.now().strftime("%d/%m/%Y %I:%M:%S %p"))
                     self.__dispostivo.lastUpdate = datetime.now().strftime("%d/%m/%Y %I:%M:%S %p")
+                    for i,var in enumerate(self.__dispostivo.variables): # to update his value
+                        if var.unicID == v.unicID:
+                            self.__dispostivo.variables[i].value = v.value
         if len(list(filter(lambda var:(not var.output) ,self.__dispostivo.variables))) == 0:
             self.updateState("¡No hay variables!",subText=None)
             self.__status = 0
@@ -315,6 +320,26 @@ class UIDispositivoWidget(widget):
             self.__status = 1
         self.deviceSignals.updated.emit()
 
+    def nuevoReporte(self,v:variable):
+        report = reporte({
+            "NombreDispositivo":self.__dispostivo.nombre,
+            "NombreVariable":v.nombre,
+            "Valor":v.value,
+            "Usuario":self.session.usuario,
+            "Condicion": "%s%s" % (v.value,v.notify.replace("-","")[1:]),
+            "Nivel":v.nivel,
+        })
+        worker = Worker(Logica.nuevoReporte,**{"access_token":self.session.access_token,"data":report.toJSON()})
+        worker.signals.finished.connect(self.nuevoReporteAction)
+        self.threadpool.start(worker)
+    
+    def nuevoReporteAction(self,response):
+        print(response)
+        if isinstance(response,Exception):
+            pass
+        if not response["Success"] == 'true':
+            pass
+        
     def actualizarVariable(self,var:variable):
         self.__status = 2
         current_time =  int(self.Time.text()) if self.Time.text() != '' else self.__dispostivo.time

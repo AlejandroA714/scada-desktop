@@ -1,8 +1,0 @@
-[
-{"ID":"12345","Timestamp":"20140101", "Usefulness":"Yes",
-  "Code":[{"event1":"A","result":"1"},{"event1":"C","result":"2"}]},
-{"ID":"1A35B","Timestamp":"20140102", "Usefulness":"No",
-  "Code":[{"event1":"B","result":"1"}]},
-{"ID":"AA356","Timestamp":"20140103", "Usefulness":"No",
-  "Code":[{"event1":"B","result":"0"}]}
-]

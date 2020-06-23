@@ -295,7 +295,7 @@ class variable(object):
     @nombre.setter
     def nombre(self,value):
         if len(value) < 3 or value is None:
-            raise ValueError("¡Error! \"%s\" no es un nombre valido, Min 3" % value.__str__())
+            raise ValueError("¡Error! \"%s\" no es un nombre valido\nMinimo 3 caracteres" % value.__str__())
         self.__nombre = value
 
     @property
@@ -341,9 +341,13 @@ class variable(object):
         return self.__expresion
 
     @expresion.setter
-    def expresion(self,value): #pending
-        if value == "" or value == "null" or value == '':
+    def expresion(self,value):
+        from classes import Logica
+        if value == "" or value == "null" or value == '' or value is None:
             self.__expresion = None
+            return
+        if not Logica.evaluarExpresion(value) :
+            raise ValueError("¡Error! \"%s\" no es una expresion valida\nLa expresion debe ser logica y contener solo a x" % value)
         self.__expresion = value
 
     @property
@@ -356,7 +360,7 @@ class variable(object):
         if value == "" or value == "null" or value == None:
             self.__notify = None
             return
-        if not re.search("^((->|-<|==|!=)[0-9]{1,}$)",value):
+        if not re.search("^((x->|x-<|x==|x!=)[0-9]{1,}$)",value):
             raise ValueError("¡Error! \"%s\" no es un comparador valido" % value)
         self.__notify = value
 

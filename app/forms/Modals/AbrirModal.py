@@ -1,14 +1,10 @@
 from PyQt5.QtWidgets import QGraphicsDropShadowEffect, QMessageBox
 from PyQt5 import QtCore, QtGui, QtWidgets
-from forms.Widgets.ProyectoWidget import UIWidgetP
+from ..Widgets import UIWidgetP
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QMovie
-from classes.inheritables.modal import modal
-from classes.utils.logica import Logica
-from classes.utils.worker import Worker
-from classes.objects.workSpace import workSpace
-from classes.utils.timer import timer
-from resources.resources import *
+from classes import modal, Logica, Worker, Worker, timer
+from resources import *
 
 class UIAbrirModal(modal):
 

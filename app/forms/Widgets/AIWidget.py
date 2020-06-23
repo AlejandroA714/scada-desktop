@@ -1,6 +1,6 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import Qt
-from classes import widget, variable, variableSignals
+from classes import widget, variable, variableSignals, Logica
 
 class UIAIVariable(widget):
 
@@ -88,4 +88,4 @@ class UIAIVariable(widget):
         _translate = QtCore.QCoreApplication.translate
         AIVariable.setWindowTitle(_translate("AIVariable", "Form"))
         self.lblTitle.setText(_translate("AIVariable", self.__variable.nombre))
-        self.lblValue.setText(_translate("AIVariable", self.__variable.value))
+        self.lblValue.setText(_translate("AIVariable", self.__variable.value.__str__()))

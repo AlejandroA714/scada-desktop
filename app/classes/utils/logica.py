@@ -1,6 +1,7 @@
 from classes.utils.logger import logger
 from classes.objects.workSpace import workSpace,device, variable
 from ..objects.usuario import usuario
+from py_expression_eval import Parser
 import requests, json, os
 
 class Logica():
@@ -34,13 +35,6 @@ class Logica():
         response  = requests.get("http://%s:%s/Controles/ObtenerTodos" % (Logica.settings["APISCADA"]["Host"],Logica.settings["APISCADA"]["Port"]), timeout = 45, headers=_headers)
         response.raise_for_status()
         return list(Logica.jsonToList(response.json(),workSpace))
-
-    @staticmethod
-    def jsonToList(y:list,type):
-        if y is None or len(y) == 0:
-            return []
-        for x in y:
-            yield type(x)
 
     @staticmethod
     def ObtenerConfiguraciones(**kwargs):
@@ -114,6 +108,30 @@ class Logica():
         result  = requests.get("http://%s:%s/Controles/Eliminar/%s" % (Logica.settings["APISCADA"]["Host"],Logica.settings["APISCADA"]["Port"],kwargs["id"]), timeout = 45, headers=_headers)
         result.raise_for_status()
         return result.json()
+
+    @staticmethod
+    def nuevoReporte(**kwargs):
+        _headers = {'Authorization': 'Bearer ' + kwargs["access_token"]}
+        result  = requests.post("http://%s:%s/Reportes/NuevoReporte" % (Logica.settings["APISCADA"]["Host"],Logica.settings["APISCADA"]["Port"]), timeout = 45,json=kwargs["data"], headers=_headers)
+        result.raise_for_status()
+        return result.json()
+
+
+    @staticmethod
+    def evaluarExpresion(expresion:str,value=255):
+        parser = Parser()
+        try:
+            response = parser.parse(expresion).evaluate({'x':value})
+            return response
+        except Exception as e:
+            return False
+
+    @staticmethod
+    def jsonToList(y:list,type):
+        if y is None or len(y) == 0:
+            return []
+        for x in y:
+            yield type(x)
 
     @staticmethod
     def fileToJSON(fileName):

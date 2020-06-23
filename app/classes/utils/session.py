@@ -21,5 +21,9 @@ class session(object):
     def access_token(self):
         return self.__sessionObject.access_token
 
+    @property
+    def usuario(self):
+        return self.__sessionObject.usuario
+
     def isValid(self): # just validate that an user object exits, if access_token is invalid o doesnt exist API will deny access
         return True if isinstance(self.__sessionObject,usuario) else False
