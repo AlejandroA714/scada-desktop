@@ -104,6 +104,41 @@ class Logica():
         return list(Logica.jsonToList(response.json(),usuario))
 
     @staticmethod
+    def agregarUsuario(**kwargs):
+        _headers = {'Authorization': 'Bearer ' + kwargs["access_token"]}
+        response  = requests.post("%s://%s:%s/Sesion/InsertarUsuario" % (Logica.settings["APISCADA"]["HTTP_PROTOCOL"],Logica.settings["APISCADA"]["Host"],Logica.settings["APISCADA"]["Port"]), timeout = 45,json=kwargs["data"], headers=_headers,verify=False)
+        response.raise_for_status()
+        return response.json()
+
+    @staticmethod
+    def editarUsuario(**kwargs):
+        _headers = {'Authorization': 'Bearer ' + kwargs["access_token"]}
+        response  = requests.post("%s://%s:%s/Sesion/ActualizarUsuario" % (Logica.settings["APISCADA"]["HTTP_PROTOCOL"],Logica.settings["APISCADA"]["Host"],Logica.settings["APISCADA"]["Port"]), timeout = 45,json=kwargs["data"], headers=_headers,verify=False)
+        response.raise_for_status()
+        return response.json()
+    
+    @staticmethod
+    def eliminarUsuario(**kwargs):
+        _headers = {'Authorization': 'Bearer ' + kwargs["access_token"]}
+        response  = requests.get("%s://%s:%s/Sesion/EliminarUsuario/%s" % (Logica.settings["APISCADA"]["HTTP_PROTOCOL"],Logica.settings["APISCADA"]["Host"],Logica.settings["APISCADA"]["Port"],kwargs["id"]), timeout = 45, headers=_headers,verify=False)
+        response.raise_for_status()
+        return response.json()
+
+    @staticmethod
+    def habilitarUsuario(**kwargs):
+        _headers = {'Authorization': 'Bearer ' + kwargs["access_token"]}
+        response  = requests.get("%s://%s:%s/Sesion/HabilitarUsuario/%s" % (Logica.settings["APISCADA"]["HTTP_PROTOCOL"],Logica.settings["APISCADA"]["Host"],Logica.settings["APISCADA"]["Port"],kwargs["id"]), timeout = 45, headers=_headers,verify=False)
+        response.raise_for_status()
+        return response.json()
+    
+    @staticmethod
+    def deshabilitarUsuario(**kwargs):
+        _headers = {'Authorization': 'Bearer ' + kwargs["access_token"]}
+        response  = requests.get("%s://%s:%s/Sesion/DeshabilitarUsuario/%s" % (Logica.settings["APISCADA"]["HTTP_PROTOCOL"],Logica.settings["APISCADA"]["Host"],Logica.settings["APISCADA"]["Port"],kwargs["id"]), timeout = 45, headers=_headers,verify=False)
+        response.raise_for_status()
+        return response.json()
+
+    @staticmethod
     def nuevoReporte(**kwargs):
         _headers = {'Authorization': 'Bearer ' + kwargs["access_token"]}
         result  = requests.post("%s://%s:%s/Reportes/NuevoReporte" % (Logica.settings["APISCADA"]["HTTP_PROTOCOL"],Logica.settings["APISCADA"]["Host"],Logica.settings["APISCADA"]["Port"]), timeout = 45,json=kwargs["data"], headers=_headers,verify=False)

@@ -1,3 +1,3 @@
-txet = 'true'
+from classes import usuario
 
-print(bool(txet))
+print(usuario.randomPassword(32))

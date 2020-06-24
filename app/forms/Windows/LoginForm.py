@@ -193,7 +193,7 @@ class UILogin(form):
         self.lblmovie.hide()
         self.btnAceptar.show()
         if isinstance(s,Exception):
-            QMessageBox.information(self,"¡Error!", "¡Error! %s" % str(s))
+            QMessageBox.information(self,"¡Error!",str(s))
             return
         if(s.id is None): # If returns None, API is online, but mongodb isnt
             QMessageBox.warning(self,"¡Error!", "No se pudo iniciar sesion")

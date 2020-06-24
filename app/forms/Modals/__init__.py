@@ -5,3 +5,4 @@ from .AgregarDispositivoModal import UIAgregarDispositvoModal
 from .AgregarVariableModal import UIAgregarVariableModal
 from .ImportarDispositivoModal import UIImportarDispositivoModal
 from .UsuariosModal import UIUsuariosModal
+from .AgregarUsuarioModal import UIAgregarUsuarioModal

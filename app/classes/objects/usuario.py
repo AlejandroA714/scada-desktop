@@ -1,13 +1,15 @@
+from pymongo.collection import ObjectId
+
 class usuario(object):
 
     def __init__(self,dict = None):
         if dict is None:
-            self.id = None
-            self.nombres = None
-            self.tipo = None
-            self.usuario = None
-            self.email = None
-            self.enabled = None
+            self.id = ObjectId().__str__()
+            self.nombres = "Usuario1"
+            self.tipo = "Usuario"
+            self.usuario = "usuario.scada"
+            self.email = "usuario@gmail.com"
+            self.enabled = False
             self.access_token = None
             self.refresh_token = None
         else:
@@ -36,6 +38,8 @@ class usuario(object):
 
     @nombres.setter
     def nombres(self,value):
+        if len(value) < 3 or len(value) > 32 or value is None:
+            raise ValueError("¡Error! \"%s\" no es un nombre valido\nMinimo 3 caracteres, Maximo 32" % value.__str__())
         self.__nombres = value
 
     @property
@@ -44,8 +48,9 @@ class usuario(object):
 
     @tipo.setter
     def tipo(self,value):
+        if value != "Administrador" and value != "Usuario":
+            raise ValueError("¡Error! Tipo de usuario invalido")
         self.__tipo = value
-        #raise Exception("¡Error! No se puede cambiar el tipo de usuario")
 
     @property
     def usuario(self):
@@ -53,6 +58,8 @@ class usuario(object):
 
     @usuario.setter
     def usuario(self,value):
+        if len(value) < 3 or len(value) > 24 or value is None:
+            raise ValueError("¡Error! \"%s\" no es un usuario valido\nMinimo 3 caracteres, Maximo 24" % value.__str__())
         self.__usuario = value
 
     @property
@@ -61,6 +68,9 @@ class usuario(object):
     
     @email.setter
     def email(self,value):
+        import re
+        if not re.search("^((\w|ñ){1,}(\.){0,1}){1,}@(\w|ñ){3,}((\.)[ñA-Za-z]{2,3}){1,}",value) and self.usuario != "administrador.scada":
+            raise ValueError("¡Error! \"%s\" no es un email valido" % value)
         self.__email = value
     
     @property
@@ -69,7 +79,7 @@ class usuario(object):
 
     @enabled.setter
     def enabled(self,value):
-        self.__enabled = bool(value)
+        self.__enabled = self.toBool(value)
 
     @property
     def access_token(self):
@@ -87,3 +97,31 @@ class usuario(object):
     def refresh_token(self,value):
         self.__refresh_token = value
         #return Exception("¡Error! Solo se puede asignar un refresh token")
+
+    def toJSON(self):
+        return {
+            "Id":self.id,
+            "Nombres":self.nombres,
+            "Usuario":self.usuario,
+            "Email":self.email,
+            "Password":self.randomPassword(),
+            "Tipo":self.tipo,
+            "Enabled":self.enabled
+        }
+
+    @staticmethod
+    def randomPassword(lenght=12):
+        import random
+        alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"
+        txtPass = ""
+        for i in range(lenght):
+            txtPass += alphabet[random.randint(0,alphabet.__len__()-1)]
+        return txtPass
+
+    @staticmethod
+    def toBool(str):
+        if str in ["true","True",1,"verdadero",True]:
+            return True
+        else:
+            return False
+

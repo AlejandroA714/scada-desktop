@@ -226,19 +226,38 @@ class UIUsuarioWidget(widget):
         #listener
 
         self.btnHabilitar.clicked.connect(self.actualizarEstadoUsuario)
+        self.btnEditar.clicked.connect(self.editarUsuario)
+        self.btnEliminar.clicked.connect(self.eliminarUsuario)
 
     def actualizarEstadoUsuario(self):
         reply = self.prompt("Confirmacion","¿Habilitar este usuario?" if not self.usuario.enabled else "¿Deshabilitar este usuario?")
         if not reply == QtWidgets.QMessageBox.Yes:
             return
-        self.usuario.enabled = not self.usuario.enabled
-        icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap(":/source/img/allow.png" if not self.usuario.enabled else ":/source/img/denied.png" ), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.btnHabilitar.setIcon(icon)
-        if self.usuario.enabled:
+        if not self.usuario.enabled:
             self.signals.enable.emit(self.usuario)
         else:
             self.signals.disable.emit(self.usuario)
+
+    def editarUsuario(self):
+        reply = self.prompt("Confirmacion","¿Editar este usuario?")
+        if  reply == QtWidgets.QMessageBox.Yes:
+            self.signals.edit.emit(self.usuario)
+    
+    def eliminarUsuario(self):
+        reply = self.prompt("Confirmacion","¿Editar este usuario?")
+        if  reply == QtWidgets.QMessageBox.Yes:
+            self.signals.delete.emit(self.usuario)
+    
+    def updateUI(self,usr:usuario):
+        self.usuario = usr     
+        _translate = QtCore.QCoreApplication.translate  
+        self.lblNombre.setText(_translate("UsuarioWidget", self.usuario.nombres))
+        self.lblTipo.setText(_translate("UsuarioWidget", self.usuario.tipo))
+        self.lblEmail.setText(_translate("UsuarioWidget", "-" if self.usuario.email == "" else self.usuario.email))
+        self.lblUsuario.setText(_translate("UsuarioWidget", self.usuario.usuario)) 
+        icon = QtGui.QIcon()
+        icon.addPixmap(QtGui.QPixmap(":/source/img/allow.png" if not self.usuario.enabled else ":/source/img/denied.png" ), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.btnHabilitar.setIcon(icon)
 
     def showEvent(self,evt):
         
@@ -253,12 +272,13 @@ class UIUsuarioWidget(widget):
             self.btnEliminar.show()
         if (currentUser == showUser):
             self.btnEditar.show()
-            self.btnHabilitar.clicked.disconnect(self.actualizarEstadoUsuario)
-            self.btnHabilitar.deleteLater()
-            self.btnEliminar.deleteLater()
+            #self.btnHabilitar.clicked.disconnect(self.actualizarEstadoUsuario)
+            #self.btnHabilitar.deleteLater()
+            #self.btnEliminar.deleteLater()
 
     def disconnectSignals(self):
-        pass
+        self.btnHabilitar.clicked.disconnect(self.actualizarEstadoUsuario)
+        self.btnEditar.clicked.disconnect(self.editarUsuario)
     
     def sizeHint(self):
         return QtCore.QSize(621,41)

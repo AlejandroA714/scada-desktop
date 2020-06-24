@@ -1,15 +1,17 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtGui import QMovie
+from PyQt5.QtWidgets import QMessageBox
 from PyQt5.QtCore import Qt
-from classes import modal, device, Logica, Worker
+from classes import modal, device, Logica, Worker, usuario
 from forms.Widgets import UIUsuarioWidget
-from forms.Modals.AgregarDispositivoModal import UIAgregarDispositvoModal
+from .AgregarUsuarioModal import UIAgregarUsuarioModal
+from functools import partial
 from resources import *
 
 class UIUsuariosModal(modal):
 
     def __init__(self,MainWindow):
-        self.UIContainer = []
+        self.UIContainer = dict()
         super(UIUsuariosModal,self).__init__(MainWindow)
         self.setupUi()
 
@@ -352,6 +354,7 @@ class UIUsuariosModal(modal):
         self.btnExit.clicked.connect(self.exit)
         self.btnReload.clicked.connect(self.obtenerUsuarios)
         self.cmbTipo.currentIndexChanged.connect(self.mostrarUsuarios)
+        self.btnAgregar.clicked.connect(self.agregarUsuario)
 
     def showEvent(self,evt):
         self.center()
@@ -378,9 +381,7 @@ class UIUsuariosModal(modal):
 
     def mostrarUsuarios(self,index):
         self.ScrollContainer.setGeometry(QtCore.QRect(5, 65, 660, 451))
-        for UI in self.UIContainer:
-            UI.close()
-        self.UIContainer.clear()
+        self.cleanUI()
         filter = self.cmbTipo.currentText()
         if not filter == "Todos":
            filterUsr = list(self.filter(filter))
@@ -394,8 +395,80 @@ class UIUsuariosModal(modal):
            self.UtilsFrame.hide()
         for usr in filterUsr:
            UIUsuario = UIUsuarioWidget(usr)
+           UIUsuario.signals.enable.connect(self.habilitarUsuario)
+           UIUsuario.signals.disable.connect(self.deshabilitarUsuario)
+           UIUsuario.signals.edit.connect(self.editarUsuario)
+           UIUsuario.signals.delete.connect(self.eliminarUsuario)
            self.verticalLayout_3.addWidget(UIUsuario,0,Qt.AlignTop | Qt.AlignHCenter)
-           self.UIContainer.append(UIUsuario)
+           self.UIContainer[usr.id] = UIUsuario
+
+    def agregarUsuario(self):
+        UIAgregar = UIAgregarUsuarioModal(self.parent)
+        UIAgregar.signals.success.connect(self.agregarUsuarioAction)
+        UIAgregar.show()
+
+    def agregarUsuarioAction(self,usr:usuario):
+        self.usuarios.append(usr)
+        self.mostrarUsuarios(2)
+
+    def editarUsuario(self,usr:usuario):
+        UIEditar = UIAgregarUsuarioModal(self.parent,True,user=usr)
+        UIEditar.signals.success.connect(self.editarUsuarioAction)
+        UIEditar.show()
+
+    def editarUsuarioAction(self,usr:usuario):
+        self.UIContainer[usr.id].updateUI(usr)
+        for i,user in enumerate(self.usuarios):
+            if user.id == usr.id:
+                self.usuarios[i] = usr
+
+    def eliminarUsuario(self,user:usuario):
+        self.ContentBox.setEnabled(False)
+        worker = Worker(Logica.eliminarUsuario,**{"access_token":self.session.access_token,"id":user.id})
+        worker.signals.finished.connect(partial(self.eliminarUsuarioAction,usr=user))
+        self.threadpool.start(worker)
+
+    def eliminarUsuarioAction(self,response,usr):
+        self.ContentBox.setEnabled(True)
+        if isinstance(response,Exception):
+            QMessageBox.warning(self,"¡Error!","¡Error! Fallo al contactar con el servicio SCADA")
+            return
+        if response["Success"] == 'false':
+            QMessageBox.warning(self,'¡Error!',response["Message"])
+            return
+        self.usuarios.remove(usr)
+        self.UIContainer[usr.id].close()
+        del self.UIContainer[usr.id]
+
+    def habilitarUsuario(self,usr:usuario):
+        self.ContentBox.setEnabled(False)
+        worker = Worker(Logica.habilitarUsuario,**{"access_token":self.session.access_token,"id":usr.id})
+        worker.signals.finished.connect(partial(self.habilitarUsuarioAction,usr=usr))
+        self.threadpool.start(worker)
+
+    def deshabilitarUsuario(self,usr:usuario):
+        self.ContentBox.setEnabled(False)
+        worker = Worker(Logica.deshabilitarUsuario,**{"access_token":self.session.access_token,"id":usr.id})
+        worker.signals.finished.connect(partial(self.habilitarUsuarioAction,usr=usr))
+        self.threadpool.start(worker)
+
+    def habilitarUsuarioAction(self,response,usr:usuario):
+        self.ContentBox.setEnabled(True)
+        if isinstance(response,Exception):
+            QMessageBox.warning(self,"¡Error!","¡Error! Fallo al contactar con el servicio SCADA")
+            return
+        if response["Success"] == 'false':
+            QMessageBox.warning(self,'¡Error!',response["Message"])
+            return
+        usr.enabled = not usr.enabled
+        self.UIContainer[usr.id].updateUI(usr)
+
+    def cleanUI(self):
+        for UI in self.UIContainer.items():
+            UI[1].signals.enable.disconnect(self.habilitarUsuario)
+            UI[1].signals.disable.disconnect(self.deshabilitarUsuario)
+            UI[1].close()
+        self.UIContainer.clear()
 
     def filter(self,filter):
         for u in self.usuarios:
@@ -406,10 +479,7 @@ class UIUsuariosModal(modal):
         self.parent.signals.resize.disconnect(self.center)
         self.btnExit.clicked.disconnect(self.exit)
         self.cmbTipo.currentIndexChanged.disconnect(self.mostrarUsuarios)
-        for ui in self.UIContainer:
-            ui.close()
-        self.UIContainer.clear()
-        QtWidgets.QApplication.processEvents()
+        self.cleanUI()
 
     def updateState(self,text,Movie = None,Reload = False):
         self.Status.setMovie(Movie)
