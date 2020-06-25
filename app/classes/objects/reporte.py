@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import datetime, date
 import re
 
 class reporte(object):
@@ -7,7 +7,7 @@ class reporte(object):
         if dict is None:
             self.nombreDispositivo = "devX"
             self.nombreVariable = "varX"
-            self.fecha = datetime.now().strftime("%Y-%m-%d")
+            self.fecha = date.now().strftime("%Y-%m-%d")
             self.hora = datetime.now().strftime("%I:%M:%S")
             self.value = 0
             self.condicion = "0==0"
@@ -17,8 +17,8 @@ class reporte(object):
         else:
             self.nombreDispositivo = dict["NombreDispositivo"]
             self.nombreVariable = dict["NombreVariable"]
-            self.fecha = datetime.now().strftime("%Y-%m-%d")
-            self.hora = datetime.now().strftime("%I:%M:%S")
+            self.fecha = dict["Fecha"]
+            self.hora = dict["Hora"]
             self.value = dict["Valor"]
             self.condicion = dict["Condicion"]
             self.usuario = dict["Usuario"]

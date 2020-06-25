@@ -1,7 +1,10 @@
 from classes.utils.logger import logger
 from classes.objects.workSpace import workSpace,device, variable
 from ..objects.usuario import usuario
+from ..objects.reporte import reporte
 from py_expression_eval import Parser
+from openpyxl import Workbook
+from openpyxl.styles import Color, PatternFill, Border, Side
 import requests, json, os
 
 class Logica():
@@ -145,6 +148,42 @@ class Logica():
         result.raise_for_status()
         return result.json()
 
+    @staticmethod
+    def ObtenerReportes(**kwargs):
+        _headers = {'Authorization': 'Bearer ' + kwargs["access_token"]}
+        response  = requests.get("%s://%s:%s/Reportes/ObtenerReportes/%s/%s/%s" % (Logica.settings["APISCADA"]["HTTP_PROTOCOL"],Logica.settings["APISCADA"]["Host"],Logica.settings["APISCADA"]["Port"],kwargs["dateStart"],kwargs["dateEnd"],kwargs["nivel"]), timeout = 45, headers=_headers,verify=False)
+        response.raise_for_status()
+        return list(Logica.jsonToList(response.json(),reporte))
+
+    @staticmethod
+    def ExportarReportes(filename,reportes:list):
+        Logger = logger()
+        workbook = Workbook()
+        currentShet = workbook.active
+        currentShet.title = "Pagina 1"
+        for i,reporte in enumerate(reportes):
+            border = Border(left=Side(style='thin'),right=Side(style='thin'),top=Side(style='thin'),bottom=Side(style='thin'))
+            filler = PatternFill(fill_type='solid', start_color=Logica.findHEX(reporte.nivel),end_color=Logica.findHEX(reporte.nivel))
+            currentShet["A%s" % (i+1).__str__()].fill = filler
+            currentShet["A%s" % (i+1).__str__()].border = border
+            currentShet["B%s" % (i+1).__str__()] = reporte.nombreVariable
+            currentShet["C%s" % (i+1).__str__()] = reporte.nombreDispositivo
+            currentShet["D%s" % (i+1).__str__()] = reporte.fecha
+            currentShet["E%s" % (i+1).__str__()] = reporte.hora
+            currentShet["F%s" % (i+1).__str__()] = reporte.condicion
+            currentShet["G%s" % (i+1).__str__()] = reporte.usuario
+            currentShet["H%s" % (i+1).__str__()] = reporte.value.__str__()
+            #currentShet["I%s" % i.__str__()] = reporte.mensaje
+        try:
+            import os
+            workbook.save(filename=filename)
+            fileNameStr = os.path.splitext(filename)[0]
+            os.rename(filename, fileNameStr + '.xlsx') 
+            return True
+        except Exception as e:
+            Logger.log_error(e)
+            return False
+
 
     @staticmethod
     def evaluarExpresion(expresion:str,value=255):
@@ -155,6 +194,16 @@ class Logica():
         except Exception as e:
             return False
 
+    @staticmethod
+    def findHEX(color:str):
+        switcher = {
+            "aqua":"00FFFF",
+            "green":"008000",
+            "orange":"FFA500",
+            "red":"FF0000"
+        }
+        return switcher.get(color,"aqua")
+    
     @staticmethod
     def jsonToList(y:list,type):
         if y is None or len(y) == 0:
