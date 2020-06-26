@@ -38,7 +38,7 @@ class usuario(object):
 
     @nombres.setter
     def nombres(self,value):
-        if len(value) < 3 or len(value) > 32:
+        if len(value) < 3 or len(value) > 32 and value != None:
             raise ValueError("¡Error! \"%s\" no es un nombre valido\nMinimo 3 caracteres, Maximo 32" % value.__str__())
         self.__nombres = value
 
@@ -48,7 +48,7 @@ class usuario(object):
 
     @tipo.setter
     def tipo(self,value):
-        if value != "Administrador" and value != "Usuario":
+        if value != "Administrador" and value != "Usuario" and value != None:
             raise ValueError("¡Error! Tipo de usuario invalido")
         self.__tipo = value
 
@@ -58,7 +58,7 @@ class usuario(object):
 
     @usuario.setter
     def usuario(self,value):
-        if len(value) < 3 or len(value) > 24:
+        if len(value) < 3 or len(value) > 24 and value != None:
             raise ValueError("¡Error! \"%s\" no es un usuario valido\nMinimo 3 caracteres, Maximo 24" % value.__str__())
         self.__usuario = value
 
@@ -69,7 +69,7 @@ class usuario(object):
     @email.setter
     def email(self,value):
         import re
-        if not re.search("^((\w|ñ){1,}(\.){0,1}){1,}@(\w|ñ){3,}((\.)[ñA-Za-z]{2,3}){1,}",value) and self.usuario != "administrador.scada":
+        if not re.search("^((\w|ñ){1,}(\.){0,1}){1,}@(\w|ñ){3,}((\.)[ñA-Za-z]{2,3}){1,}",value) and self.usuario != "administrador.scada" and value != None:
             raise ValueError("¡Error! \"%s\" no es un email valido" % value)
         self.__email = value
     
