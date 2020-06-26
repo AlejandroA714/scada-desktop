@@ -14,7 +14,7 @@ def index():
         pass
     return jsonify(answer)
 
-app.config['MONGO_URI'] =  "mongodb://alejandro:S0l1t4rym1st#80@ds039707.mlab.com:39707/heroku_pmb9h46c"
+app.config['MONGO_URI'] =  "mongodb://alejandro:<password>@ds039707.mlab.com:39707/heroku_pmb9h46c"
 mongo = PyMongo(app) ## Inicia una estancia de Mongo
 
 
