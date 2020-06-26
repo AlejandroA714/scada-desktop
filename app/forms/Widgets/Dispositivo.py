@@ -321,11 +321,14 @@ class UIDispositivoWidget(widget):
         self.deviceSignals.updated.emit()
 
     def nuevoReporte(self,v:variable):
+        from datetime import date, time
         report = reporte({
             "NombreDispositivo":self.__dispostivo.nombre,
             "NombreVariable":v.nombre,
             "Valor":v.value,
             "Usuario":self.session.usuario,
+            "Fecha":date.today().strftime("%Y-%m-%d"),
+            "Hora":time().strftime("%I:%M:%S"),
             "Condicion": "%s%s" % (v.value,v.notify.replace("-","")[1:]),
             "Nivel":v.nivel,
         })

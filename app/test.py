@@ -1,21 +1,34 @@
-from flask_pymongo import PyMongo
-from flask import Flask, jsonify,request, make_response
+from classes import reporte
+from datetime import date, datetime, time
+
+reporte1 = reporte({
+            "NombreDispositivo":"Nombre",
+            "NombreVariable":"Nombre",
+            "Valor":126,
+            "Usuario":"alejo.scada",
+            "Fecha":date.today().strftime("%Y-%m-%d"),
+            "Hora":time().strftime("%I:%M:%S"),
+            "Condicion": "261<64",
+            "Nivel":"aqua",
+        })
+
+reporte2 = reporte({
+            "NombreDispositivo":"Nombre",
+            "NombreVariable":"Nombre",
+            "Valor":126,
+            "Usuario":"alejo.scada",
+            "Fecha":'2020-06-24',
+            "Hora":"04:08:04",
+            "Condicion": "261<64",
+            "Nivel":"aqua",
+        })
+
+date.today().strftime()
+# datetime.strptime(value, '%Y-%m-%d')
+
+#2020-06-23T00:00:00.000Z
+#strftime recevives a data return a string Obtener reportess
+#strptime receives a strng return date object, nuevo Reporte
+#2020-06-24
 
 
-app = Flask(__name__) # APP
-
-@app.route('/')
-def index():
-    try:
-        answer = []
-        for s in mongo.db.controles_scada.find({}):
-            answer.append({'Id' : str(s['_id']),'Nombre':s['Nombre'],'Drivers': s['Drivers'],'DriversCount': len(s['Drivers'])  })
-    except Exception as e:
-        pass
-    return jsonify(answer)
-
-app.config['MONGO_URI'] =  "mongodb://alejandro:<password>@ds039707.mlab.com:39707/heroku_pmb9h46c"
-mongo = PyMongo(app) ## Inicia una estancia de Mongo
-
-
-app.run()
