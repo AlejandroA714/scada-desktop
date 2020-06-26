@@ -38,7 +38,7 @@ class usuario(object):
 
     @nombres.setter
     def nombres(self,value):
-        if len(value) < 3 or len(value) > 32 or value is None:
+        if len(value) < 3 or len(value) > 32:
             raise ValueError("¡Error! \"%s\" no es un nombre valido\nMinimo 3 caracteres, Maximo 32" % value.__str__())
         self.__nombres = value
 
@@ -58,7 +58,7 @@ class usuario(object):
 
     @usuario.setter
     def usuario(self,value):
-        if len(value) < 3 or len(value) > 24 or value is None:
+        if len(value) < 3 or len(value) > 24:
             raise ValueError("¡Error! \"%s\" no es un usuario valido\nMinimo 3 caracteres, Maximo 24" % value.__str__())
         self.__usuario = value
 
