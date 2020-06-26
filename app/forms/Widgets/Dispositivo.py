@@ -337,7 +337,6 @@ class UIDispositivoWidget(widget):
         self.threadpool.start(worker)
     
     def nuevoReporteAction(self,response):
-        print(response)
         if isinstance(response,Exception):
             pass
         if not response["Success"] == 'true':

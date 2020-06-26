@@ -71,7 +71,7 @@
      <string/>
     </property>
     <property name="pixmap">
-     <pixmap resource="../resources/resources.qrc">:/source/img/iiie.png</pixmap>
+     <pixmap>:/source/img/iiie.png</pixmap>
     </property>
    </widget>
    <widget class="QLabel" name="label">
@@ -90,7 +90,7 @@
      <string/>
     </property>
     <property name="pixmap">
-     <pixmap resource="../resources/resources.qrc">:/source/img/logo.png</pixmap>
+     <pixmap>:/source/img/logo.png</pixmap>
     </property>
    </widget>
    <widget class="QFrame" name="frame_2">
@@ -121,7 +121,7 @@
       <string/>
      </property>
      <property name="pixmap">
-      <pixmap resource="../resources/resources.qrc">:/source/img/Usuario.png</pixmap>
+      <pixmap>:/source/img/Usuario.png</pixmap>
      </property>
     </widget>
     <widget class="QLineEdit" name="txtUsuario">
@@ -150,7 +150,7 @@
       <string/>
      </property>
      <property name="pixmap">
-      <pixmap resource="../resources/resources.qrc">:/source/img/Password.png</pixmap>
+      <pixmap>:/source/img/Password.png</pixmap>
      </property>
     </widget>
     <widget class="QLineEdit" name="txtPassword">
@@ -220,7 +220,7 @@
       <string>Iniciar Sesion</string>
      </property>
      <property name="icon">
-      <iconset resource="../resources/resources.qrc">
+      <iconset>
        <normaloff>:/source/img/OK.png</normaloff>:/source/img/OK.png</iconset>
      </property>
      <property name="iconSize">
@@ -246,7 +246,7 @@
       <x>130</x>
       <y>130</y>
       <width>151</width>
-      <height>41</height>
+      <height>25</height>
      </rect>
     </property>
     <property name="font">
@@ -320,7 +320,7 @@
      <string/>
     </property>
     <property name="icon">
-     <iconset resource="../resources/resources.qrc">
+     <iconset>
       <normaloff>:/source/img/Cancelar.png</normaloff>:/source/img/Cancelar.png</iconset>
     </property>
     <property name="iconSize">

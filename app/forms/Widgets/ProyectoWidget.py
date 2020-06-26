@@ -23,7 +23,7 @@ class UIWidgetP(widget):
         self.ProjectFrame.setMinimumSize(QtCore.QSize(350, 96))
         self.ProjectFrame.setMaximumSize(QtCore.QSize(16777215, 96))
         self.ProjectFrame.setFrameShape(QtWidgets.QFrame.StyledPanel)
-        self.ProjectFrame.setFrameShadow(QtWidgets.QFrame.Raised)
+        self.ProjectFrame.setFrameShadow(QtWidgets.QFrame.Sunken)
         self.ProjectFrame.setObjectName("ProjectFrame")
         self.gridLayout = QtWidgets.QGridLayout(self.ProjectFrame)
         self.gridLayout.setObjectName("gridLayout")

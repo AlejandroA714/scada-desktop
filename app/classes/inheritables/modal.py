@@ -1,5 +1,5 @@
 from PyQt5.QtWidgets import QDialog, QMainWindow, QMessageBox, QApplication
-from PyQt5.QtCore import Qt,QObject, pyqtSlot, pyqtSignal, QThreadPool
+from PyQt5.QtCore import Qt,QObject, pyqtSlot, pyqtSignal, QThreadPool, QPoint
 from ..utils.session import session
 
 
@@ -17,6 +17,7 @@ class modal(QDialog): # Class to be inherit to convert a window into a modal
         self.parent = Parent
         self.weight = 480
         self.height = 720
+        self.dragPos = QPoint(0,0)
         QDialog.__init__(self,Parent)
         self.setWindowFlags(Qt.FramelessWindowHint) # removes borders
         self.setAttribute(Qt.WA_TranslucentBackground) # Making it translucent to make a trick with the shadows
@@ -70,7 +71,7 @@ class modal(QDialog): # Class to be inherit to convert a window into a modal
         self.disconnectSignals()
         self.close()
 
-    def mousePressEvent(self, event):
+    def mousePressEvent(self, event): # it also get called on click a combobox
         if event.buttons() == Qt.LeftButton:
             self.dragPos = event.globalPos()
             event.accept()

@@ -22,7 +22,7 @@ class UIDispositivoModalWidget(widget):
         self.ProjectFrame.setMinimumSize(QtCore.QSize(350, 182))
         self.ProjectFrame.setMaximumSize(QtCore.QSize(16777215, 200))
         self.ProjectFrame.setFrameShape(QtWidgets.QFrame.StyledPanel)
-        self.ProjectFrame.setFrameShadow(QtWidgets.QFrame.Raised)
+        self.ProjectFrame.setFrameShadow(QtWidgets.QFrame.Sunken)
         self.ProjectFrame.setObjectName("ProjectFrame")
         self.lblImagen = QtWidgets.QLabel(self.ProjectFrame)
         self.lblImagen.setGeometry(QtCore.QRect(10, 15, 171, 151))
