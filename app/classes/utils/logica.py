@@ -9,7 +9,7 @@ import requests, json, os
 
 class Logica():
 
-    __program_files = "/opt"
+    __program_files = os.environ["ALLUSERSPROFILE"]
 
     settings = { 
         "APISCADA":{
@@ -22,13 +22,13 @@ class Logica():
     @staticmethod
     def IniciarSesion(**kwargs):
         _data = {"Usuario":kwargs["Usuario"],"Password":kwargs["Password"]}
-        _response =  requests.post("%s://%s:%s/Sesion/IniciarSesion" % (Logica.settings["APISCADA"]["HTTP_PROTOCOL"],Logica.settings["APISCADA"]["Host"],Logica.settings["APISCADA"]["Port"]), timeout = 45,json=_data,verify=False)
+        _response =  requests.post("%s://%s/Sesion/IniciarSesion" % (Logica.settings["APISCADA"]["HTTP_PROTOCOL"],Logica.settings["APISCADA"]["Host"]), timeout = 45,json=_data)
         return json.loads(_response.content,object_hook=usuario)
 
     @staticmethod
     def ObtenerProyectos(**kwargs): # returns a list with all project in database
         _headers = {'Authorization': 'Bearer ' + kwargs["access_token"]}
-        result  = requests.get("%s://%s:%s/Controles/MostrarTodos" % (Logica.settings["APISCADA"]["HTTP_PROTOCOL"],Logica.settings["APISCADA"]["Host"],Logica.settings["APISCADA"]["Port"]), timeout = 45, headers=_headers,verify=False)
+        result  = requests.get("%s://%s/Controles/MostrarTodos" % (Logica.settings["APISCADA"]["HTTP_PROTOCOL"],Logica.settings["APISCADA"]["Host"]), timeout = 45, headers=_headers)
         result.raise_for_status()
         _answer:workSpace = json.loads( result.content ,object_hook=workSpace)
         return _answer
@@ -36,28 +36,28 @@ class Logica():
     @staticmethod
     def ObtenerWorkspaces(**kwargs):
         _headers = {'Authorization': 'Bearer ' + kwargs["access_token"]}
-        response  = requests.get("%s://%s:%s/Controles/ObtenerTodos" % (Logica.settings["APISCADA"]["HTTP_PROTOCOL"],Logica.settings["APISCADA"]["Host"],Logica.settings["APISCADA"]["Port"]), timeout = 45, headers=_headers,verify=False)
+        response  = requests.get("%s://%s/Controles/ObtenerTodos" % (Logica.settings["APISCADA"]["HTTP_PROTOCOL"],Logica.settings["APISCADA"]["Host"]), timeout = 45, headers=_headers)
         response.raise_for_status()
         return list(Logica.jsonToList(response.json(),workSpace))
 
     @staticmethod
     def ObtenerConfiguraciones(**kwargs):
         _headers = {'Authorization': 'Bearer ' + kwargs["access_token"]}
-        result  = requests.get("%s://%s:%s/Configuraciones/Obtener" % (Logica.settings["APISCADA"]["HTTP_PROTOCOL"],Logica.settings["APISCADA"]["Host"],Logica.settings["APISCADA"]["Port"]), timeout = 45, headers=_headers,verify=False)
+        result  = requests.get("%s://%s/Configuraciones/Obtener" % (Logica.settings["APISCADA"]["HTTP_PROTOCOL"],Logica.settings["APISCADA"]["Host"]), timeout = 45, headers=_headers)
         result.raise_for_status()
         return result.json()
 
     @staticmethod
     def GuardarConfiguraciones(**kwargs):
         _headers = {'Authorization': 'Bearer ' + kwargs["access_token"]}
-        result  = requests.post("%s://%s:%s/Configuraciones/Actualizar" % (Logica.settings["APISCADA"]["HTTP_PROTOCOL"],Logica.settings["APISCADA"]["Host"],Logica.settings["APISCADA"]["Port"]), timeout = 45,json=kwargs["data"], headers=_headers,verify=False)
+        result  = requests.post("%s://%s/Configuraciones/Actualizar" % (Logica.settings["APISCADA"]["HTTP_PROTOCOL"],Logica.settings["APISCADA"]["Host"]), timeout = 45,json=kwargs["data"], headers=_headers)
         result.raise_for_status()
         return result.json()
         
     @staticmethod
     def AbrirProyecto(**kwargs):
         _headers = {'Authorization': 'Bearer ' + kwargs["access_token"]}
-        response  = requests.get("%s://%s:%s/Controles/Abrir/%s" % (Logica.settings["APISCADA"]["HTTP_PROTOCOL"],Logica.settings["APISCADA"]["Host"],Logica.settings["APISCADA"]["Port"],kwargs["id"]), timeout = 45, headers=_headers,verify=False)
+        response  = requests.get("%s://%s/Controles/Abrir/%s" % (Logica.settings["APISCADA"]["HTTP_PROTOCOL"],Logica.settings["APISCADA"]["Host"],kwargs["id"]), timeout = 45, headers=_headers)
         response.raise_for_status()
         if response.json() == []:
             raise Exception("¡Error! Proyecto no existe")
@@ -66,14 +66,14 @@ class Logica():
     @staticmethod
     def ObtenerVariablesFunciones(**kwargs):
         _headers = {'Authorization': 'Bearer ' + kwargs["access_token"]}
-        result  = requests.get("%s://%s:%s/Controles/ObtenerVariablesFunciones/%s/%s" % (Logica.settings["APISCADA"]["HTTP_PROTOCOL"],Logica.settings["APISCADA"]["Host"],Logica.settings["APISCADA"]["Port"],kwargs["ID"],kwargs["Token"]), timeout = 45, headers=_headers,verify=False)
+        result  = requests.get("%s://%s/Controles/ObtenerVariablesFunciones/%s/%s" % (Logica.settings["APISCADA"]["HTTP_PROTOCOL"],Logica.settings["APISCADA"]["Host"],kwargs["ID"],kwargs["Token"]), timeout = 45, headers=_headers)
         result.raise_for_status()
         return result.json()
 
     @staticmethod
     def LeerSensor(**kwargs):
         _headers = {'Authorization': 'Bearer ' + kwargs["access_token"]}
-        result  = requests.post("%s://%s:%s/Controles/LeerSensor/%s/%s" % (Logica.settings["APISCADA"]["HTTP_PROTOCOL"],Logica.settings["APISCADA"]["Host"],Logica.settings["APISCADA"]["Port"],kwargs["ID"],kwargs["Token"]), timeout = 45,json=kwargs["data"],headers=_headers,verify=False)
+        result  = requests.post("%s://%s/Controles/LeerSensor/%s/%s" % (Logica.settings["APISCADA"]["HTTP_PROTOCOL"],Logica.settings["APISCADA"]["Host"],kwargs["ID"],kwargs["Token"]), timeout = 45,json=kwargs["data"],headers=_headers)
         result.raise_for_status()
         _answer:variable = json.loads(result.content, object_hook=variable)
         return _answer
@@ -81,77 +81,77 @@ class Logica():
     @staticmethod
     def ActualizarSensor(**kwargs):
         _headers = {'Authorization': 'Bearer ' + kwargs["access_token"]}
-        result  = requests.post("http://%s:%s/Controles/ActualizarVariable/%s/%s" % (Logica.settings["APISCADA"]["Host"],Logica.settings["APISCADA"]["Port"],kwargs["ID"],kwargs["Token"]), timeout = 45,json=kwargs["data"],headers=_headers,verify=False)
+        result  = requests.post("http://%s/Controles/ActualizarVariable/%s/%s" % (Logica.settings["APISCADA"]["Host"],kwargs["ID"],kwargs["Token"]), timeout = 45,json=kwargs["data"],headers=_headers)
         result.raise_for_status()
         return result.json()
 
     @staticmethod
     def Guardar(**kwargs):
         _headers = {'Authorization': 'Bearer ' + kwargs["access_token"]}
-        result  = requests.post("%s://%s:%s/Controles/Guardar" % (Logica.settings["APISCADA"]["HTTP_PROTOCOL"],Logica.settings["APISCADA"]["Host"],Logica.settings["APISCADA"]["Port"]), timeout = 45,json=kwargs["data"],headers=_headers,verify=False)
+        result  = requests.post("%s://%s/Controles/Guardar" % (Logica.settings["APISCADA"]["HTTP_PROTOCOL"],Logica.settings["APISCADA"]["Host"]), timeout = 45,json=kwargs["data"],headers=_headers)
         result.raise_for_status()
         return result.json()
 
     @staticmethod
     def EliminarProyecto(**kwargs):
         _headers = {'Authorization': 'Bearer ' + kwargs["access_token"]}
-        result  = requests.get("%s://%s:%s/Controles/Eliminar/%s" % (Logica.settings["APISCADA"]["HTTP_PROTOCOL"],Logica.settings["APISCADA"]["Host"],Logica.settings["APISCADA"]["Port"],kwargs["id"]), timeout = 45, headers=_headers,verify=False)
+        result  = requests.get("%s://%s/Controles/Eliminar/%s" % (Logica.settings["APISCADA"]["HTTP_PROTOCOL"],Logica.settings["APISCADA"]["Host"],kwargs["id"]), timeout = 45, headers=_headers)
         result.raise_for_status()
         return result.json()
 
     @staticmethod
     def ObtenerUsuarios(**kwargs):
         _headers = {'Authorization': 'Bearer ' + kwargs["access_token"]}
-        response  = requests.get("%s://%s:%s/Sesion/ObtenerUsuarios" % (Logica.settings["APISCADA"]["HTTP_PROTOCOL"],Logica.settings["APISCADA"]["Host"],Logica.settings["APISCADA"]["Port"]), timeout = 45, headers=_headers,verify=False)
+        response  = requests.get("%s://%s/Sesion/ObtenerUsuarios" % (Logica.settings["APISCADA"]["HTTP_PROTOCOL"],Logica.settings["APISCADA"]["Host"]), timeout = 45, headers=_headers)
         response.raise_for_status()
         return list(Logica.jsonToList(response.json(),usuario))
 
     @staticmethod
     def agregarUsuario(**kwargs):
         _headers = {'Authorization': 'Bearer ' + kwargs["access_token"]}
-        response  = requests.post("%s://%s:%s/Sesion/InsertarUsuario" % (Logica.settings["APISCADA"]["HTTP_PROTOCOL"],Logica.settings["APISCADA"]["Host"],Logica.settings["APISCADA"]["Port"]), timeout = 45,json=kwargs["data"], headers=_headers,verify=False)
+        response  = requests.post("%s://%s/Sesion/InsertarUsuario" % (Logica.settings["APISCADA"]["HTTP_PROTOCOL"],Logica.settings["APISCADA"]["Host"]), timeout = 45,json=kwargs["data"], headers=_headers)
         response.raise_for_status()
         return response.json()
 
     @staticmethod
     def editarUsuario(**kwargs):
         _headers = {'Authorization': 'Bearer ' + kwargs["access_token"]}
-        response  = requests.post("%s://%s:%s/Sesion/ActualizarUsuario" % (Logica.settings["APISCADA"]["HTTP_PROTOCOL"],Logica.settings["APISCADA"]["Host"],Logica.settings["APISCADA"]["Port"]), timeout = 45,json=kwargs["data"], headers=_headers,verify=False)
+        response  = requests.post("%s://%s/Sesion/ActualizarUsuario" % (Logica.settings["APISCADA"]["HTTP_PROTOCOL"],Logica.settings["APISCADA"]["Host"]), timeout = 45,json=kwargs["data"], headers=_headers)
         response.raise_for_status()
         return response.json()
     
     @staticmethod
     def eliminarUsuario(**kwargs):
         _headers = {'Authorization': 'Bearer ' + kwargs["access_token"]}
-        response  = requests.get("%s://%s:%s/Sesion/EliminarUsuario/%s" % (Logica.settings["APISCADA"]["HTTP_PROTOCOL"],Logica.settings["APISCADA"]["Host"],Logica.settings["APISCADA"]["Port"],kwargs["id"]), timeout = 45, headers=_headers,verify=False)
+        response  = requests.get("%s://%s/Sesion/EliminarUsuario/%s" % (Logica.settings["APISCADA"]["HTTP_PROTOCOL"],Logica.settings["APISCADA"]["Host"],kwargs["id"]), timeout = 45, headers=_headers)
         response.raise_for_status()
         return response.json()
 
     @staticmethod
     def habilitarUsuario(**kwargs):
         _headers = {'Authorization': 'Bearer ' + kwargs["access_token"]}
-        response  = requests.get("%s://%s:%s/Sesion/HabilitarUsuario/%s" % (Logica.settings["APISCADA"]["HTTP_PROTOCOL"],Logica.settings["APISCADA"]["Host"],Logica.settings["APISCADA"]["Port"],kwargs["id"]), timeout = 45, headers=_headers,verify=False)
+        response  = requests.get("%s://%s/Sesion/HabilitarUsuario/%s" % (Logica.settings["APISCADA"]["HTTP_PROTOCOL"],Logica.settings["APISCADA"]["Host"],kwargs["id"]), timeout = 45, headers=_headers)
         response.raise_for_status()
         return response.json()
     
     @staticmethod
     def deshabilitarUsuario(**kwargs):
         _headers = {'Authorization': 'Bearer ' + kwargs["access_token"]}
-        response  = requests.get("%s://%s:%s/Sesion/DeshabilitarUsuario/%s" % (Logica.settings["APISCADA"]["HTTP_PROTOCOL"],Logica.settings["APISCADA"]["Host"],Logica.settings["APISCADA"]["Port"],kwargs["id"]), timeout = 45, headers=_headers,verify=False)
+        response  = requests.get("%s://%s/Sesion/DeshabilitarUsuario/%s" % (Logica.settings["APISCADA"]["HTTP_PROTOCOL"],Logica.settings["APISCADA"]["Host"],kwargs["id"]), timeout = 45, headers=_headers)
         response.raise_for_status()
         return response.json()
 
     @staticmethod
     def nuevoReporte(**kwargs):
         _headers = {'Authorization': 'Bearer ' + kwargs["access_token"]}
-        result  = requests.post("%s://%s:%s/Reportes/NuevoReporte" % (Logica.settings["APISCADA"]["HTTP_PROTOCOL"],Logica.settings["APISCADA"]["Host"],Logica.settings["APISCADA"]["Port"]), timeout = 45,json=kwargs["data"], headers=_headers,verify=False)
+        result  = requests.post("%s://%s/Reportes/NuevoReporte" % (Logica.settings["APISCADA"]["HTTP_PROTOCOL"],Logica.settings["APISCADA"]["Host"]), timeout = 45,json=kwargs["data"], headers=_headers)
         result.raise_for_status()
         return result.json()
 
     @staticmethod
     def ObtenerReportes(**kwargs):
         _headers = {'Authorization': 'Bearer ' + kwargs["access_token"]}
-        response  = requests.get("%s://%s:%s/Reportes/ObtenerReportes/%s/%s/%s" % (Logica.settings["APISCADA"]["HTTP_PROTOCOL"],Logica.settings["APISCADA"]["Host"],Logica.settings["APISCADA"]["Port"],kwargs["dateStart"],kwargs["dateEnd"],kwargs["nivel"]), timeout = 45, headers=_headers,verify=False)
+        response  = requests.get("%s://%s/Reportes/ObtenerReportes/%s/%s/%s" % (Logica.settings["APISCADA"]["HTTP_PROTOCOL"],Logica.settings["APISCADA"]["Host"],kwargs["dateStart"],kwargs["dateEnd"],kwargs["nivel"]), timeout = 45, headers=_headers)
         response.raise_for_status()
         return list(Logica.jsonToList(response.json(),reporte))
 
@@ -265,8 +265,8 @@ class Logica():
             file.close()
         except: # Si no existe lo crea
             settings =  {"APISCADA":{
-                "Host":"127.0.0.1",
-                "Port":"8080",
+                "Host":"apiscada.herokuapp.com",
+                "Port":"80",
                 "HTTP_PROTOCOL":"https"
             }}
             file =  open("%s/Sistema SCADA/setting.json" % Logica.__program_files,"w")

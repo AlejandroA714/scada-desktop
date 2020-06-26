@@ -1,8 +1,21 @@
-from datetime import date, timedelta, datetime
-from openpyxl import Workbook
-from openpyxl.styles import Color, Fill, PatternFill
+from flask_pymongo import PyMongo
+from flask import Flask, jsonify,request, make_response
 
-format = "%Y-%m-%d"
-value = date.today()
-value2 = '2020-06-24 00:00:00'
-print(date.strftime(value, '%Y-%m-%d'))
+
+app = Flask(__name__) # APP
+
+@app.route('/')
+def index():
+    try:
+        answer = []
+        for s in mongo.db.controles_scada.find({}):
+            answer.append({'Id' : str(s['_id']),'Nombre':s['Nombre'],'Drivers': s['Drivers'],'DriversCount': len(s['Drivers'])  })
+    except Exception as e:
+        pass
+    return jsonify(answer)
+
+app.config['MONGO_URI'] =  "mongodb://alejandro:S0l1t4rym1st#80@ds039707.mlab.com:39707/heroku_pmb9h46c"
+mongo = PyMongo(app) ## Inicia una estancia de Mongo
+
+
+app.run()
