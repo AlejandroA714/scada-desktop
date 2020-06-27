@@ -427,7 +427,7 @@ class UIReportesModal(modal):
         _translate = QtCore.QCoreApplication.translate
         ReportesModal.setWindowTitle(_translate("ReportesModal", "Sistema SCADA"))
         self.lblSCADA.setText(_translate("ReportesModal", "SCADA"))
-        self.lblTitle.setText(_translate("ReportesModal", "Usuarios"))
+        self.lblTitle.setText(_translate("ReportesModal", "Reportes"))
         self.lblInicio.setText(_translate("ReportesModal", "Desde"))
         self.btnAgregar.setText(_translate("ReportesModal", "Filtrar"))
         self.dateStart.setDisplayFormat(_translate("ReportesModal", "d/M/yyyy"))

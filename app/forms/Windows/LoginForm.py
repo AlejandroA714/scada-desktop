@@ -3,6 +3,7 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QMovie, QPainter, QPixmap, QKeySequence, QKeyEvent
 from PyQt5.QtWidgets import QMessageBox, QApplication, QGraphicsDropShadowEffect, QMainWindow, QApplication, QShortcut
 from classes import Logica, Worker, form
+from ..Modals import UIRecuperarModal
 from resources import *
 
 class UILogin(form):
@@ -172,9 +173,15 @@ class UILogin(form):
         # listener
 
         self.btnAceptar.clicked.connect(self.btnAceptar_Click)
+        self.lblForgottenPass.mousePressEvent = self.mousePress_Click
         self.btnExit.clicked.connect(self.exit)
         
         # end
+    
+    def mousePress_Click(self,evt):
+        if evt.buttons() == Qt.LeftButton:
+            UI = UIRecuperarModal(self)
+            UI.show()
 
     def btnAceptar_Click(self):
         if(self.txtUsuario.text() == "" or self.txtPassword.text() == ""):

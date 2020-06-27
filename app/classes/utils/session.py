@@ -18,6 +18,10 @@ class session(object):
             QApplication.exit(0)
 
     @property
+    def nombres(self):
+        return self.__sessionObject.nombres
+
+    @property
     def access_token(self):
         return self.__sessionObject.access_token
 
@@ -29,6 +33,14 @@ class session(object):
     def tipo(self):
         return self.__sessionObject.tipo
 
+    @property
+    def email(self):
+        return self.__sessionObject.email
+    
+    @property
+    def id(self):
+        return self.__sessionObject.id.__str__()
+    
     def destroy(self):
         self.__instance = None
         self.__sessionObject = None

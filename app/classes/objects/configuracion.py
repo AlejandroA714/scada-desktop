@@ -173,4 +173,53 @@ class _apiExterna(object):
             "URI":self.uri
         }
 
+class API(object):
+
+    def __init__(self,dict = None):
+        self.__IPv4 = re.compile(r'(^| )((?:[1-9]?\d|1\d{2}|2[0-4]\d|25[0-5])\.){3}(?:[1-9]?\d|1\d{2}|2[0-4]\d|25[0-5])($| |/)')
+        self.__Domain = re.compile(r'^[a-zA-Z0-9][a-zA-Z0-9-]{1,61}(\.[a-zA-Z])?[a-zA-Z0-9]{1,61}\.[a-zA-Z]{2,}|(localhost)$')
+        self.__portV4 = re.compile(r'^([0-9]{1,4}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])$')
+        if dict is None:
+            self.IP = "127.0.0.1"
+            self.puerto = "8080"
+        else:
+            self.IP = dict["APISCADA"]["Host"]
+            self.puerto = dict["APISCADA"]["Port"]
+
+    @property
+    def IP(self):
+        return self.__IP
+
+    @IP.setter
+    def IP(self,value):
+        if not self.__IPv4.match(value) and not self.__Domain.match(value):
+            raise ValueError("¡Error! API Local\nDirección IP o dominio no valido")
+        self.__IP = value
+    
+    @property
+    def puerto(self):
+        return self.__Port
+
+    @puerto.setter
+    def puerto(self,value):
+        if value != None and not self.__portV4.match(value):
+            raise ValueError("¡Error! API Local\nPuerto No valido (0-65535) ")
+        self.__Port = value
+    
+    @property
+    def HTTP_PROTOCOL(self):
+        return self.__htttps
+
+    @HTTP_PROTOCOL.setter
+    def HTTP_PROTOCOL(self,value):
+        if value != "http" and value != "https":
+           raise ValueError("¡Error! Protocolos admitidos (HTTP|HTTPS)")
+        self.__htttps = value
+
+    def toJSON(self):
+        return{
+            "Host":self.IP,
+            "Port":self.puerto,
+            "HTTP_PROTOCOL":self.HTTP_PROTOCOL
+        }
 

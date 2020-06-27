@@ -3,7 +3,7 @@ from PyQt5.QtWidgets import QMainWindow, QAction, QMenu, QMessageBox, QShortcut,
 from PyQt5.QtCore import Qt, pyqtSlot
 from PyQt5.QtGui import QKeySequence, QMovie
 from classes import form, Worker, Logica, device, workSpace,container, session
-from forms import UIAbrirModal,UIDispositivoWidget, UIConfiguracionesModal, UIDispositvoModal, UIAgregarDispositvoModal, UIUsuariosModal,UIReportesModal
+from forms import UIAbrirModal,UIDispositivoWidget, UIConfiguracionesModal, UIDispositvoModal, UIAgregarDispositvoModal, UIUsuariosModal,UIReportesModal, UIAPIModal, UICuentaModal
 from resources import *
 from bson import ObjectId
 from functools import partial
@@ -426,14 +426,16 @@ class UIMainWindow(form):
         UI.show()
 
     def MenuAPI_Click(self):
-        print("api")
+        UI = UIAPIModal(self)
+        UI.show()
 
     def MenuUsuarios_Click(self):
         UI = UIUsuariosModal(self)
         UI.show()
     
     def MenuCuenta_Click(self):
-        print("account")
+        UI = UICuentaModal(self)
+        UI.show()
     
     def MenuAcerca_Click(self):
         print("about")

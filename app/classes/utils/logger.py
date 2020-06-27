@@ -9,7 +9,7 @@ class logger(object):
 
     def __init__(self):
         if  not self.__Initialized:
-            __program_files = os.environ["ALLUSERSPROFILE"]
+            __program_files = "/opt" #os.environ["ALLUSERSPROFILE"]
             if not os.path.exists("%s/Sistema SCADA" % __program_files): # if does not exist, is created
                 os.makedirs("%s/Sistema SCADA" % __program_files)
             __log_formatter = logging.Formatter('[Desktop SCADA] [%(asctime)s] [%(levelname)s] %(message)s','%d/%m/%Y %H:%M')
