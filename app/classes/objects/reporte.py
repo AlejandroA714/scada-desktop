@@ -7,7 +7,7 @@ class reporte(object):
         if dict is None:
             self.nombreDispositivo = "devX"
             self.nombreVariable = "varX"
-            self.fecha = date.now().strftime("%Y-%m-%d")
+            self.fecha = date.today().strftime("%Y-%m-%d")
             self.hora = datetime.now().strftime("%I:%M:%S")
             self.value = 0
             self.condicion = "0==0"
@@ -53,7 +53,7 @@ class reporte(object):
     @fecha.setter
     def fecha(self,value):
         try:
-            datetime.strptime(value, '%Y-%m-%d')
+           datetime.strptime(value, '%Y-%m-%d')
         except ValueError:
             raise ValueError("¡Error! Formato de fecha invalido\nFormato aceptado: YYYY-MM-DD")
         self.__fecha = value

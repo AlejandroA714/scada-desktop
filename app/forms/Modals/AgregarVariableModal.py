@@ -5,18 +5,17 @@ from resources import *
 
 class UIAgregarVariableModal(modal):
 
-    def __init__(self,Parent,var:variable = None,IsEdit = False,**kwargs):
-        super(UIAgregarVariableModal,self).__init__(Parent)
+    def __init__(self,**kwargs):
+        super(UIAgregarVariableModal,self).__init__(**kwargs)
         self.ID = kwargs["ID"]
         self.Token = kwargs["Token"]
-        if not var is None:
-            self.variable = var
+        if not kwargs["Variable"] is None:
+            self.variable = kwargs["Variable"]
         else:
             self.variable = variable()
-        self.IsEdit = IsEdit
-        self.setupUi()
+        self.IsEdit = kwargs["IsEdit"]
 
-    def setupUi(self):
+    def setupUI(self):
         AgregarVariableModal = self
         AgregarVariableModal.setObjectName("AgregarVariableModal")
         AgregarVariableModal.setWindowModality(QtCore.Qt.WindowModal)

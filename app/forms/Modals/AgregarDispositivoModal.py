@@ -10,17 +10,16 @@ from copy import copy
 
 class UIAgregarDispositvoModal(modal): # To add or update and device
 
-    def __init__(self,Parent, dev = None,isEdit = False):
-        super(UIAgregarDispositvoModal,self).__init__(Parent)
-        if not dev is None:
-            self.dispositivo = dev
+    def __init__(self,**kwargs):
+        super(UIAgregarDispositvoModal,self).__init__(**kwargs)
+        if not kwargs["Dispositivo"] is None:
+            self.dispositivo = kwargs["Dispositivo"]
         else:
             self.dispositivo = device()
-        self.IsEdit = isEdit
+        self.IsEdit = kwargs["IsEdit"]
         self.__UIVariablesContainer = dict()
-        self.setupUi()
         
-    def setupUi(self):
+    def setupUI(self):
         AgregarDispositvoModal = self
         AgregarDispositvoModal.setObjectName("AgregarDispositvoModal")
         AgregarDispositvoModal.setWindowModality(QtCore.Qt.WindowModal)
@@ -452,7 +451,7 @@ class UIAgregarDispositvoModal(modal): # To add or update and device
            return
         if len(self.dispositivo.variables) == 12:
            QMessageBox.warning(self,"¡Error!","No puede agregar mas variables")
-        UIAgregarVariable = UIAgregarVariableModal(self.parent,**{"ID":self.txtID.text(),"Token":self.txtToken.text()})
+        UIAgregarVariable = UIAgregarVariableModal(**{"Parent":self.parent,"Variable":None,"IsEdit":False,"ID":self.txtID.text(),"Token":self.txtToken.text()})
         UIAgregarVariable.show()
         UIAgregarVariable.signals.success.connect(self.agregarVariable_Callback)
 
@@ -469,7 +468,7 @@ class UIAgregarDispositvoModal(modal): # To add or update and device
         if self.txtID.text() == "" or self.txtToken.text() == "":
            QMessageBox.warning(self,"¡Error!","Ingrese un ID y token para continuar")
            return
-        UIVariable = UIAgregarVariableModal(self.parent,v,True,**{"ID":self.txtID.text(),"Token":self.txtToken.text()})
+        UIVariable = UIAgregarVariableModal(**{"Parent":self.parent,"Variable":v,"IsEdit":True,"ID":self.txtID.text(),"Token":self.txtToken.text()})
         UIVariable.show()
         UIVariable.signals.success.connect(self.editarVariable_Callback)
         
@@ -504,7 +503,7 @@ class UIAgregarDispositvoModal(modal): # To add or update and device
             self.dispositivo.image = str_base64
 
     def btnImportar_Click(self):
-        UIImportar = UIImportarDispositivoModal(self.parent)
+        UIImportar = UIImportarDispositivoModal(**{"Parent":self.parent})
         UIImportar.show()
         UIImportar.signals.success.connect(self.importarAction)
 

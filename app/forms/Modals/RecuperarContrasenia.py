@@ -1,46 +1,47 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
-from PyQt5.QtGui import QMovie
-from PyQt5.QtWidgets import QMessageBox
-from PyQt5.QtCore import Qt
-from classes import modal, Logica, Worker, usuario
-from functools import partial
+from PyQt5.QtGui import QMovie, QPixmap, QColor, QIcon
+from PyQt5.QtWidgets import QMessageBox, QDialog, QApplication
+from PyQt5.QtCore import Qt, QThreadPool
+from classes import modal,Logica, Worker, usuario, Worker
+from .CambiarContrasenia import UIContraseniaModal
 from resources import *
 
-class UIAgregarUsuarioModal(modal):
+class UIRecuperarModal(QDialog):
 
-    def __init__(self,**kwargs):
-        super(UIAgregarUsuarioModal,self).__init__(**kwargs)
-        self.isEdit = kwargs["IsEdit"]
-        if kwargs["Usuario"] is None:
-            self.usuario = usuario()
-        else:
-            self.usuario = kwargs["Usuario"]
+    def __init__(self,Parent):
+        self.threadpool = QThreadPool() #QThearPool object to execute work class
+        self.parent = Parent
+        QDialog.__init__(self,Parent)
+        self.setWindowFlags(Qt.FramelessWindowHint) # removes borders
+        self.setAttribute(Qt.WA_TranslucentBackground) # Making it translucent to make a trick with the shadows
+        self.setAttribute( Qt.WA_DeleteOnClose) # this should liberate ram
+        self.setupUi()
 
-    def setupUI(self):
-        AgregarUsuarioModal = self
-        AgregarUsuarioModal.setObjectName("AgregarUsuarioModal")
-        AgregarUsuarioModal.setWindowModality(QtCore.Qt.WindowModal)
-        AgregarUsuarioModal.resize(370, 486)
+    def setupUi(self):
+        ContraseniaModal = self
+        ContraseniaModal.setObjectName("ContraseniaModal")
+        ContraseniaModal.setWindowModality(QtCore.Qt.WindowModal)
+        ContraseniaModal.resize(385, 409)
         sizePolicy = QtWidgets.QSizePolicy(QtWidgets.QSizePolicy.Preferred, QtWidgets.QSizePolicy.Maximum)
         sizePolicy.setHorizontalStretch(0)
         sizePolicy.setVerticalStretch(0)
-        sizePolicy.setHeightForWidth(AgregarUsuarioModal.sizePolicy().hasHeightForWidth())
-        AgregarUsuarioModal.setSizePolicy(sizePolicy)
+        sizePolicy.setHeightForWidth(ContraseniaModal.sizePolicy().hasHeightForWidth())
+        ContraseniaModal.setSizePolicy(sizePolicy)
         font = QtGui.QFont()
         font.setFamily("Noto Serif")
         font.setPointSize(11)
         font.setBold(True)
         font.setWeight(75)
-        AgregarUsuarioModal.setFont(font)
-        AgregarUsuarioModal.setContextMenuPolicy(QtCore.Qt.NoContextMenu)
+        ContraseniaModal.setFont(font)
+        ContraseniaModal.setContextMenuPolicy(QtCore.Qt.NoContextMenu)
         icon = QtGui.QIcon()
-        icon.addPixmap(QtGui.QPixmap("../../../../../../../../.designer/if_16_1751363.ico"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        AgregarUsuarioModal.setWindowIcon(icon)
-        AgregarUsuarioModal.setStyleSheet("background-color: rgb(255, 255, 255);")
-        AgregarUsuarioModal.setInputMethodHints(QtCore.Qt.ImhSensitiveData)
-        self.verticalLayout = QtWidgets.QVBoxLayout(AgregarUsuarioModal)
+        icon.addPixmap(QtGui.QPixmap(":/source/img/if_16_1751363.ico"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        ContraseniaModal.setWindowIcon(icon)
+        ContraseniaModal.setStyleSheet("background-color: rgb(255, 255, 255);")
+        ContraseniaModal.setInputMethodHints(QtCore.Qt.ImhSensitiveData)
+        self.verticalLayout = QtWidgets.QVBoxLayout(ContraseniaModal)
         self.verticalLayout.setObjectName("verticalLayout")
-        self.MainFrame = QtWidgets.QFrame(AgregarUsuarioModal)
+        self.MainFrame = QtWidgets.QFrame(ContraseniaModal)
         self.MainFrame.setMinimumSize(QtCore.QSize(0, 0))
         self.MainFrame.setFrameShape(QtWidgets.QFrame.StyledPanel)
         self.MainFrame.setFrameShadow(QtWidgets.QFrame.Raised)
@@ -182,84 +183,57 @@ class UIAgregarUsuarioModal(modal):
         self.ContentLayout.setSpacing(0)
         self.ContentLayout.setObjectName("ContentLayout")
         self.ContentFrame = QtWidgets.QFrame(self.ContentBox)
-        self.ContentFrame.setFrameShape(QtWidgets.QFrame.StyledPanel)
-        self.ContentFrame.setFrameShadow(QtWidgets.QFrame.Raised)
+        self.ContentFrame.setFrameShape(QtWidgets.QFrame.NoFrame)
+        self.ContentFrame.setFrameShadow(QtWidgets.QFrame.Plain)
         self.ContentFrame.setObjectName("ContentFrame")
-        self.txtNombre = QtWidgets.QLineEdit(self.ContentFrame)
-        self.txtNombre.setGeometry(QtCore.QRect(120, 35, 101, 21))
-        self.txtNombre.setStyleSheet("border-bottom:1px solid black;border-top:none;")
-        self.txtNombre.setObjectName("txtNombre")
-        self.lblNombre = QtWidgets.QLabel(self.ContentFrame)
-        self.lblNombre.setGeometry(QtCore.QRect(40, 40, 75, 17))
-        font = QtGui.QFont()
-        font.setFamily("Roboto")
-        font.setPointSize(11)
-        font.setBold(True)
-        font.setWeight(75)
-        self.lblNombre.setFont(font)
-        self.lblNombre.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
-        self.lblNombre.setObjectName("lblNombre")
-        self.lblTipo = QtWidgets.QLabel(self.ContentFrame)
-        self.lblTipo.setGeometry(QtCore.QRect(40, 160, 75, 17))
-        font = QtGui.QFont()
-        font.setFamily("Roboto")
-        font.setPointSize(11)
-        font.setBold(True)
-        font.setWeight(75)
-        self.lblTipo.setFont(font)
-        self.lblTipo.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
-        self.lblTipo.setObjectName("lblTipo")
-        self.btnAceptar_2 = QtWidgets.QPushButton(self.ContentFrame)
-        self.btnAceptar_2.setGeometry(QtCore.QRect(111, 200, 71, 41))
-        font = QtGui.QFont()
-        font.setFamily("Roboto")
-        font.setPointSize(11)
-        font.setBold(True)
-        font.setWeight(75)
-        self.btnAceptar_2.setFont(font)
-        self.btnAceptar_2.setStyleSheet("border:1px solid green;")
-        icon2 = QtGui.QIcon()
-        icon2.addPixmap(QtGui.QPixmap(":/source/img/OK.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
-        self.btnAceptar_2.setIcon(icon2)
-        self.btnAceptar_2.setIconSize(QtCore.QSize(24, 24))
-        self.btnAceptar_2.setShortcut("")
-        self.btnAceptar_2.setCheckable(False)
-        self.btnAceptar_2.setFlat(True)
-        self.btnAceptar_2.setObjectName("btnAceptar_2")
-        self.lblEmail = QtWidgets.QLabel(self.ContentFrame)
-        self.lblEmail.setGeometry(QtCore.QRect(40, 120, 75, 17))
-        font = QtGui.QFont()
-        font.setFamily("Roboto")
-        font.setPointSize(11)
-        font.setBold(True)
-        font.setWeight(75)
-        self.lblEmail.setFont(font)
-        self.lblEmail.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
-        self.lblEmail.setObjectName("lblEmail")
-        self.cmbTipo = QtWidgets.QComboBox(self.ContentFrame)
-        self.cmbTipo.setGeometry(QtCore.QRect(120, 155, 101, 25))
-        self.cmbTipo.setObjectName("cmbTipo")
         self.lblUsuario = QtWidgets.QLabel(self.ContentFrame)
-        self.lblUsuario.setGeometry(QtCore.QRect(40, 80, 75, 17))
+        self.lblUsuario.setGeometry(QtCore.QRect(60, 30, 61, 20))
         font = QtGui.QFont()
         font.setFamily("Roboto")
         font.setPointSize(11)
         font.setBold(True)
         font.setWeight(75)
         self.lblUsuario.setFont(font)
-        self.lblUsuario.setFrameShape(QtWidgets.QFrame.NoFrame)
         self.lblUsuario.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
         self.lblUsuario.setObjectName("lblUsuario")
+        self.btnAceptar = QtWidgets.QPushButton(self.ContentFrame)
+        self.btnAceptar.setGeometry(QtCore.QRect(110, 130, 71, 41))
+        font = QtGui.QFont()
+        font.setFamily("Roboto")
+        font.setPointSize(11)
+        font.setBold(True)
+        font.setWeight(75)
+        self.btnAceptar.setFont(font)
+        self.btnAceptar.setStyleSheet("border:1px solid green;")
+        icon2 = QtGui.QIcon()
+        icon2.addPixmap(QtGui.QPixmap(":/source/img/OK.png"), QtGui.QIcon.Normal, QtGui.QIcon.Off)
+        self.btnAceptar.setIcon(icon2)
+        self.btnAceptar.setIconSize(QtCore.QSize(24, 24))
+        self.btnAceptar.setShortcut("")
+        self.btnAceptar.setCheckable(False)
+        self.btnAceptar.setFlat(True)
+        self.btnAceptar.setObjectName("btnAceptar")
+        self.lblEmail = QtWidgets.QLabel(self.ContentFrame)
+        self.lblEmail.setGeometry(QtCore.QRect(70, 75, 51, 20))
+        font = QtGui.QFont()
+        font.setFamily("Roboto")
+        font.setPointSize(11)
+        font.setBold(True)
+        font.setWeight(75)
+        self.lblEmail.setFont(font)
+        self.lblEmail.setFrameShape(QtWidgets.QFrame.NoFrame)
+        self.lblEmail.setAlignment(QtCore.Qt.AlignRight|QtCore.Qt.AlignTrailing|QtCore.Qt.AlignVCenter)
+        self.lblEmail.setObjectName("lblEmail")
         self.txtUsuario = QtWidgets.QLineEdit(self.ContentFrame)
-        self.txtUsuario.setGeometry(QtCore.QRect(120, 75, 101, 21))
+        self.txtUsuario.setGeometry(QtCore.QRect(130, 25, 101, 21))
         self.txtUsuario.setStyleSheet("border-bottom:1px solid black;border-top:none;")
         self.txtUsuario.setObjectName("txtUsuario")
         self.txtEmail = QtWidgets.QLineEdit(self.ContentFrame)
-        self.txtEmail.setGeometry(QtCore.QRect(120, 115, 101, 21))
+        self.txtEmail.setGeometry(QtCore.QRect(130, 70, 101, 21))
         self.txtEmail.setStyleSheet("border-bottom:1px solid black;border-top:none;")
         self.txtEmail.setObjectName("txtEmail")
         self.Status = QtWidgets.QLabel(self.ContentFrame)
-        self.Status.setGeometry(QtCore.QRect(121, 200, 51, 51))
+        self.Status.setGeometry(QtCore.QRect(120, 120, 51, 51))
         self.Status.setMaximumSize(QtCore.QSize(64, 64))
         self.Status.setText("")
         self.Status.setPixmap(QtGui.QPixmap(":/source/img/Cargando.gif"))
@@ -269,14 +243,15 @@ class UIAgregarUsuarioModal(modal):
         self.verticalLayout_2.addWidget(self.ContentBox, 0, QtCore.Qt.AlignHCenter)
         self.verticalLayout.addWidget(self.MainFrame)
 
-        self.retranslateUi(AgregarUsuarioModal)
-        QtCore.QMetaObject.connectSlotsByName(AgregarUsuarioModal)
+        self.retranslateUi(ContraseniaModal)
+        QtCore.QMetaObject.connectSlotsByName(ContraseniaModal)
+        self.Status.hide()
         self.center()
 
         self.shortcut = QtWidgets.QShortcut(Qt.Key_Return,self)
-        self.shortcut.activated.connect(self.validarUsuario)
-         # movie
+        self.shortcut.activated.connect(self.btnAceptar_Click)
 
+        # movie
         self.movie = QMovie(":/source/img/Cargando.gif") # 80 ,200
         self.movie.setScaledSize(QtCore.QSize(48,48))
         self.Status.setMovie(self.movie)
@@ -285,52 +260,28 @@ class UIAgregarUsuarioModal(modal):
         #listener
         self.parent.signals.resize.connect(self.center)
         self.btnExit.clicked.connect(self.exit)
-        self.btnAceptar_2.clicked.connect(self.validarUsuario)
+        self.btnAceptar.clicked.connect(self.btnAceptar_Click)
 
-    def showEvent(self,evt):
-        self.cmbTipo.addItem("Usuario")
-        self.cmbTipo.addItem("Administrador")
-        if self.isEdit and not self.session.usuario == "administrador.scada":
-            self.cmbTipo.setEnabled(False)
-        if not self.isEdit and not self.session.usuario == "administrador.scada":
-            self.cmbTipo.removeItem("Administrador")
-        if self.isEdit:
-            self.lblTitle.setText("Editar usuario")
-            self.txtNombre.setText(self.usuario.nombres)
-            self.txtUsuario.setText(self.usuario.usuario)
-            self.txtEmail.setText(self.usuario.email)
-            self.cmbTipo.setCurrentIndex(self.cmbTipo.findText(self.usuario.tipo))
-     
     def disconnectSignals(self):
         self.parent.signals.resize.disconnect(self.center)
         self.btnExit.clicked.disconnect(self.exit)
-        self.btnAceptar_2.clicked.disconnect(self.validarUsuario)
+        self.btnAceptar.clicked.disconnect(self.btnAceptar_Click)
 
-    def validarUsuario(self):
-        try:
-            self.usuario.nombres = self.txtNombre.text()
-            self.usuario.usuario = self.txtUsuario.text()
-            self.usuario.email = self.txtEmail.text()
-            if self.session.usuario == "administrador.scada":
-                self.usuario.tipo = self.cmbTipo.currentText()
-        except ValueError as vError:
-            QMessageBox.warning(self,"¡Error!",str(vError))
+    def btnAceptar_Click(self):
+        if self.txtUsuario.text() == "" or self.txtEmail.text() == "":
+            QMessageBox.warning(self,"¡Error!","Rellene los campos solicitados")
             return
         reply = self.prompt("Confirmacion","¿Son estos datos correctos?")
         if reply == QMessageBox.Yes:
-            self.btnAceptar_2.hide()
+            self.btnAceptar.hide()
             self.Status.show()
             self.movie.start()
-            worker = None
-            if not self.isEdit:
-                worker = Worker(Logica.agregarUsuario,**{"access_token":self.session.access_token,"data":self.usuario.toJSON()})
-            else:
-                worker = Worker(Logica.editarUsuario,**{"access_token":self.session.access_token,"data":self.usuario.toJSON()})
-            worker.signals.finished.connect(partial(self.validarUsuarioAction,user=self.usuario))
+            worker = Worker(Logica.recuperarContrasenia,**{"data":{"Email":self.txtEmail.text(),"Usuario":self.txtUsuario.text(),"Password":UIRecuperarModal.randomPassword() }})
+            worker.signals.finished.connect(self.validarUsuarioAction)
             self.threadpool.start(worker)
-    
-    def validarUsuarioAction(self,response,user):
-        self.btnAceptar_2.show()
+
+    def validarUsuarioAction(self,response):
+        self.btnAceptar.show()
         self.Status.hide()
         self.movie.stop()
         if isinstance(response,Exception):
@@ -339,16 +290,54 @@ class UIAgregarUsuarioModal(modal):
         if response["Success"] == 'false':
             QMessageBox.warning(self,'¡Error!',response["Message"])
             return
-        self.success(user)
+        QMessageBox.information(self,"¡Aviso!",response["Message"])
+        self.close()
 
-    def retranslateUi(self, AgregarUsuarioModal):
+    def center(self): # this function is responsible for centering the modal with respect its father
+        qr = self.frameGeometry()
+        pr = self.parent.geometry()
+        x = (self.parent.width() - qr.width()) / 2
+        y = (self.parent.height() - qr.height()) / 2 
+        self.setGeometry(x,y,qr.width(),qr.height())
+
+    def exit(self): # this function is responsible to emit a cancelation signal if exit button was clicked
+        reply = QMessageBox.question(
+            self, "Confirmacion",
+            "¿Seguro que desea cancelar?",
+            QMessageBox.Yes | QMessageBox.No)
+        if reply == QMessageBox.Yes:
+            self.close()
+        else:
+            pass
+
+    def prompt(self,title,text):
+        reply = QMessageBox.question(
+            self, title,
+            text,
+            QMessageBox.Yes | QMessageBox.No)
+        return reply
+
+    @staticmethod
+    def randomPassword(lenght=12):
+        import random
+        alphabet = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890"
+        txtPass = ""
+        for i in range(lenght):
+            txtPass += alphabet[random.randint(0,alphabet.__len__()-1)]
+        return txtPass
+
+    def close(self):
+        super().close()
+        self.disconnectSignals()
+        self.deleteLater()
+        QApplication.processEvents()
+
+    def retranslateUi(self, ContraseniaModal):
         _translate = QtCore.QCoreApplication.translate
-        AgregarUsuarioModal.setWindowTitle(_translate("AgregarUsuarioModal", "Sistema SCADA"))
-        self.lblSCADA.setText(_translate("AgregarUsuarioModal", "SCADA"))
-        self.lblTitle.setText(_translate("AgregarUsuarioModal", "Agregar Usuario"))
-        self.ContentBox.setTitle(_translate("AgregarUsuarioModal", "Información"))
-        self.lblNombre.setText(_translate("AgregarUsuarioModal", "Nombre:"))
-        self.lblTipo.setText(_translate("AgregarUsuarioModal", "Tipo:"))
-        self.btnAceptar_2.setText(_translate("AgregarUsuarioModal", "OK"))
-        self.lblEmail.setText(_translate("AgregarUsuarioModal", "Email:"))
-        self.lblUsuario.setText(_translate("AgregarUsuarioModal", "Usuario:"))
+        ContraseniaModal.setWindowTitle(_translate("ContraseniaModal", "Sistema SCADA"))
+        self.lblSCADA.setText(_translate("ContraseniaModal", "SCADA"))
+        self.lblTitle.setText(_translate("ContraseniaModal", "Recuperar Contraseña"))
+        self.ContentBox.setTitle(_translate("ContraseniaModal", "Información"))
+        self.lblUsuario.setText(_translate("ContraseniaModal", "Usuario:"))
+        self.btnAceptar.setText(_translate("ContraseniaModal", "OK"))
+        self.lblEmail.setText(_translate("ContraseniaModal", "Email:"))

@@ -8,13 +8,12 @@ from resources import *
 
 class UIAbrirModal(modal):
 
-    def __init__(self,MainWindow,IsDelete = False):
-        super(UIAbrirModal,self).__init__(MainWindow)
-        self.__IsDelete = IsDelete
+    def __init__(self,**kwargs):
+        self.__IsDelete = kwargs["IsDelete"]
         self.__UIContainer = []
-        self.setupUi()
-    
-    def setupUi(self):
+        super(UIAbrirModal,self).__init__(**kwargs)
+        
+    def setupUI(self):
         AbrirModal = self
         AbrirModal.setObjectName("AbrirModal")
         AbrirModal.setWindowModality(QtCore.Qt.WindowModal)
@@ -174,10 +173,10 @@ class UIAbrirModal(modal):
         self.ContentBox.setFont(font)
         self.ContentBox.setStyleSheet("background-color: rgb(255, 255, 255);")
         self.ContentBox.setAlignment(QtCore.Qt.AlignBottom|QtCore.Qt.AlignLeading|QtCore.Qt.AlignLeft)
-        self.ContentBox.setFlat(True)
+        self.ContentBox.setFlat(False)
         self.ContentBox.setObjectName("ContentBox")
         self.verticalLayout_3 = QtWidgets.QVBoxLayout(self.ContentBox)
-        self.verticalLayout_3.setContentsMargins(0, 0, 0, 0)
+        self.verticalLayout_3.setContentsMargins(0, 0, 0, 5)
         self.verticalLayout_3.setSpacing(0)
         self.verticalLayout_3.setObjectName("verticalLayout_3")
         self.ContentScroll = QtWidgets.QScrollArea(self.ContentBox)
@@ -187,8 +186,8 @@ class UIAbrirModal(modal):
         self.ContentScroll.setWidgetResizable(False)
         self.ContentScroll.setObjectName("ContentScroll")
         self.ContainerScroll = QtWidgets.QWidget()
-        self.ContainerScroll.setGeometry(QtCore.QRect(0, 0, 377, 490))
-        self.ContainerScroll.setMinimumSize(QtCore.QSize(0, 490))
+        self.ContainerScroll.setGeometry(QtCore.QRect(0, 0, 377, 485))
+        self.ContainerScroll.setMinimumSize(QtCore.QSize(0, 485))
         self.ContainerScroll.setObjectName("ContainerScroll")
         self.LayoutScroll = QtWidgets.QVBoxLayout(self.ContainerScroll)
         self.LayoutScroll.setContentsMargins(0, 9, 5, 9)
@@ -272,29 +271,24 @@ class UIAbrirModal(modal):
         self.btnExit.clicked.disconnect(self.exit)
 
     def obtenerProyectos(self):
-        self.btnReload.hide()
-        self.lblStatus.setText("Cargando...")
-        self.movie = QMovie(":/source/img/Cargando.gif")
-        self.movie.start()
-        self.Status.setMovie(self.movie)
+        self.updateState("Cargando...",QMovie(":/source/img/Cargando.gif"))
         worker = Worker(Logica.ObtenerProyectos,**{"access_token":self.session.access_token})
         worker.signals.finished.connect(self.showCallback)
         self.threadpool.start(worker)
+    
+    def updateState(self,text,Movie = None,Reload = False):
+        self.Status.setMovie(Movie)
+        self.lblStatus.setText(text)
+        Movie.start() if Movie != None else None
+        self.btnReload.hide() if Reload is False else self.btnReload.show()
+        Movie.setScaledSize(QtCore.QSize(64,64))
 
     def showCallback(self,_data):
         if isinstance(_data,Exception): # if data returned is a Exception
-            self.btnReload.show()
-            self.lblStatus.setText("¡Error! Ha ocurrido un error")
-            self.movie = QMovie(":/source/img/Error.png")
-            self.movie.start()
-            self.Status.setMovie(self.movie)
+            self.updateState("¡Error! Ha ocurrido un error",QMovie(":/source/img/Error.png"),True)
             return
         if len(_data) == 0:
-            self.btnReload.show()
-            self.lblStatus.setText("¡Vacio! Aún no hay nada")
-            self.movie = QMovie(":/source/img/Empty.png")
-            self.movie.start()
-            self.Status.setMovie(self.movie)
+            self.updateState("¡Vacio! Aún no hay nada",QMovie(":/source/img/Empty.png"),True)
             return
         self.btnReload.clicked.disconnect(self.obtenerProyectos)
         self.UtilsFrame.deleteLater()

@@ -6,10 +6,10 @@ from resources import *
 
 class UIImportarDispositivoModal(modal):
 
-    def __init__(self,MainWindow):
+    def __init__(self,**kwargs):
         self.workSpaces = dict()
         self.UIContainer = []
-        super(UIImportarDispositivoModal,self).__init__(MainWindow)
+        super(UIImportarDispositivoModal,self).__init__(**kwargs)
         self.setupUi()
 
     def setupUi(self):

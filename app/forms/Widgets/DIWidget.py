@@ -19,7 +19,7 @@ class UIDIVariable(widget):
         self.MainFrame.setGeometry(QtCore.QRect(0, 0, 150, 25))
         self.MainFrame.setStyleSheet("background-color: rgb(255, 255, 255);")
         self.MainFrame.setFrameShape(QtWidgets.QFrame.NoFrame)
-        self.MainFrame.setFrameShadow(QtWidgets.QFrame.Raised)
+        self.MainFrame.setFrameShadow(QtWidgets.QFrame.Plain)
         self.MainFrame.setLineWidth(0)
         self.MainFrame.setObjectName("MainFrame")
         self.lblTileScroll = QtWidgets.QScrollArea(self.MainFrame)

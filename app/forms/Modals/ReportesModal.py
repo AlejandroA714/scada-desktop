@@ -10,12 +10,11 @@ from resources import *
 
 class UIReportesModal(modal):
 
-    def __init__(self,MainWindow):
+    def __init__(self,**kwargs):
         self.UIContainer = dict()
-        super(UIReportesModal,self).__init__(MainWindow)
-        self.setupUi()
+        super(UIReportesModal,self).__init__(**kwargs)
 
-    def setupUi(self):
+    def setupUI(self):
         ReportesModal = self
         ReportesModal.setObjectName("ReportesModal")
         ReportesModal.setWindowModality(QtCore.Qt.WindowModal)
@@ -427,7 +426,7 @@ class UIReportesModal(modal):
         _translate = QtCore.QCoreApplication.translate
         ReportesModal.setWindowTitle(_translate("ReportesModal", "Sistema SCADA"))
         self.lblSCADA.setText(_translate("ReportesModal", "SCADA"))
-        self.lblTitle.setText(_translate("ReportesModal", "Usuarios"))
+        self.lblTitle.setText(_translate("ReportesModal", "Reportes"))
         self.lblInicio.setText(_translate("ReportesModal", "Desde"))
         self.btnAgregar.setText(_translate("ReportesModal", "Filtrar"))
         self.dateStart.setDisplayFormat(_translate("ReportesModal", "d/M/yyyy"))

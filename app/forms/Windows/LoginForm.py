@@ -3,6 +3,7 @@ from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QMovie, QPainter, QPixmap, QKeySequence, QKeyEvent
 from PyQt5.QtWidgets import QMessageBox, QApplication, QGraphicsDropShadowEffect, QMainWindow, QApplication, QShortcut
 from classes import Logica, Worker, form
+from ..Modals import UIRecuperarModal
 from resources import *
 
 class UILogin(form):
@@ -58,7 +59,7 @@ class UILogin(form):
         self.frame_2 = QtWidgets.QFrame(self.MainFrame)
         self.frame_2.setGeometry(QtCore.QRect(40, 190, 321, 311))
         self.frame_2.setFrameShape(QtWidgets.QFrame.StyledPanel)
-        self.frame_2.setFrameShadow(QtWidgets.QFrame.Raised)
+        self.frame_2.setFrameShadow(QtWidgets.QFrame.Sunken)
         self.frame_2.setObjectName("frame_2")
         self.label_6 = QtWidgets.QLabel(self.frame_2)
         self.label_6.setGeometry(QtCore.QRect(40, 50, 41, 41))
@@ -106,14 +107,14 @@ class UILogin(form):
         self.btnAceptar.setFlat(True)
         self.btnAceptar.setObjectName("btnAceptar")
         self.label_4 = QtWidgets.QLabel(self.MainFrame)
-        self.label_4.setGeometry(QtCore.QRect(130, 140, 151, 41))
+        self.label_4.setGeometry(QtCore.QRect(130, 140, 151, 25))
         font = QtGui.QFont()
         font.setFamily("Roboto")
         font.setPointSize(14)
         self.label_4.setFont(font)
         self.label_4.setObjectName("label_4")
         self.label_5 = QtWidgets.QLabel(self.MainFrame)
-        self.label_5.setGeometry(QtCore.QRect(50, 180, 101, 17))
+        self.label_5.setGeometry(QtCore.QRect(50, 180, 91, 15))
         font = QtGui.QFont()
         font.setFamily("Roboto")
         font.setPointSize(11)
@@ -172,9 +173,15 @@ class UILogin(form):
         # listener
 
         self.btnAceptar.clicked.connect(self.btnAceptar_Click)
+        self.lblForgottenPass.mousePressEvent = self.mousePress_Click
         self.btnExit.clicked.connect(self.exit)
         
         # end
+    
+    def mousePress_Click(self,evt):
+        if evt.buttons() == Qt.LeftButton:
+            UI = UIRecuperarModal(self)
+            UI.show()
 
     def btnAceptar_Click(self):
         if(self.txtUsuario.text() == "" or self.txtPassword.text() == ""):
@@ -226,7 +233,7 @@ class UILogin(form):
         _translate = QtCore.QCoreApplication.translate
         Login.setWindowTitle(_translate("Login", "Sistema SCADA"))
         self.lblForgottenPass.setText(_translate("Login", "¿Olvidaste tu contraseña?"))
-        self.btnAceptar.setText(_translate("Login", "Iniciar Sesion"))
-        self.label_4.setText(_translate("Login", "Iniciar Sesiòn"))
+        self.btnAceptar.setText(_translate("Login", "Iniciar Sesión"))
+        self.label_4.setText(_translate("Login", "Iniciar Sesión"))
         self.label_5.setText(_translate("Login", "Credenciales"))
         self.label_2.setText(_translate("Login", "SCADA"))

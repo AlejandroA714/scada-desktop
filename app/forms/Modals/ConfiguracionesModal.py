@@ -7,11 +7,10 @@ from resources import *
 
 class UIConfiguracionesModal(modal):
 
-    def __init__(self,MainWindow):
-        super(UIConfiguracionesModal,self).__init__(MainWindow)
-        self.setupUi()
+    def __init__(self,**kwargs):
+        super(UIConfiguracionesModal,self).__init__(**kwargs)
     
-    def setupUi(self):
+    def setupUI(self):
         ConfiguracionesModal = self
         ConfiguracionesModal.setObjectName("ConfiguracionesModal")
         ConfiguracionesModal.setWindowModality(QtCore.Qt.WindowModal)
@@ -170,7 +169,7 @@ class UIConfiguracionesModal(modal):
         self.ContentBox.setFont(font)
         self.ContentBox.setStyleSheet("background-color: rgb(255, 255, 255);")
         self.ContentBox.setAlignment(QtCore.Qt.AlignBottom|QtCore.Qt.AlignJustify)
-        self.ContentBox.setFlat(True)
+        self.ContentBox.setFlat(False)
         self.ContentBox.setObjectName("ContentBox")
         self.ContentLayout = QtWidgets.QVBoxLayout(self.ContentBox)
         self.ContentLayout.setContentsMargins(10, 10, 10, 10)
@@ -435,7 +434,7 @@ class UIConfiguracionesModal(modal):
         self.ContentLayout.addWidget(self.UtilsFrame, 0, QtCore.Qt.AlignHCenter)
 
         # listener
-        self.__parent.signals.resize.connect(self.center)
+        self.parent.signals.resize.connect(self.center)
         self.btnExit.clicked.connect(self.exit)
         self.btnAceptar.clicked.connect(self.btnAceptar_Click)
         self.btnReload.clicked.connect(self.ObtenerConfguraciones)

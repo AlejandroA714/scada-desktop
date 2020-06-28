@@ -3,7 +3,7 @@ from PyQt5.QtWidgets import QMainWindow, QAction, QMenu, QMessageBox, QShortcut,
 from PyQt5.QtCore import Qt, pyqtSlot
 from PyQt5.QtGui import QKeySequence, QMovie
 from classes import form, Worker, Logica, device, workSpace,container, session
-from forms import UIAbrirModal,UIDispositivoWidget, UIConfiguracionesModal, UIDispositvoModal, UIAgregarDispositvoModal, UIUsuariosModal,UIReportesModal
+from forms import UIAbrirModal,UIDispositivoWidget, UIConfiguracionesModal, UIDispositvoModal, UIUsuariosModal,UIReportesModal, UIAPIModal, UICuentaModal
 from resources import *
 from bson import ObjectId
 from functools import partial
@@ -296,7 +296,8 @@ class UIMainWindow(form):
         self.workSpaceTab.setTabText(self.workSpaceTab.indexOf(self.workSpaceTab.currentWidget()),work.nombre)
     
     def MenuAbrir_Click(self):
-        dialog = UIAbrirModal(self)
+        dialog = UIAbrirModal(**{"Parent":self,"IsDelete":False})
+        print(dialog)
         dialog.show()
         dialog.signals.success.connect(self.AbrirAction)
 
@@ -373,7 +374,7 @@ class UIMainWindow(form):
                 QMessageBox.warning(self,"¡Error!","¡Error! Fallo al guardar, La operacion (Cerrar) no ha sido completada") 
 
     def MenuEliminar_Click(self):
-        dialog = UIAbrirModal(self,True)
+        dialog = UIAbrirModal(**{"Parent":self,"IsDelete":True})
         dialog.show()
         dialog.signals.success.connect(self.EliminarAction)
 
@@ -418,29 +419,31 @@ class UIMainWindow(form):
 
     # methods of settings:menu
     def MenuConfiguraciones_Click(self):
-        UI = UIConfiguracionesModal(self)
+        UI = UIConfiguracionesModal(**{"Parent":self})
         UI.show()
 
     def MenuDispositivos_Click(self):
-        UI = UIDispositvoModal(self,self.__containers)
+        UI = UIDispositvoModal(**{"Parent":self,"workSpaces":self.__containers})
         UI.show()
 
     def MenuAPI_Click(self):
-        print("api")
+        UI = UIAPIModal(**{"Parent":self})
+        UI.show()
 
     def MenuUsuarios_Click(self):
-        UI = UIUsuariosModal(self)
+        UI = UIUsuariosModal(**{"Parent":self})
         UI.show()
     
     def MenuCuenta_Click(self):
-        print("account")
+        UI = UICuentaModal(**{"Parent":self})
+        UI.show()
     
     def MenuAcerca_Click(self):
         print("about")
 
     # methods of reports:menu
     def MenuReportes_Click(self):
-        UIReportes = UIReportesModal(self)
+        UIReportes = UIReportesModal(**{"Parent":self})
         UIReportes.show()
         
     # utils Methods
