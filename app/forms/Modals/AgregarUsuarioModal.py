@@ -8,16 +8,15 @@ from resources import *
 
 class UIAgregarUsuarioModal(modal):
 
-    def __init__(self,MainWindow,IsEditar=False,user=None):
-        super(UIAgregarUsuarioModal,self).__init__(MainWindow)
-        self.isEdit = IsEditar
-        if user is None:
+    def __init__(self,**kwargs):
+        super(UIAgregarUsuarioModal,self).__init__(**kwargs)
+        self.isEdit = kwargs["IsEdit"]
+        if kwargs["Usuario"] is None:
             self.usuario = usuario()
         else:
-            self.usuario = user
-        self.setupUi()
+            self.usuario = kwargs["Usuario"]
 
-    def setupUi(self):
+    def setupUI(self):
         AgregarUsuarioModal = self
         AgregarUsuarioModal.setObjectName("AgregarUsuarioModal")
         AgregarUsuarioModal.setWindowModality(QtCore.Qt.WindowModal)

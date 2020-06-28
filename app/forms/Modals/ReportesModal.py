@@ -10,12 +10,11 @@ from resources import *
 
 class UIReportesModal(modal):
 
-    def __init__(self,MainWindow):
+    def __init__(self,**kwargs):
         self.UIContainer = dict()
-        super(UIReportesModal,self).__init__(MainWindow)
-        self.setupUi()
+        super(UIReportesModal,self).__init__(**kwargs)
 
-    def setupUi(self):
+    def setupUI(self):
         ReportesModal = self
         ReportesModal.setObjectName("ReportesModal")
         ReportesModal.setWindowModality(QtCore.Qt.WindowModal)

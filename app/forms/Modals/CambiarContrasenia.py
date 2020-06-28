@@ -7,11 +7,10 @@ from resources import *
 
 class UIContraseniaModal(modal):
 
-    def __init__(self,Parent):
-        super(UIContraseniaModal,self).__init__(Parent)
-        self.setupUi()
+    def __init__(self,**kwargs):
+        super(UIContraseniaModal,self).__init__(**kwargs)
 
-    def setupUi(self):
+    def setupUI(self):
         ContraseniaModal = self
         ContraseniaModal.setObjectName("ContraseniaModal")
         ContraseniaModal.setWindowModality(QtCore.Qt.WindowModal)

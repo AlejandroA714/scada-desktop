@@ -8,12 +8,11 @@ from resources import *
 
 class UICuentaModal(modal):
 
-    def __init__(self,Parent):
-        super(UICuentaModal,self).__init__(Parent)
+    def __init__(self,**kwargs):
+        super(UICuentaModal,self).__init__(**kwargs)
         self.usuario = usuario()
-        self.setupUi()
 
-    def setupUi(self):
+    def setupUI(self):
         CuentaModal = self
         CuentaModal.setObjectName("CuentaModal")
         CuentaModal.setWindowModality(QtCore.Qt.WindowModal)
@@ -325,7 +324,7 @@ class UICuentaModal(modal):
         self.btnAceptar_2.clicked.disconnect(self.validarUsuario)
 
     def cambiarContrasenia(self):
-        UIPass = UIContraseniaModal(self.parent)
+        UIPass = UIContraseniaModal(**{"Parent":self.parent})
         UIPass.show()
         
     def showEvent(self,evt):

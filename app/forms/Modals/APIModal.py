@@ -6,11 +6,10 @@ from resources import *
 
 class UIAPIModal(modal):
 
-    def __init__(self,Parent):
-        super(UIAPIModal,self).__init__(Parent)
-        self.setupUi()
+    def __init__(self,**kwargs):
+        super(UIAPIModal,self).__init__(**kwargs)
 
-    def setupUi(self):
+    def setupUI(self):
         APIModal = self
         APIModal.setObjectName("APIModal")
         APIModal.setWindowModality(QtCore.Qt.WindowModal)

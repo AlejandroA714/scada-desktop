@@ -7,11 +7,10 @@ from resources import *
 
 class UIConfiguracionesModal(modal):
 
-    def __init__(self,MainWindow):
-        super(UIConfiguracionesModal,self).__init__(MainWindow)
-        self.setupUi()
+    def __init__(self,**kwargs):
+        super(UIConfiguracionesModal,self).__init__(**kwargs)
     
-    def setupUi(self):
+    def setupUI(self):
         ConfiguracionesModal = self
         ConfiguracionesModal.setObjectName("ConfiguracionesModal")
         ConfiguracionesModal.setWindowModality(QtCore.Qt.WindowModal)

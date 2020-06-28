@@ -5,11 +5,11 @@ from PyQt5.QtWidgets import QMessageBox, QApplication
 from requests.exceptions import HTTPError, ConnectionError
 
 #This file handle the execute of thread to contact with API SCADA
-# wiil call and request executing a thread to avoid program freezing
+# will call and request executing a thread to avoid program freezing
 
 class WorkerSignals(QObject): # Class to emit signals at execute a thread
 
-    finished = pyqtSignal(object) # returns no data
+    finished = pyqtSignal(object) # returns data, json object
     error = pyqtSignal(Exception) # return a tuple with error
     result = pyqtSignal(object) # if success return data, json object
 

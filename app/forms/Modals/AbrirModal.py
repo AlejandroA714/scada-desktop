@@ -8,13 +8,12 @@ from resources import *
 
 class UIAbrirModal(modal):
 
-    def __init__(self,MainWindow,IsDelete = False):
-        super(UIAbrirModal,self).__init__(MainWindow)
-        self.__IsDelete = IsDelete
+    def __init__(self,**kwargs):
+        self.__IsDelete = kwargs["IsDelete"]
         self.__UIContainer = []
-        self.setupUi()
-    
-    def setupUi(self):
+        super(UIAbrirModal,self).__init__(**kwargs)
+        
+    def setupUI(self):
         AbrirModal = self
         AbrirModal.setObjectName("AbrirModal")
         AbrirModal.setWindowModality(QtCore.Qt.WindowModal)

@@ -7,13 +7,12 @@ from resources import *
 
 class UIDispositvoModal(modal):
 
-    def __init__(self,MainWindow,workSpaces:dict):
-        self.workSpaces = workSpaces
+    def __init__(self,**kwargs):
+        self.workSpaces = kwargs["workSpaces"]
         self.UIContainer = []
-        super(UIDispositvoModal,self).__init__(MainWindow)
-        self.setupUi()
+        super(UIDispositvoModal,self).__init__(**kwargs)
 
-    def setupUi(self):
+    def setupUI(self):
         DispositvoModal = self
         DispositvoModal.setObjectName("DispositvoModal")
         DispositvoModal.setWindowModality(QtCore.Qt.WindowModal)
@@ -368,7 +367,7 @@ class UIDispositvoModal(modal):
         self.mostrarDispositivos(0)
     
     def agregarDispositivo(self):
-        UIAgregar = UIAgregarDispositvoModal(self.parent)
+        UIAgregar = UIAgregarDispositvoModal(**{"Parent":self.parent,"Dispositivo":None,"IsEdit":False})
         UIAgregar.show()
         UIAgregar.signals.success.connect(self.agregarDispositivoAction)
 
@@ -409,7 +408,7 @@ class UIDispositvoModal(modal):
 
     def editarDispositivo(self,dev:device):
         from copy import copy
-        UIAgregar = UIAgregarDispositvoModal(self.parent,copy(dev),True)
+        UIAgregar = UIAgregarDispositvoModal(**{"Parent":self.parent,"Dispositivo":copy(dev),"IsEdit":True})
         UIAgregar.show()
         UIAgregar.signals.success.connect(self.editarDispositivo_Callback)
     
@@ -438,7 +437,7 @@ class UIDispositvoModal(modal):
         copyDev.image = dev.image
         copyDev.id = dev.id
         copyDev.token = dev.token
-        UIAgregar = UIAgregarDispositvoModal(self.parent,copyDev,True)
+        UIAgregar = UIAgregarDispositvoModal(**{"Parent":self.parent,"Dispositivo":copyDev,"IsEdit":True})
         UIAgregar.show()
         UIAgregar.signals.success.connect(self.agregarDispositivo_Callback)
         

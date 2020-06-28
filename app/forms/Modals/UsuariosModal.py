@@ -10,12 +10,11 @@ from resources import *
 
 class UIUsuariosModal(modal):
 
-    def __init__(self,MainWindow):
+    def __init__(self,**kwargs):
         self.UIContainer = dict()
-        super(UIUsuariosModal,self).__init__(MainWindow)
-        self.setupUi()
+        super(UIUsuariosModal,self).__init__(**kwargs)
 
-    def setupUi(self):
+    def setupUI(self):
         ImportarDispositivo = self
         ImportarDispositivo.setObjectName("ImportarDispositivo")
         ImportarDispositivo.setWindowModality(QtCore.Qt.WindowModal)
@@ -403,7 +402,7 @@ class UIUsuariosModal(modal):
            self.UIContainer[usr.id] = UIUsuario
 
     def agregarUsuario(self):
-        UIAgregar = UIAgregarUsuarioModal(self.parent)
+        UIAgregar = UIAgregarUsuarioModal(**{"Parent":self.parent,"Usuario":None,"IsEdit":False})
         UIAgregar.signals.success.connect(self.agregarUsuarioAction)
         UIAgregar.show()
 
@@ -412,7 +411,7 @@ class UIUsuariosModal(modal):
         self.mostrarUsuarios(2)
 
     def editarUsuario(self,usr:usuario):
-        UIEditar = UIAgregarUsuarioModal(self.parent,True,user=usr)
+        UIEditar = UIAgregarUsuarioModal(**{"Parent":self.parent,"Usuario":usr,"IsEdit":True})
         UIEditar.signals.success.connect(self.editarUsuarioAction)
         UIEditar.show()
 
