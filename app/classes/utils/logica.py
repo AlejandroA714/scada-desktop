@@ -9,7 +9,7 @@ import requests, json, os
 
 class Logica():
 
-    __program_files = '/opt' #os.environ["ALLUSERSPROFILE"]
+    __program_files = os.path.expanduser('~/.scada') #os.environ["ALLUSERSPROFILE"]
 
     settings = { 
             "Host":"127.0.0.1",
@@ -177,7 +177,7 @@ class Logica():
     @staticmethod
     def LeerConfiguracionesLocal():
         try:
-            with open("%s/Sistema SCADA/setting.json" % Logica.__program_files,'r') as f:
+            with open("%s/setting.json" % Logica.__program_files,'r') as f:
                 jsonFile = json.load(f)
                 f.close()
                 return jsonFile
@@ -187,7 +187,7 @@ class Logica():
     @staticmethod
     def GuardarConfiguracionesLocal(settings):
         try:
-            with open("%s/Sistema SCADA/setting.json" % Logica.__program_files,"w") as f:
+            with open("%s/setting.json" % Logica.__program_files,"w") as f:
                 f.write(json.dumps(settings))
                 f.close()
             return True
@@ -301,7 +301,7 @@ class Logica():
     def LeerConfiguracion():
         Logger = logger()
         try:
-            with open("%s/Sistema SCADA/setting.json" % Logica.__program_files,"r") as f:
+            with open("%s/setting.json" % Logica.__program_files,"r") as f:
                 jsonFile = json.load(f)
                 jsonFile["URI"] = "%s://%s" % (jsonFile["HTTP_PROTOCOL"],jsonFile["Host"]) if jsonFile["Port"] is None else "%s://%s:%s" % (jsonFile["HTTP_PROTOCOL"],jsonFile["Host"],jsonFile["Port"])
                 f.close()
@@ -313,7 +313,7 @@ class Logica():
                 "Port":8080,
                 "HTTP_PROTOCOL":"http"
             }
-            with open("%s/Sistema SCADA/setting.json" % Logica.__program_files,"w") as f:
+            with open("%s/setting.json" % Logica.__program_files,"w") as f:
                 f.write(json.dumps(settings))
                 f.close()
             settings["URI"] = "%s://%s" % (settings["HTTP_PROTOCOL"],settings["Host"]) if settings["Port"] is None else "%s://%s:%s" % (settings["HTTP_PROTOCOL"],settings["Host"],settings["Port"])

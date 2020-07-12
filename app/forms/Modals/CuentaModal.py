@@ -1,6 +1,6 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtGui import QMovie, QPixmap, QColor, QIcon
-from PyQt5.QtWidgets import QMessageBox
+from PyQt5.QtWidgets import QMessageBox, QGraphicsDropShadowEffect
 from PyQt5.QtCore import Qt
 from classes import modal,Logica, Worker, usuario, Worker
 from .CambiarContrasenia import UIContraseniaModal
@@ -41,6 +41,10 @@ class UICuentaModal(modal):
         self.MainFrame.setFrameShape(QtWidgets.QFrame.StyledPanel)
         self.MainFrame.setFrameShadow(QtWidgets.QFrame.Raised)
         self.MainFrame.setObjectName("MainFrame")
+        self.shadow = QGraphicsDropShadowEffect()
+        self.shadow.setBlurRadius(4)
+        self.shadow.setOffset(2)
+        self.MainFrame.setGraphicsEffect(self.shadow)
         self.verticalLayout_2 = QtWidgets.QVBoxLayout(self.MainFrame)
         self.verticalLayout_2.setContentsMargins(0, 0, 0, 20)
         self.verticalLayout_2.setSpacing(0)

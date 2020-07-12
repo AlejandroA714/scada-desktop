@@ -7,6 +7,8 @@ from forms import UIAbrirModal,UIDispositivoWidget, UIConfiguracionesModal, UIDi
 from resources import *
 from bson import ObjectId
 from functools import partial
+from notificator import notificator
+from notificator.alingments import TopRight
 
 class UIMainWindow(form):
 
@@ -15,6 +17,7 @@ class UIMainWindow(form):
         self.__containers = dict()
         self.setupUi()
         self.session = session()
+        self.noft = notificator()
 
     def setupUi(self):
         MainWindow = self
@@ -235,6 +238,9 @@ class UIMainWindow(form):
             
         # listener
 
+    def showEvent(self,evt):
+        self.noft.info("¡Información!","Bienvenido %s" % self.session.nombres,None,TopRight,duracion=5)
+
     def defineMenuArchivo(self):
         # Definicion de menus
         archivoMenu = QMenu()
@@ -294,15 +300,20 @@ class UIMainWindow(form):
         containerObject = container({"tab":self.workSpaceTab.currentWidget(),"workSpace":work,"devicesContainer":dict()  })
         self.__containers[tabName] = containerObject
         self.workSpaceTab.setTabText(self.workSpaceTab.indexOf(self.workSpaceTab.currentWidget()),work.nombre)
+        self.actualizarEstado("Guardando...","white","slategray",movie=self.movie)
+        worker = Worker(Logica.Guardar,**{"access_token":self.session.access_token,"data":work})
+        self.noft.info("Información","Guardando...",duracion=10)
+        worker.signals.finished.connect(self.GuardarAction)
+        self.threadpool.start(worker)
     
     def MenuAbrir_Click(self):
         dialog = UIAbrirModal(**{"Parent":self,"IsDelete":False})
-        print(dialog)
         dialog.show()
         dialog.signals.success.connect(self.AbrirAction)
 
     def AbrirAction(self,workSpace):
         worker = Worker(Logica.AbrirProyecto,**{"access_token":self.session.access_token,"id":workSpace.id})
+        self.noft.info("¡Información!","Cargando proyecto...",self,duracion=10)
         worker.signals.finished.connect(self.MostrarDispositivos)
         self.threadpool.start(worker)
 
@@ -329,6 +340,7 @@ class UIMainWindow(form):
         workSpace.id = ObjectId().__str__()
         workSpace.nombre = name[0]
         self.workSpaceTab.setTabText(self.workSpaceTab.indexOf(self.workSpaceTab.currentWidget()),workSpace.nombre)
+        self.noft.info("Información","Guardando...",duracion=10)
         workSpace = self.serializeWorkSpace(self.workSpaceTab.currentWidget().objectName())
         worker = Worker(Logica.Guardar,**{"access_token":self.session.access_token,"data":workSpace})
         worker.signals.finished.connect(self.GuardarAction)
@@ -345,6 +357,7 @@ class UIMainWindow(form):
         QMessageBox.Save | QMessageBox.No | QMessageBox.Cancel  )
         if reply == QMessageBox.Save:
             self.actualizarEstado("Guardando...","white","slategray",self.movie)
+            self.noft.info("¡Información!","Guardando...",duracion=10)
             workSpace = self.serializeWorkSpace(tabName)
             worker = Worker(Logica.Guardar,**{"access_token":self.session.access_token,"data":workSpace})
             worker.signals.finished.connect(partial(self.GuardarAction,IsClose=True,Tab=self.workSpaceTab.currentWidget()))
@@ -353,7 +366,8 @@ class UIMainWindow(form):
             self.cleanWorkSpace(self.workSpaceTab.currentWidget().objectName())
             self.__containers.pop(tabName)
             self.workSpaceTab.setTabText(self.workSpaceTab.indexOf(self.workSpaceTab.currentWidget()),"Tab %s" % (self.workSpaceTab.indexOf(self.workSpaceTab.currentWidget()) + 1) )
-    
+            self.noft.sucess("¡Información!","Exito al cerrar",duracion=10)
+
     def GuardarAction(self,response,IsClose = False,Tab = None):
         from datetime import datetime
         if isinstance(response,Exception):
@@ -367,7 +381,7 @@ class UIMainWindow(form):
                 self.cleanWorkSpace(Tab.objectName())
                 self.__containers.pop(Tab.objectName())
                 self.workSpaceTab.setTabText(self.workSpaceTab.indexOf(Tab),"Tab %s" % (self.workSpaceTab.indexOf(Tab) + 1))
-                
+                self.noft.sucess("¡Información!","Exito al cerrar",duracion=10)                
         else:
             self.actualizarEstado("¡Error! Fallo al guardar a las %s" % datetime.now().strftime("%I:%M del dia %d/%m"),"red","red")
             if IsClose:

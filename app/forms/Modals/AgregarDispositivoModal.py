@@ -1,7 +1,7 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from classes import modal,Logica, variable, device
 from PyQt5.QtCore import Qt
-from PyQt5.QtWidgets import QMessageBox
+from PyQt5.QtWidgets import QMessageBox, QGraphicsDropShadowEffect
 from resources import *
 from .AgregarVariableModal import UIAgregarVariableModal
 from ..Widgets.VariableWidget import UIVariableWidget
@@ -49,6 +49,10 @@ class UIAgregarDispositvoModal(modal): # To add or update and device
         self.MainFrame.setFrameShape(QtWidgets.QFrame.StyledPanel)
         self.MainFrame.setFrameShadow(QtWidgets.QFrame.Raised)
         self.MainFrame.setObjectName("MainFrame")
+        self.shadow = QGraphicsDropShadowEffect()
+        self.shadow.setBlurRadius(4)
+        self.shadow.setOffset(2)
+        self.MainFrame.setGraphicsEffect(self.shadow)
         self.MainLayout = QtWidgets.QVBoxLayout(self.MainFrame)
         self.MainLayout.setContentsMargins(0, 0, 0, 20)
         self.MainLayout.setSpacing(0)

@@ -9,11 +9,11 @@ class logger(object):
 
     def __init__(self):
         if  not self.__Initialized:
-            __program_files = "/opt" #os.environ["ALLUSERSPROFILE"]
-            if not os.path.exists("%s/Sistema SCADA" % __program_files): # if does not exist, is created
-                os.makedirs("%s/Sistema SCADA" % __program_files)
+            __program_files = os.path.expanduser('~/.scada') #os.environ["ALLUSERSPROFILE"]
+            #if not os.path.exists("%s/" % __program_files): # if does not exist, is created
+            #    os.makedirs("%s/Sistema SCADA" % __program_files)
             __log_formatter = logging.Formatter('[Desktop SCADA] [%(asctime)s] [%(levelname)s] %(message)s','%d/%m/%Y %H:%M')
-            __logFile = '%s/Sistema SCADA/SCADA.log' % __program_files
+            __logFile = '%s/SCADA.log' % __program_files
             __my_handler = RotatingFileHandler(__logFile, maxBytes=5242880,
                                                 backupCount=2, encoding=None, delay=0)
             __my_handler.setFormatter(__log_formatter)

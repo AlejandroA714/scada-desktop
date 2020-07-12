@@ -2,7 +2,8 @@ from PyQt5.QtWidgets import QApplication
 from forms import UILogin, UIMainWindow
 from classes import logger,timer,session
 from functools import partial
-import sip,sys
+from notificator import notificator
+from notificator.alingments import TopRight
 
 class application(QApplication):
 
@@ -19,13 +20,15 @@ class application(QApplication):
             self.timer.restartTimer(timerid)
             self.mainWindow.deleteLater()
             self.processEvents()
+            noft = notificator()
+            noft.info("¡Información!","Sesion Finalizada con exito",None,TopRight)
         self.mainWindow = UILogin()
         self.mainWindow.signals.login.connect(self.showMainForm)
         self.mainWindow.signals.finish.connect(self.exit)
         self.mainWindow.show()
 
     def showMainForm(self,s):
-        self.session = session(s)
+        session(s)
         self.mainWindow.signals.login.disconnect(self.showMainForm)
         self.mainWindow.signals.finish.disconnect(self.exit)
         self.mainWindow.deleteLater()
