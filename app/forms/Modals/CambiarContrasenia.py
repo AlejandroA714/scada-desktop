@@ -292,11 +292,14 @@ class UIContraseniaModal(modal):
             self.btnAceptar.hide()
             self.Status.show()
             self.movie.start()
-            worker = Worker(Logica.actualizarContrasenia,**{"access_token":self.session.access_token,"data":{"Id":self.session.id,"Password":self.txtNewPass.text(),"OldPassword":self.txtOldPass1.text() }})
-            worker.signals.finished.connect(self.validarUsuarioAction)
-            self.threadpool.start(worker)
+            self.worker = Worker(Logica.actualizarContrasenia,**{"access_token":self.session.access_token,"data":{"Id":self.session.id,"Password":self.txtNewPass.text(),"OldPassword":self.txtOldPass1.text() }})
+            self.worker.signals.finished.connect(self.validarUsuarioAction)
+            self.worker.start()
 
     def validarUsuarioAction(self,response):
+        self.worker.signals.finished.disconnect(self.validarUsuarioAction)
+        self.worker.deleteLater()
+        del self.worker
         self.btnAceptar.show()
         self.Status.hide()
         self.movie.stop()

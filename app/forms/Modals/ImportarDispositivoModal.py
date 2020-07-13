@@ -289,11 +289,14 @@ class UIImportarDispositivoModal(modal):
 
     def obtenerWorkSpaces(self):
         self.updateState("Cargando...",QMovie(":/source/img/Cargando.gif"))
-        worker = Worker(Logica.ObtenerWorkspaces,**{"access_token":self.session.access_token})
-        worker.signals.finished.connect(self.showAction)
-        self.threadpool.start(worker)
+        self.worker = Worker(Logica.ObtenerWorkspaces,**{"access_token":self.session.access_token})
+        self.worker.signals.finished.connect(self.showAction)
+        self.worker.start()
         
     def showAction(self,response):
+        self.worker.signals.finished.disconnect(self.showAction)
+        self.worker.deleteLater()
+        del self.worker
         if isinstance(response,Exception):
             self.updateState("¡Error! Ha ocurrido un error",QMovie(":/source/img/Error.png"),True)
             return

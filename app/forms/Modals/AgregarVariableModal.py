@@ -448,9 +448,9 @@ class UIAgregarVariableModal(modal):
         self.movie = QMovie(":/source/img/Cargando.gif")
         self.movie.start()
         self.Status.setMovie(self.movie)
-        worker = Worker(Logica.ObtenerVariablesFunciones,**{"ID":self.ID,"Token":self.Token,"access_token":self.session.access_token})
-        worker.signals.finished.connect(self.obtenerVariablesFuncionesCallback)
-        self.threadpool.start(worker)
+        self.worker = Worker(Logica.ObtenerVariablesFunciones,**{"ID":self.ID,"Token":self.Token,"access_token":self.session.access_token})
+        self.worker.signals.finished.connect(self.obtenerVariablesFuncionesCallback)
+        self.worker.start()
 
     def addColorItems(self):
         colors = {"aqua","aquamarine","beige","black","blue","blueviolet","brown","burlywood","chartreuse",
@@ -478,6 +478,9 @@ class UIAgregarVariableModal(modal):
             self.cmbNivel.addItem(Icon,c["text"],c)
 
     def obtenerVariablesFuncionesCallback(self,response):
+        self.worker.signals.finished.disconnect(self.obtenerVariablesFuncionesCallback)
+        self.worker.deleteLater()
+        del self.worker
         if isinstance(response,Exception): # if data returned is a Exception
             self.btnReload.show()
             self.lblStatus.setText("¡Error! Ha ocurrido un error")

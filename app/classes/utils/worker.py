@@ -13,7 +13,7 @@ class WorkerSignals(QObject): # Class to emit signals at execute a thread
     error = pyqtSignal(Exception) # return a tuple with error
     result = pyqtSignal(object) # if success return data, json object
 
-class Worker(QRunnable): # Class to execute a function inside a thread
+class Worker(QThread): # Class to execute a function inside a thread
 
     def __init__(self,fn,*args,**kwargs): # fn:  Function to be executed
 
@@ -24,14 +24,7 @@ class Worker(QRunnable): # Class to execute a function inside a thread
         self.kwargs = kwargs
         self.signals = WorkerSignals() 
         self.logger = logger()
-        self.setAutoDelete(True)
-
-    def isRunning(self):
-        return self.__running
-
-    def finished(self,result):
-        self.__running = False
-        self.signals.finished.emit(result)  # Return the result of the processing
+        #self.setAutoDelete(True)
 
     @pyqtSlot()
     def run(self):   
@@ -39,7 +32,7 @@ class Worker(QRunnable): # Class to execute a function inside a thread
         self.__running = True
         try:
             result = self.fn(*self.args, **self.kwargs) #Execute function, passing args and kwargs, always recibe **kwargs as json object
-            self.finished(result)
+            self.signals.finished.emit(result)
         except Exception as e:
             self.logger.log_error(e)
             if isinstance(e,HTTPError): # Receives an unathorized 
@@ -49,5 +42,5 @@ class Worker(QRunnable): # Class to execute a function inside a thread
             if isinstance(e,ConnectionError):
                 e = Exception("Fallo al conectar con el servicio SCADA")
             traceback.print_exc()
-            self.finished(e) # Returns an object exception
+            self.signals.finished.emit(e) # Returns an object exception
 

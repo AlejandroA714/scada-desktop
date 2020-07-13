@@ -48,6 +48,10 @@ class widget(QWidget):
     def close(self):
         super().close()
         self.disconnectSignals()
+        if hasattr(self,'worker'): # if attribute worker is defined then, there is a thread execution pending
+            self.worker.signals.finished.disconnect() # disconnect signal from the worker
+            self.worker.terminate() # ask to end the execution of the thread
+            self.worker.wait()
         self.deleteLater()
         QApplication.processEvents()
 

@@ -1,7 +1,7 @@
 from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtGui import QMovie, QPixmap, QColor, QIcon
 from PyQt5.QtWidgets import QMessageBox, QGraphicsDropShadowEffect
-from classes import modal,Logica, Worker, API
+from classes import modal,Logica, API
 from resources import *
 
 class UIAPIModal(modal):

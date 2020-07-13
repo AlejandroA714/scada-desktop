@@ -192,11 +192,14 @@ class UILogin(form):
         self.btnAceptar.hide()
         self.lblmovie.show()
         self.movie.start()
-        worker = Worker(Logica.IniciarSesion ,**{"Usuario":self.txtUsuario.text(),"Password":self.txtPassword.text()})
-        worker.signals.finished.connect(self.btnAceptar_CallBack)
-        self.threadpool.start(worker)
+        self.worker = Worker(Logica.IniciarSesion ,**{"Usuario":self.txtUsuario.text(),"Password":self.txtPassword.text()})
+        self.worker.signals.finished.connect(self.btnAceptar_CallBack)
+        self.worker.start()
 
     def btnAceptar_CallBack(self,s):
+        self.worker.signals.finished.disconnect(self.btnAceptar_CallBack) # disconnect signals
+        self.worker.deleteLater() # deletes QThread
+        del self.worker
         self.lblmovie.hide()
         self.btnAceptar.show()
         if isinstance(s,Exception):

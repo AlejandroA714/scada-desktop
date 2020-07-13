@@ -11,13 +11,13 @@ from copy import copy
 class UIAgregarDispositvoModal(modal): # To add or update and device
 
     def __init__(self,**kwargs):
-        super(UIAgregarDispositvoModal,self).__init__(**kwargs)
+        self.IsEdit = kwargs["IsEdit"]
         if not kwargs["Dispositivo"] is None:
             self.dispositivo = kwargs["Dispositivo"]
         else:
             self.dispositivo = device()
-        self.IsEdit = kwargs["IsEdit"]
         self.__UIVariablesContainer = dict()
+        super(UIAgregarDispositvoModal,self).__init__(**kwargs)
         
     def setupUI(self):
         AgregarDispositvoModal = self

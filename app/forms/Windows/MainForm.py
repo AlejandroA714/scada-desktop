@@ -298,9 +298,9 @@ class UIMainWindow(form):
         self.__containers[tabName] = containerObject
         self.workSpaceTab.setTabText(self.workSpaceTab.indexOf(self.workSpaceTab.currentWidget()),work.nombre)
         self.actualizarEstado("Guardando...","white","slategray",movie=self.movie)
-        worker = Worker(Logica.Guardar,**{"access_token":self.session.access_token,"data":work.toJSON()})
-        worker.signals.finished.connect(self.GuardarAction)
-        self.threadpool.start(worker)
+        self.worker = Worker(Logica.Guardar,**{"access_token":self.session.access_token,"data":work.toJSON()})
+        self.worker.signals.finished.connect(self.GuardarAction)
+        self.worker.start()
     
     def MenuAbrir_Click(self):
         dialog = UIAbrirModal(**{"Parent":self,"IsDelete":False})
@@ -308,10 +308,10 @@ class UIMainWindow(form):
         dialog.signals.success.connect(self.AbrirAction)
 
     def AbrirAction(self,workSpace):
-        worker = Worker(Logica.AbrirProyecto,**{"access_token":self.session.access_token,"id":workSpace.id})
+        self.worker = Worker(Logica.AbrirProyecto,**{"access_token":self.session.access_token,"id":workSpace.id})
         self.actualizarEstado("Cargando...","white","slategray",movie=self.movie)
-        worker.signals.finished.connect(self.MostrarDispositivos)
-        self.threadpool.start(worker)
+        self.worker.signals.finished.connect(self.MostrarDispositivos)
+        self.worker.start()
 
     def MenuGuardar_Click(self):
         tabName = self.workSpaceTab.currentWidget().objectName()
@@ -320,9 +320,9 @@ class UIMainWindow(form):
             return
         self.actualizarEstado("Guardando...","white","slategray",self.movie)
         workSpace = self.serializeWorkSpace(self.workSpaceTab.currentWidget().objectName())
-        worker = Worker(Logica.Guardar,**{"access_token":self.session.access_token,"data":workSpace})
-        worker.signals.finished.connect(self.GuardarAction)
-        self.threadpool.start(worker)
+        self.worker = Worker(Logica.Guardar,**{"access_token":self.session.access_token,"data":workSpace})
+        self.worker.signals.finished.connect(self.GuardarAction)
+        self.worker.start()
     
     def MenuGuardarComo_Click(self):
         tabName = self.workSpaceTab.currentWidget().objectName()
@@ -337,9 +337,9 @@ class UIMainWindow(form):
         workSpace.nombre = name[0]
         self.workSpaceTab.setTabText(self.workSpaceTab.indexOf(self.workSpaceTab.currentWidget()),workSpace.nombre)
         workSpace = self.serializeWorkSpace(self.workSpaceTab.currentWidget().objectName())
-        worker = Worker(Logica.Guardar,**{"access_token":self.session.access_token,"data":workSpace})
-        worker.signals.finished.connect(self.GuardarAction)
-        self.threadpool.start(worker)
+        self.worker = Worker(Logica.Guardar,**{"access_token":self.session.access_token,"data":workSpace})
+        self.worker.signals.finished.connect(self.GuardarAction)
+        self.worker.start()
     
     def MenuCerrar_Click(self):
         tabName = self.workSpaceTab.currentWidget().objectName()
@@ -363,6 +363,9 @@ class UIMainWindow(form):
 
     def GuardarAction(self,response,IsClose = False,Tab = None):
         from datetime import datetime
+        self.worker.signals.finished.disconnect()
+        self.worker.deleteLater()
+        del self.worker
         if isinstance(response,Exception):
             self.actualizarEstado("¡Error! Fallo al contactar con el servicio SCADA a las %s" % datetime.now().strftime("%I:%M del dia %d/%m"),"red","red")
             if IsClose:
@@ -390,9 +393,9 @@ class UIMainWindow(form):
                QMessageBox.warning(self,"¡Error!","¡Error! El proyecto que intenta eliminar se encuentra abierto\nCierre dicho proyecto antes de continuar")
                return
         self.actualizarEstado("Eliminado...","white","slategray",self.movie)
-        worker = Worker(Logica.EliminarProyecto,**{"access_token":self.session.access_token,"id":workSpace.id})
-        worker.signals.finished.connect(self.EliminarAction_Callback)
-        self.threadpool.start(worker)
+        self.worker = Worker(Logica.EliminarProyecto,**{"access_token":self.session.access_token,"id":workSpace.id})
+        self.worker.signals.finished.connect(self.EliminarAction_Callback)
+        self.worker.start()
     
     def EliminarAction_Callback(self,response):
         from datetime import datetime
@@ -455,6 +458,9 @@ class UIMainWindow(form):
     # utils Methods
 
     def MostrarDispositivos(self,workSpace:workSpace):
+        self.worker.signals.finished.disconnect()
+        self.worker.deleteLater()
+        del self.worker
         from datetime import datetime
         if isinstance(workSpace,Exception):
             self.actualizarEstado("¡Error! Fallo al cargar el proyecto a las %s" % datetime.now().strftime("%I:%M del dia %d/%m"),"red","red")

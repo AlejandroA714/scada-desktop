@@ -457,11 +457,14 @@ class UIConfiguracionesModal(modal):
         self.movie.setScaledSize(QtCore.QSize(64,64))
         self.movie.start()
         self.Status.setMovie(self.movie)
-        worker = Worker(Logica.ObtenerConfiguraciones,**{"access_token":self.session.access_token})
-        worker.signals.finished.connect(self.obtenerConfiguracionesCallBack)
-        self.threadpool.start(worker)
+        self.worker = Worker(Logica.ObtenerConfiguraciones,**{"access_token":self.session.access_token})
+        self.worker.signals.finished.connect(self.obtenerConfiguracionesCallBack)
+        self.worker.start()
         
     def obtenerConfiguracionesCallBack(self,response):
+        self.worker.finished.disconnect(self.obtenerConfiguracionesCallBack)
+        self.worker.deleteLater()
+        del self.worker
         if isinstance(response,Exception):
             self.btnReload.show()
             self.lblStatus.setText("¡Error! Ha ocurrido un error")
@@ -521,11 +524,14 @@ class UIConfiguracionesModal(modal):
         self.movie.start()
         self.Status.setMovie(self.movie)
         self.ContentLayout.addWidget(self.Status, 0, QtCore.Qt.AlignHCenter)
-        worker = Worker(Logica.GuardarConfiguraciones,**{"access_token":self.getAccessToken(),"data":self.config.toJSON() } )
-        worker.signals.finished.connect(self.guardarConfiguracionesCallback)
-        self.threadpool.start(worker)
+        self.worker = Worker(Logica.GuardarConfiguraciones,**{"access_token":self.getAccessToken(),"data":self.config.toJSON() } )
+        self.worker.signals.finished.connect(self.guardarConfiguracionesCallback)
+        self.worker.start()
 
     def guardarConfiguracionesCallback(self,response):
+        self.worker.finished.disconnect(self.guardarConfiguracionesCallback)
+        self.worker.deleteLater()
+        del self.worker
         self.movie.deleteLater()
         self.Status.deleteLater()
         if isinstance(response,Exception):

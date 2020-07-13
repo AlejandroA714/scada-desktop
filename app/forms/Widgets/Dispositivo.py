@@ -286,11 +286,14 @@ class UIDispositivoWidget(widget):
         variablesList = list(self.variablesListToJSON(variablesList))
         self.updateState("Actualizando...",self.movie)
         self.deviceSignals.updating.emit()
-        worker = Worker(Logica.LeerSensor,**{"access_token":self.session.access_token,"ID":self.__dispostivo.id,"Token":self.__dispostivo.token,"data":variablesList})
-        worker.signals.finished.connect(self.actualizarVariables_Callback)
-        self.threadpool.start(worker)  
+        self.worker = Worker(Logica.LeerSensor,**{"access_token":self.session.access_token,"ID":self.__dispostivo.id,"Token":self.__dispostivo.token,"data":variablesList})
+        self.worker.signals.finished.connect(self.actualizarVariables_Callback)
+        self.worker.start()  
 
     def actualizarVariables_Callback(self,variablesList:list): # callback for worker
+        self.worker.signals.finished.disconnect(self.actualizarVariables_Callback)
+        self.worker.deleteLater()
+        del self.worker
         if isinstance(variablesList,Exception): # No connection with API SCADA
             self.deviceSignals.error.emit(variablesList)
             self.updateDeviceState("Sin Conexion")
@@ -332,11 +335,14 @@ class UIDispositivoWidget(widget):
             "Condicion": "%s%s" % (v.value,v.notify.replace("-","")[1:]),
             "Nivel":v.nivel,
         })
-        worker = Worker(Logica.nuevoReporte,**{"access_token":self.session.access_token,"data":report.toJSON()})
-        worker.signals.finished.connect(self.nuevoReporteAction)
-        self.threadpool.start(worker)
+        self.worker = Worker(Logica.nuevoReporte,**{"access_token":self.session.access_token,"data":report.toJSON()})
+        self.worker.signals.finished.connect(self.nuevoReporteAction)
+        self.worker.start()
     
     def nuevoReporteAction(self,response):
+        self.worker.signals.finished.disconnect(self.nuevoReporteAction)
+        self.worker.deleteLater()
+        del self.worker
         if isinstance(response,Exception):
             pass
         if not response["Success"] == 'true':
@@ -348,11 +354,14 @@ class UIDispositivoWidget(widget):
         self.VariablesFrame.setEnabled(False)
         self.updateState("Actualizando...",self.movie)
         self.deviceSignals.updating.emit()
-        worker = Worker(Logica.ActualizarSensor, **{"access_token":self.session.access_token,"ID":self.__dispostivo.id,"Token":self.__dispostivo.token,"data":var.toJSON() })
-        worker.signals.finished.connect(partial(self.actualizarVariable_Callback,var,current_time))
-        self.threadpool.start(worker)
+        self.worker = Worker(Logica.ActualizarSensor, **{"access_token":self.session.access_token,"ID":self.__dispostivo.id,"Token":self.__dispostivo.token,"data":var.toJSON() })
+        self.worker.signals.finished.connect(partial(self.actualizarVariable_Callback,var,current_time))
+        self.worker.start()
 
     def actualizarVariable_Callback(self,var:variable,current_time,response):
+        self.worker.signals.finished.disconnect()
+        self.worker.deleteLater()
+        del self.worker
         if isinstance(response,Exception):
             self.deviceSignals.error.emit(response)
             self.updateDeviceState("Sin Conexion")

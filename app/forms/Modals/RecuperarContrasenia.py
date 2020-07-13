@@ -280,11 +280,14 @@ class UIRecuperarModal(QDialog):
             self.btnAceptar.hide()
             self.Status.show()
             self.movie.start()
-            worker = Worker(Logica.recuperarContrasenia,**{"data":{"Email":self.txtEmail.text(),"Usuario":self.txtUsuario.text(),"Password":UIRecuperarModal.randomPassword() }})
-            worker.signals.finished.connect(self.validarUsuarioAction)
-            self.threadpool.start(worker)
+            self.worker = Worker(Logica.recuperarContrasenia,**{"data":{"Email":self.txtEmail.text(),"Usuario":self.txtUsuario.text(),"Password":UIRecuperarModal.randomPassword() }})
+            self.worker.signals.finished.connect(self.validarUsuarioAction)
+            self.worker.start()
 
     def validarUsuarioAction(self,response):
+        self.worker.signals.finished.disconnect(self.validarUsuarioAction)
+        self.worker.deleteLater()
+        del self.worker
         self.btnAceptar.show()
         self.Status.hide()
         self.movie.stop()

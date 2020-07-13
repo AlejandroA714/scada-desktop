@@ -366,11 +366,14 @@ class UIUsuariosModal(modal):
     def obtenerUsuarios(self):
         self.UtilsFrame.show()
         self.updateState("Cargando...",QMovie(":/source/img/Cargando.gif"))
-        worker = Worker(Logica.ObtenerUsuarios,**{"access_token":self.session.access_token})
-        worker.signals.finished.connect(self.obtenerUsuariosAction)
-        self.threadpool.start(worker)
+        self.worker = Worker(Logica.ObtenerUsuarios,**{"access_token":self.session.access_token})
+        self.worker.signals.finished.connect(self.obtenerUsuariosAction)
+        self.worker.start()
 
     def obtenerUsuariosAction(self,response):
+        self.worker.signals.finished.disconnect(self.obtenerUsuariosAction)
+        self.worker.deleteLater()
+        del self.worker
         if isinstance(response,Exception): # if data returned is a Exception
             self.updateState("¡Error! Ha ocurrido un error",QMovie(":/source/img/Error.png"),True)
             return
@@ -427,11 +430,14 @@ class UIUsuariosModal(modal):
 
     def eliminarUsuario(self,user:usuario):
         self.ContentBox.setEnabled(False)
-        worker = Worker(Logica.eliminarUsuario,**{"access_token":self.session.access_token,"id":user.id})
-        worker.signals.finished.connect(partial(self.eliminarUsuarioAction,usr=user))
-        self.threadpool.start(worker)
+        self.worker = Worker(Logica.eliminarUsuario,**{"access_token":self.session.access_token,"id":user.id})
+        self.worker.signals.finished.connect(partial(self.eliminarUsuarioAction,usr=user))
+        self.worker.start()
 
     def eliminarUsuarioAction(self,response,usr):
+        self.worker.signals.finished.disconnect()
+        self.worker.deleteLater()
+        del self.worker
         self.ContentBox.setEnabled(True)
         if isinstance(response,Exception):
             QMessageBox.warning(self,"¡Error!","¡Error! Fallo al contactar con el servicio SCADA")
@@ -445,17 +451,20 @@ class UIUsuariosModal(modal):
 
     def habilitarUsuario(self,usr:usuario):
         self.ContentBox.setEnabled(False)
-        worker = Worker(Logica.habilitarUsuario,**{"access_token":self.session.access_token,"id":usr.id})
-        worker.signals.finished.connect(partial(self.habilitarUsuarioAction,usr=usr))
-        self.threadpool.start(worker)
+        self.worker = Worker(Logica.habilitarUsuario,**{"access_token":self.session.access_token,"id":usr.id})
+        self.worker.signals.finished.connect(partial(self.habilitarUsuarioAction,usr=usr))
+        self.worker.start()
 
     def deshabilitarUsuario(self,usr:usuario):
         self.ContentBox.setEnabled(False)
-        worker = Worker(Logica.deshabilitarUsuario,**{"access_token":self.session.access_token,"id":usr.id})
-        worker.signals.finished.connect(partial(self.habilitarUsuarioAction,usr=usr))
-        self.threadpool.start(worker)
+        self.worker = Worker(Logica.deshabilitarUsuario,**{"access_token":self.session.access_token,"id":usr.id})
+        self.worker.signals.finished.connect(partial(self.habilitarUsuarioAction,usr=usr))
+        self.worker.start()
 
     def habilitarUsuarioAction(self,response,usr:usuario):
+        self.worker.signals.finished.disconnect()
+        self.worker.deleteLater()
+        del self.worker
         self.ContentBox.setEnabled(True)
         if isinstance(response,Exception):
             QMessageBox.warning(self,"¡Error!","¡Error! Fallo al contactar con el servicio SCADA")

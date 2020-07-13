@@ -2,7 +2,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtGui import QMovie, QPixmap, QColor, QIcon
 from PyQt5.QtWidgets import QMessageBox, QGraphicsDropShadowEffect
 from PyQt5.QtCore import Qt
-from classes import modal,Logica, Worker, usuario, Worker
+from classes import modal,Logica, Worker, usuario
 from .CambiarContrasenia import UIContraseniaModal
 from resources import *
 
@@ -354,11 +354,14 @@ class UICuentaModal(modal):
             self.btnAceptar_2.hide()
             self.Status.show()
             self.movie.start()
-            worker = Worker(Logica.actualizarUsuario,**{"access_token":self.session.access_token,"data":self.usuario.toJSON()})
-            worker.signals.finished.connect(self.validarUsuarioAction)
-            self.threadpool.start(worker)
+            self.worker = Worker(Logica.actualizarUsuario,**{"access_token":self.session.access_token,"data":self.usuario.toJSON()})
+            self.worker.signals.finished.connect(self.validarUsuarioAction)
+            self.worker.start()
 
     def validarUsuarioAction(self,response):
+        self.worker.signals.finished.disconnect(self.validarUsuarioAction)
+        self.worker.deleteLater()
+        del self.worker
         self.btnAceptar_2.show()
         self.Status.hide()
         self.movie.stop()

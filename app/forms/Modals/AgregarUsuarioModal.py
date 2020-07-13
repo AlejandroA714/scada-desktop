@@ -325,15 +325,17 @@ class UIAgregarUsuarioModal(modal):
             self.btnAceptar_2.hide()
             self.Status.show()
             self.movie.start()
-            worker = None
             if not self.isEdit:
-                worker = Worker(Logica.agregarUsuario,**{"access_token":self.session.access_token,"data":self.usuario.toJSON()})
+                self.worker = Worker(Logica.agregarUsuario,**{"access_token":self.session.access_token,"data":self.usuario.toJSON()})
             else:
-                worker = Worker(Logica.editarUsuario,**{"access_token":self.session.access_token,"data":self.usuario.toJSON()})
-            worker.signals.finished.connect(partial(self.validarUsuarioAction,user=self.usuario))
-            self.threadpool.start(worker)
+                self.worker = Worker(Logica.editarUsuario,**{"access_token":self.session.access_token,"data":self.usuario.toJSON()})
+            self.worker.signals.finished.connect(partial(self.validarUsuarioAction,user=self.usuario))
+            self.worker.start()
     
     def validarUsuarioAction(self,response,user):
+        self.worker.signals.finished.disconnect()
+        self.worker.deleteLater()
+        del self.worker
         self.btnAceptar_2.show()
         self.Status.hide()
         self.movie.stop()

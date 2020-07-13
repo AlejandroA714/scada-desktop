@@ -377,6 +377,7 @@ class UIDispositvoModal(modal):
         UIAgregar.signals.success.connect(self.agregarDispositivoAction)
 
     def agregarDispositivoAction(self,d:device):
+        self.UtilsFrame.hide()
         c = self.comboBox.itemData(self.comboBox.currentIndex())
         c.workSpace.devices.append(d)
         UIDevice = UIDispositivoWidget(c.tab,d)
