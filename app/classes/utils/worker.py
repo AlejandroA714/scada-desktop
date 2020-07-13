@@ -18,6 +18,7 @@ class Worker(QRunnable): # Class to execute a function inside a thread
     def __init__(self,fn,*args,**kwargs): # fn:  Function to be executed
 
         super(Worker,self).__init__()
+        self.__running = False
         self.fn = fn
         self.args = args
         self.kwargs = kwargs
@@ -25,12 +26,20 @@ class Worker(QRunnable): # Class to execute a function inside a thread
         self.logger = logger()
         self.setAutoDelete(True)
 
+    def isRunning(self):
+        return self.__running
+
+    def finished(self,result):
+        self.__running = False
+        self.signals.finished.emit(result)  # Return the result of the processing
+
     @pyqtSlot()
     def run(self):   
         # Retrieve args/kwargs here; and processing using them
+        self.__running = True
         try:
             result = self.fn(*self.args, **self.kwargs) #Execute function, passing args and kwargs, always recibe **kwargs as json object
-            self.signals.finished.emit(result)  # Return the result of the processing
+            self.finished(result)
         except Exception as e:
             self.logger.log_error(e)
             if isinstance(e,HTTPError): # Receives an unathorized 
@@ -40,5 +49,5 @@ class Worker(QRunnable): # Class to execute a function inside a thread
             if isinstance(e,ConnectionError):
                 e = Exception("Fallo al conectar con el servicio SCADA")
             traceback.print_exc()
-            self.signals.finished.emit(e) # Returns an object exception
+            self.finished(e) # Returns an object exception
 

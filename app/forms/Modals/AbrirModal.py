@@ -273,12 +273,15 @@ class UIAbrirModal(modal):
     def disconnectSignals(self):
         self.parent.signals.resize.disconnect(self.center)
         self.btnExit.clicked.disconnect(self.exit)
+        #if self.worker:
+        #    print("is runnning")
+        #    self.threadpool.tryTake(self.worker)
 
     def obtenerProyectos(self):
         self.updateState("Cargando...",QMovie(":/source/img/Cargando.gif"))
-        worker = Worker(Logica.ObtenerProyectos,**{"access_token":self.session.access_token})
-        worker.signals.finished.connect(self.showCallback)
-        self.threadpool.start(worker)
+        self.worker = Worker(Logica.ObtenerProyectos,**{"access_token":self.session.access_token})
+        self.worker.signals.finished.connect(self.showCallback)
+        self.threadpool.start(self.worker)
     
     def updateState(self,text,Movie = None,Reload = False):
         self.Status.setMovie(Movie)

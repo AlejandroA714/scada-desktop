@@ -17,7 +17,7 @@ class workSpace(object):
                 self.devices = list([])
             else:
                 self.devices = list(self.devicesToList(dict["Drivers"]))
-            self.devicesCount = dict["DriversCount"]
+            self.devicesCount = len(self.devices)
         
     @property
     def id(self):

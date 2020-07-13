@@ -32,6 +32,7 @@ class modal(QDialog): # Class to be inherit to convert a window into a modal
             self.setAttribute(Qt.WA_TranslucentBackground) # Making it translucent to make a trick with the shadows
             self.setAttribute( Qt.WA_DeleteOnClose) # this should liberate ram
             self.setupUI()
+            self.worker = None
             self.__instanced = True
         else:
             self.show()
@@ -74,15 +75,17 @@ class modal(QDialog): # Class to be inherit to convert a window into a modal
         self.signals.canceled.disconnect(handler)
 
     def close(self):
-        self.destroyInstance()
         super().close()
         self.disconnectSignals()
-        self.deleteLater()
-        QApplication.processEvents()
+        self.threadpool.waitForDone(150)
+        #self.threadpool.tryTake(self.worker)
+        self.destroyInstance()
+        #self.deleteLater()
+        #QApplication.processEvents()
 
     @classmethod
     def destroyInstance(cls):
-        cls.__instance = None
+        del cls.__instance
         cls.__instanced = False
         
     def success(self,_x:object): # this function is responsible to emit a success signal, if dialog was success

@@ -238,9 +238,6 @@ class UIMainWindow(form):
             
         # listener
 
-    def showEvent(self,evt):
-        self.noft.info("¡Información!","Bienvenido %s" % self.session.nombres,None,TopRight,duracion=5)
-
     def defineMenuArchivo(self):
         # Definicion de menus
         archivoMenu = QMenu()
@@ -301,8 +298,7 @@ class UIMainWindow(form):
         self.__containers[tabName] = containerObject
         self.workSpaceTab.setTabText(self.workSpaceTab.indexOf(self.workSpaceTab.currentWidget()),work.nombre)
         self.actualizarEstado("Guardando...","white","slategray",movie=self.movie)
-        worker = Worker(Logica.Guardar,**{"access_token":self.session.access_token,"data":work})
-        self.noft.info("Información","Guardando...",duracion=10)
+        worker = Worker(Logica.Guardar,**{"access_token":self.session.access_token,"data":work.toJSON()})
         worker.signals.finished.connect(self.GuardarAction)
         self.threadpool.start(worker)
     
@@ -313,7 +309,7 @@ class UIMainWindow(form):
 
     def AbrirAction(self,workSpace):
         worker = Worker(Logica.AbrirProyecto,**{"access_token":self.session.access_token,"id":workSpace.id})
-        self.noft.info("¡Información!","Cargando proyecto...",self,duracion=10)
+        self.actualizarEstado("Cargando...","white","slategray",movie=self.movie)
         worker.signals.finished.connect(self.MostrarDispositivos)
         self.threadpool.start(worker)
 
@@ -340,7 +336,6 @@ class UIMainWindow(form):
         workSpace.id = ObjectId().__str__()
         workSpace.nombre = name[0]
         self.workSpaceTab.setTabText(self.workSpaceTab.indexOf(self.workSpaceTab.currentWidget()),workSpace.nombre)
-        self.noft.info("Información","Guardando...",duracion=10)
         workSpace = self.serializeWorkSpace(self.workSpaceTab.currentWidget().objectName())
         worker = Worker(Logica.Guardar,**{"access_token":self.session.access_token,"data":workSpace})
         worker.signals.finished.connect(self.GuardarAction)
@@ -357,7 +352,6 @@ class UIMainWindow(form):
         QMessageBox.Save | QMessageBox.No | QMessageBox.Cancel  )
         if reply == QMessageBox.Save:
             self.actualizarEstado("Guardando...","white","slategray",self.movie)
-            self.noft.info("¡Información!","Guardando...",duracion=10)
             workSpace = self.serializeWorkSpace(tabName)
             worker = Worker(Logica.Guardar,**{"access_token":self.session.access_token,"data":workSpace})
             worker.signals.finished.connect(partial(self.GuardarAction,IsClose=True,Tab=self.workSpaceTab.currentWidget()))
@@ -366,7 +360,6 @@ class UIMainWindow(form):
             self.cleanWorkSpace(self.workSpaceTab.currentWidget().objectName())
             self.__containers.pop(tabName)
             self.workSpaceTab.setTabText(self.workSpaceTab.indexOf(self.workSpaceTab.currentWidget()),"Tab %s" % (self.workSpaceTab.indexOf(self.workSpaceTab.currentWidget()) + 1) )
-            self.noft.sucess("¡Información!","Exito al cerrar",duracion=10)
 
     def GuardarAction(self,response,IsClose = False,Tab = None):
         from datetime import datetime
@@ -380,8 +373,7 @@ class UIMainWindow(form):
             if IsClose:
                 self.cleanWorkSpace(Tab.objectName())
                 self.__containers.pop(Tab.objectName())
-                self.workSpaceTab.setTabText(self.workSpaceTab.indexOf(Tab),"Tab %s" % (self.workSpaceTab.indexOf(Tab) + 1))
-                self.noft.sucess("¡Información!","Exito al cerrar",duracion=10)                
+                self.workSpaceTab.setTabText(self.workSpaceTab.indexOf(Tab),"Tab %s" % (self.workSpaceTab.indexOf(Tab) + 1))               
         else:
             self.actualizarEstado("¡Error! Fallo al guardar a las %s" % datetime.now().strftime("%I:%M del dia %d/%m"),"red","red")
             if IsClose:
@@ -463,7 +455,9 @@ class UIMainWindow(form):
     # utils Methods
 
     def MostrarDispositivos(self,workSpace:workSpace):
+        from datetime import datetime
         if isinstance(workSpace,Exception):
+            self.actualizarEstado("¡Error! Fallo al cargar el proyecto a las %s" % datetime.now().strftime("%I:%M del dia %d/%m"),"red","red")
             QMessageBox.warning(self,"¡Error!", "Fallo al cargar el proyecto")
             return
         tabName = self.workSpaceTab.currentWidget().objectName()
@@ -479,6 +473,7 @@ class UIMainWindow(form):
             if reply == QMessageBox.No:
                 return
         self.workSpaceTab.setTabText(self.workSpaceTab.indexOf(self.workSpaceTab.currentWidget()),workSpace.nombre)
+        self.actualizarEstado("En linea","green","green")
         self.paintDevices(workSpace)
 
     def paintDevices(self,workSpace:workSpace):
