@@ -80,7 +80,7 @@ class modal(QDialog): # Class to be inherit to convert a window into a modal
             self.worker.signals.finished.disconnect()
             self.worker.terminate()
             self.worker.wait()
-        self.deleteLater()
+        #self.deleteLater()
         self.destroyInstance()
 
     @classmethod

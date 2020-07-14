@@ -26,7 +26,7 @@ class UIAbrirModal(modal):
         sizePolicy.setHeightForWidth(AbrirModal.sizePolicy().hasHeightForWidth())
         AbrirModal.setSizePolicy(sizePolicy)
         font = QtGui.QFont()
-        font.setFamily("Noto Serif")
+        font.setFamily("Roboto")
         font.setPointSize(11)
         font.setBold(True)
         font.setWeight(75)
