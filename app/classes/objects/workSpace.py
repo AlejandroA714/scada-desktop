@@ -103,7 +103,7 @@ class device(object):
             self.y = dict["Y"]
             self.id = dict["ID"]
             self.token = dict["Token"]
-            self.image = dict["Image"]
+            self.image = dict.get("Image")
             self.lastUpdate = dict["LastUpdate"]
             self.variables = list(self.variablesToList(dict["Variables"]))
         
