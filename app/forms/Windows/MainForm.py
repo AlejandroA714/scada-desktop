@@ -304,7 +304,8 @@ class UIMainWindow(form):
         self.__containers[tabName] = containerObject
         self.workSpaceTab.setTabText(self.workSpaceTab.indexOf(self.workSpaceTab.currentWidget()),work.nombre)
         self.actualizarEstado("Guardando...","white","slategray",movie=self.movie)
-        self.worker = Worker(Logica.Guardar,**{"access_token":self.session.access_token,"data":work.toJSON()})
+        self.worker = Worker(Logica.Guardar,Parent=self,**{"access_token":self.session.access_token,"data":work.toJSON()})
+        self.register_thread(self.worker)
         self.worker.signals.finished.connect(self.GuardarAction)
         self.worker.start()
     
@@ -314,7 +315,8 @@ class UIMainWindow(form):
         dialog.signals.success.connect(self.AbrirAction)
 
     def AbrirAction(self,workSpace):
-        self.worker = Worker(Logica.AbrirProyecto,**{"access_token":self.session.access_token,"id":workSpace.id})
+        self.worker = Worker(Logica.AbrirProyecto,Parent=self,**{"access_token":self.session.access_token,"id":workSpace.id})
+        self.register_thread(self.worker)
         self.actualizarEstado("Cargando...","white","slategray",movie=self.movie)
         self.worker.signals.finished.connect(self.MostrarDispositivos)
         self.worker.start()
@@ -326,7 +328,8 @@ class UIMainWindow(form):
             return
         self.actualizarEstado("Guardando...","white","slategray",self.movie)
         workSpace = self.serializeWorkSpace(self.workSpaceTab.currentWidget().objectName())
-        self.worker = Worker(Logica.Guardar,**{"access_token":self.session.access_token,"data":workSpace})
+        self.worker = Worker(Logica.Guardar,Parent=self,**{"access_token":self.session.access_token,"data":workSpace})
+        self.register_thread(self.worker)
         self.worker.signals.finished.connect(self.GuardarAction)
         self.worker.start()
     
@@ -343,7 +346,8 @@ class UIMainWindow(form):
         workSpace.nombre = name[0]
         self.workSpaceTab.setTabText(self.workSpaceTab.indexOf(self.workSpaceTab.currentWidget()),workSpace.nombre)
         workSpace = self.serializeWorkSpace(self.workSpaceTab.currentWidget().objectName())
-        self.worker = Worker(Logica.Guardar,**{"access_token":self.session.access_token,"data":workSpace})
+        self.worker = Worker(Logica.Guardar,Parent=self,**{"access_token":self.session.access_token,"data":workSpace})
+        self.register_thread(self.worker)
         self.worker.signals.finished.connect(self.GuardarAction)
         self.worker.start()
     
@@ -359,7 +363,8 @@ class UIMainWindow(form):
         if reply == QMessageBox.Save:
             self.actualizarEstado("Guardando...","white","slategray",self.movie)
             workSpace = self.serializeWorkSpace(tabName)
-            worker = Worker(Logica.Guardar,**{"access_token":self.session.access_token,"data":workSpace})
+            worker = Worker(Logica.Guardarm,Parent=self,**{"access_token":self.session.access_token,"data":workSpace})
+            self.register_thread(self.worker)
             worker.signals.finished.connect(partial(self.GuardarAction,IsClose=True,Tab=self.workSpaceTab.currentWidget()))
             self.threadpool.start(worker)
         if reply == QMessageBox.No:
@@ -399,7 +404,8 @@ class UIMainWindow(form):
                QMessageBox.warning(self,"¡Error!","¡Error! El proyecto que intenta eliminar se encuentra abierto\nCierre dicho proyecto antes de continuar")
                return
         self.actualizarEstado("Eliminado...","white","slategray",self.movie)
-        self.worker = Worker(Logica.EliminarProyecto,**{"access_token":self.session.access_token,"id":workSpace.id})
+        self.worker = Worker(Logica.EliminarProyecto,Parent=self,**{"access_token":self.session.access_token,"id":workSpace.id})
+        self.register_thread(self.worker)
         self.worker.signals.finished.connect(self.EliminarAction_Callback)
         self.worker.start()
     

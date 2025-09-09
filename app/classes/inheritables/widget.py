@@ -1,5 +1,5 @@
 from PyQt5.QtWidgets import QWidget, QMessageBox, QApplication
-from PyQt5.QtCore import Qt, QObject, pyqtSlot, pyqtSignal, QThreadPool
+from PyQt5.QtCore import Qt, QObject, pyqtSlot, pyqtSignal, QThreadPool, QThread
 from ..utils.session import session
 from functools import partial
 
@@ -34,6 +34,18 @@ class widget(QWidget):
             self.close()
         else:
             pass
+    def register_thread(self, t: QThread):
+        if not hasattr(self, "_threads"):
+          self._threads = set()
+        self._threads.add(t)
+
+    def stop_threads(self, timeout_ms=2000):
+        for t in list(self._threads):
+            if t.isRunning():
+                t.requestInterruption()
+                t.quit()
+                t.wait(timeout_ms)
+        self._threads.clear()
 
     def edit(self,tilte:str,text:str):
         reply = self.prompt(tilte,text)
@@ -48,6 +60,7 @@ class widget(QWidget):
     def close(self):
         super().close()
         self.disconnectSignals()
+        #self.stop_threads()
         if hasattr(self,'worker'): # if attribute worker is defined then, there is a thread execution pending
             self.worker.signals.finished.disconnect() # disconnect signal from the worker
             self.worker.terminate() # ask to end the execution of the thread

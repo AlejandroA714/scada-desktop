@@ -192,7 +192,8 @@ class UILogin(form):
         self.btnAceptar.hide()
         self.lblmovie.show()
         self.movie.start()
-        self.worker = Worker(Logica.IniciarSesion ,**{"Usuario":self.txtUsuario.text(),"Password":self.txtPassword.text()})
+        self.worker = Worker(Logica.IniciarSesion, parent=self ,**{"Usuario":self.txtUsuario.text(),"Password":self.txtPassword.text()})
+        self.register_thread(self.worker)
         self.worker.signals.finished.connect(self.btnAceptar_CallBack)
         self.worker.start()
 

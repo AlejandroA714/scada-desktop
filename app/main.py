@@ -1,3 +1,4 @@
+import sys
 from PyQt5.QtWidgets import QApplication
 from forms import UILogin, UIMainWindow
 from classes import logger,timer,session
@@ -6,7 +7,29 @@ from notificator import notificator
 from notificator.alingments import TopRight
 from PyQt5.QtGui import QFontDatabase
 from resources import *
+import logging
+from logging.handlers import RotatingFileHandler
+import os
 
+LOG_DIR = os.path.join(os.path.expanduser("~"), ".scada_logs")
+os.makedirs(LOG_DIR, exist_ok=True)
+LOG_PATH = os.path.join(LOG_DIR, "app.log")
+
+logging.basicConfig(
+    level=logging.INFO,
+    format="%(asctime)s [%(levelname)s] %(name)s: %(message)s"
+)
+
+fh = RotatingFileHandler(LOG_PATH, maxBytes=2_000_000, backupCount=5, encoding="utf-8")
+fh.setLevel(logging.INFO)
+fh.setFormatter(logging.Formatter("%(asctime)s [%(levelname)s] %(name)s: %(message)s"))
+logging.getLogger().addHandler(fh)
+
+def excepthook(exc_type, exc, tb):
+    logging.exception("Excepción no manejada", exc_info=(exc_type, exc, tb))
+    # (opcional) no mates la app: NO llames a sys.__excepthook__
+    # Puedes mostrar algo breve con QMessageBox si ya hay QApplication
+sys.excepthook = excepthook
 class application(QApplication):
 
     def __init__(self,*args):

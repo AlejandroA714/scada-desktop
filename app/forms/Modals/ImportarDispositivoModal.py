@@ -289,7 +289,8 @@ class UIImportarDispositivoModal(modal):
 
     def obtenerWorkSpaces(self):
         self.updateState("Cargando...",QMovie(":/source/img/Cargando.gif"))
-        self.worker = Worker(Logica.ObtenerWorkspaces,**{"access_token":self.session.access_token})
+        self.worker = Worker(Logica.ObtenerWorkspaces,Parent=self,**{"access_token":self.session.access_token})
+        self.register_thread(self.worker)
         self.worker.signals.finished.connect(self.showAction)
         self.worker.start()
         

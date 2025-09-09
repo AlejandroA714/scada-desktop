@@ -457,7 +457,8 @@ class UIConfiguracionesModal(modal):
         self.movie.setScaledSize(QtCore.QSize(64,64))
         self.movie.start()
         self.Status.setMovie(self.movie)
-        self.worker = Worker(Logica.ObtenerConfiguraciones,**{"access_token":self.session.access_token})
+        self.worker = Worker(Logica.ObtenerConfiguraciones,Parent=self,**{"access_token":self.session.access_token})
+        self.register_thread(self.worker)
         self.worker.signals.finished.connect(self.obtenerConfiguracionesCallBack)
         self.worker.start()
         
@@ -524,7 +525,8 @@ class UIConfiguracionesModal(modal):
         self.movie.start()
         self.Status.setMovie(self.movie)
         self.ContentLayout.addWidget(self.Status, 0, QtCore.Qt.AlignHCenter)
-        self.worker = Worker(Logica.GuardarConfiguraciones,**{"access_token":self.getAccessToken(),"data":self.config.toJSON() } )
+        self.worker = Worker(Logica.GuardarConfiguraciones,Parent=self,**{"access_token":self.getAccessToken(),"data":self.config.toJSON() } )
+        self.register_thread(self.worker)
         self.worker.signals.finished.connect(self.guardarConfiguracionesCallback)
         self.worker.start()
 

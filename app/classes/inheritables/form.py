@@ -1,5 +1,5 @@
 import PyQt5
-from PyQt5.QtCore import Qt,QObject, pyqtSlot, pyqtSignal, QThreadPool
+from PyQt5.QtCore import Qt, QObject, pyqtSignal, QThreadPool, QThread
 from PyQt5.QtWidgets import QMainWindow, QDesktopWidget, QMessageBox, QApplication
 from PyQt5.QtGui import QIcon
 from ..utils.session import session
@@ -23,6 +23,19 @@ class form(QMainWindow): # class to be inherit to make a main window
         self.center()
         self.setWindowIcon(QIcon(':/source/img/if_16_1751363.ico'))
         self.setAttribute(Qt.WA_DeleteOnClose) 
+
+    def register_thread(self, t: QThread):
+        if not hasattr(self, "_threads"):
+          self._threads = set()
+        self._threads.add(t)
+
+    def stop_threads(self, timeout_ms=2000):
+        for t in list(self._threads):
+            if t.isRunning():
+                t.requestInterruption()
+                t.quit()
+                t.wait(timeout_ms)
+        self._threads.clear()
         
     def center(self):
         qr = self.frameGeometry()
@@ -39,6 +52,7 @@ class form(QMainWindow): # class to be inherit to make a main window
             "¿Seguro que desea salir?",
             QMessageBox.Yes | QMessageBox.No)
         if reply == QMessageBox.Yes:
+            #self.stop_threads()
             self.signals.finish.emit()
             if not (isinstance(event,bool)) : event.accept()
         else:

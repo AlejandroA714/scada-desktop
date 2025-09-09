@@ -460,8 +460,9 @@ class UIDispositvoModal(modal):
             dev["UnicID"] = uuid4().__str__() # Generates a new unicID for each device
             for i,var in enumerate(dev["Variables"]):
                 dev["Variables"][i]["UnicID"] = uuid4().__str__() # and each var to avoid any duplicate problem
-            self.agregarDispositivoAction(dev) # adds to current workspace
-            self.mostrarDispositivoAction(dev) # show into the devices modals
+            dispositivo = device(dev)
+            self.agregarDispositivoAction(dispositivo) # adds to current workspace
+            self.mostrarDispositivoAction(dispositivo) # show into the devices modals
         
     def exportarDispositivos(self):
         from PyQt5.QtWidgets import QFileDialog, QMessageBox

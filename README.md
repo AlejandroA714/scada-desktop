@@ -29,28 +29,97 @@ Ofrece una interfaz moderna, soporte de notificaciones en tiempo real y conectiv
 
 ## ✨ Funcionalidades principales
 
+- 🎛️ **Interfaz gráfica moderna e intuitiva**  
+  Desarrollada con PyQt5, incluye menús, paneles y ventanas personalizadas.
+<p align="center">
+  <img src="./docs/login.png" width="480" alt="Abrir app">
+</p>
+<p align="center">
+  <img src="./docs/main.png" width="480" alt="Abrir app">
+</p>
+
 - 📊 **Monitoreo en tiempo real**  
 Visualización de variables analógicas y digitales con actualización en vivo.
 <p align="center">
   <img src="./docs/sensors.gif" width="480" alt="Abrir app">
 </p>
   
-- 🔔 **Notificaciones de eventos**  
-  Integración con [**pyqt5-notificator**](https://github.com/AlejandroA714/pyqt5-notificator), un paquete propio que permite mostrar alertas de escritorio cuando se cumplen condiciones críticas.
+- 🔌 **Conexión con dispositivos externos**  
+  Soporte para exportar e importar configuraciones rapidamente
+  <p align="center">
+  <img src="./docs/export.gif" width="480" alt="Abrir app">
+</p>
+<p align="center">
+  <img src="./docs/import.gif" width="480" alt="Abrir app">
+</p>
 
-- 🎨 **Colores personalizados**  
-  Asignación de colores a cada variable para facilitar la identificación en paneles.
+- 🗂️ **Creacion y edicion de RTUs**  
+ Guarde y gestione diferentes espacios de trabajo
+<p align="center">
+  <img src="./docs/open.png" width="480" alt="Abrir app">
+</p>
 
-- 🧮 **Expresiones evaluables**  
-  Uso de [py-expression-eval](https://pypi.org/project/py-expression-eval/) para definir fórmulas personalizadas sobre los valores monitoreados.
+ Trabaje en mas multiples workspaces a la vez
+<p align="center">
+  <img src="./docs/workspaces.gif" width="480" alt="Abrir app">
+</p>
 
-- 📑 **Gestión de reportes en Excel**  
-  Exportación de registros y tendencias en formato **.xlsx** mediante [openpyxl](https://pypi.org/project/openpyxl/).
+ Arrastre y ubique a su antojo
+<p align="center">
+  <img src="./docs/grab.gif" width="480" alt="Abrir app">
+</p>
 
-- ☁️ **Conexión a MongoDB**  
-  Almacenamiento y consulta de datos históricos usando [pymongo](https://pypi.org/project/pymongo/).
+ Visualice los dispositivos y cree nuevos
+<p align="center">
+  <img src="./docs/devices.png" width="480" alt="Abrir app">
+</p>
 
-- ⚡ **Interfaz amigable**  
-  Construida sobre **PyQt5**, con soporte para temas claros/oscuro y estilos personalizables.
+ Cree y edite RTUs
+<p align="center">
+  <img src="./docs/devices-edit.png" width="480" alt="Abrir app">
+</p>
 
+ Cree nuevas variables
+<p align="center">
+  <img src="./docs/devices-var-add.gif" width="480" alt="Abrir app">
+</p>
+
+ Actualice imagen de referencia
+
+<p align="center">
+  <img src="./docs/image.gif" width="480" alt="Abrir app">
+</p>
+
+- **Gestion de usuarios**
+Gestione usuarios administradores y normales
+
+<p align="center">
+  <img src="./docs/usuarios.png" width="480" alt="Abrir app">
+</p>
+Registre uno nuevo
+<p align="center">
+  <img src="./docs/usuarios-add.gif" width="520" alt="Abrir app">
+</p>
+Reciba su contrase;a por correo
+<p align="center">
+  <img src="./docs/usuarios-not.png" width="480" alt="Abrir app">
+</p>
+
+- 📑 **Exportación de reportes**  
+  Posibilidad de exportar datos a formatos como Excel para análisis externo.
+<p align="center">
+  <img src="./docs/report.png" width="480" alt="Abrir app">
+</p>
+[📊 Ver reporte en Excel](./docs/report.xlsx)
 ---
+
+## 🔧 Requisitos
+
+- Python 3.8
+- PyQt5
+- Dependencias adicionales en `requirements.txt`
+
+Instalación rápida:
+
+```bash
+pip install -r requirements.txt

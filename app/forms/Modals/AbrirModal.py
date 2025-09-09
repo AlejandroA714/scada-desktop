@@ -3,7 +3,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from ..Widgets import UIWidgetP
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QMovie
-from classes import modal, Logica, Worker, Worker, timer
+from classes import modal, Logica, Worker
 from resources import *
 
 class UIAbrirModal(modal):
@@ -276,7 +276,8 @@ class UIAbrirModal(modal):
 
     def obtenerProyectos(self):
         self.updateState("Cargando...",QMovie(":/source/img/Cargando.gif"))
-        self.worker = Worker(Logica.ObtenerProyectos,**{"access_token":self.session.access_token})
+        self.worker = Worker(Logica.ObtenerProyectos,Parent=self,**{"access_token":self.session.access_token})
+        self.register_thread(self.worker)
         self.worker.signals.finished.connect(self.showCallback)
         self.worker.start()
     

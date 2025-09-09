@@ -1,5 +1,5 @@
 from PyQt5.QtWidgets import QDialog, QMainWindow, QMessageBox, QApplication
-from PyQt5.QtCore import Qt,QObject, pyqtSlot, pyqtSignal, QThreadPool, QPoint
+from PyQt5.QtCore import Qt, QObject, pyqtSlot, pyqtSignal, QThreadPool, QPoint, QThread
 from ..utils.session import session
 
 
@@ -30,7 +30,7 @@ class modal(QDialog): # Class to be inherit to convert a window into a modal
             self.dragPos = QPoint(0,0)
             self.setWindowFlags(Qt.FramelessWindowHint) # removes borders
             self.setAttribute(Qt.WA_TranslucentBackground) # Making it translucent to make a trick with the shadows
-            self.setAttribute( Qt.WA_DeleteOnClose) # this should liberate ram
+            self.setAttribute(Qt.WA_DeleteOnClose) # this should liberate ram
             self.setupUI()
             self.__instanced = True
         else:
@@ -46,12 +46,33 @@ class modal(QDialog): # Class to be inherit to convert a window into a modal
         y = (self.parent.height() - qr.height()) / 2 
         self.setGeometry(x,y,qr.width(),qr.height())
 
+    def register_thread(self, t: QThread):
+        if not hasattr(self, "_threads"):
+          self._threads = set()
+        self._threads.add(t)
+
+    def stop_threads(self, timeout_ms=2000):
+      if not hasattr(self, "_threads"):
+        return
+      for t in list(self._threads):
+          if t and t.isRunning():
+              try:
+                  t.requestInterruption()
+                  t.quit()
+                  # if not t.wait(timeout_ms):
+                  #     t.terminate()
+                  #     t.wait(500)
+              finally:
+                  self._threads.discard(t)
+      self._threads.clear()
+
     def exit(self): # this function is responsible to emit a cancelation signal if exit button was clicked
         reply = QMessageBox.question(
             self, "Confirmacion",
             "¿Seguro que desea cancelar?",
             QMessageBox.Yes | QMessageBox.No)
         if reply == QMessageBox.Yes:
+            #self.stop_threads()
             self.signals.canceled.emit()
             self.close()
 

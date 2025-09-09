@@ -354,7 +354,8 @@ class UICuentaModal(modal):
             self.btnAceptar_2.hide()
             self.Status.show()
             self.movie.start()
-            self.worker = Worker(Logica.actualizarUsuario,**{"access_token":self.session.access_token,"data":self.usuario.toJSON()})
+            self.worker = Worker(Logica.actualizarUsuario,Parent=self,**{"access_token":self.session.access_token,"data":self.usuario.toJSON()})
+            self.register_thread(self.worker)
             self.worker.signals.finished.connect(self.validarUsuarioAction)
             self.worker.start()
 

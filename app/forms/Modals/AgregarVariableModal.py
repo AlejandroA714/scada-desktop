@@ -448,7 +448,8 @@ class UIAgregarVariableModal(modal):
         self.movie = QMovie(":/source/img/Cargando.gif")
         self.movie.start()
         self.Status.setMovie(self.movie)
-        self.worker = Worker(Logica.ObtenerVariablesFunciones,**{"ID":self.ID,"Token":self.Token,"access_token":self.session.access_token})
+        self.worker = Worker(Logica.ObtenerVariablesFunciones,Parent=self,**{"ID":self.ID,"Token":self.Token,"access_token":self.session.access_token})
+        self.register_thread(self.worker)
         self.worker.signals.finished.connect(self.obtenerVariablesFuncionesCallback)
         self.worker.start()
 

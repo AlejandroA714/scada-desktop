@@ -6,7 +6,7 @@ from classes import modal,Logica, Worker, usuario, Worker
 from .CambiarContrasenia import UIContraseniaModal
 from resources import *
 
-class UIRecuperarModal(QDialog):
+class UIRecuperarModal(modal):
 
     def __init__(self,Parent):
         self.threadpool = QThreadPool() #QThearPool object to execute work class
@@ -280,7 +280,8 @@ class UIRecuperarModal(QDialog):
             self.btnAceptar.hide()
             self.Status.show()
             self.movie.start()
-            self.worker = Worker(Logica.recuperarContrasenia,**{"data":{"Email":self.txtEmail.text(),"Usuario":self.txtUsuario.text(),"Password":UIRecuperarModal.randomPassword() }})
+            self.worker = Worker(Logica.recuperarContrasenia,Parent=self,**{"data":{"Email":self.txtEmail.text(),"Usuario":self.txtUsuario.text(),"Password":UIRecuperarModal.randomPassword() }})
+            self.register_thread(self.worker)
             self.worker.signals.finished.connect(self.validarUsuarioAction)
             self.worker.start()
 

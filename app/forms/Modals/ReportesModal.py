@@ -343,7 +343,8 @@ class UIReportesModal(modal):
            self.updateState("¡Error! Fechas invalidas",QMovie(":/source/img/Error.png"))
            QMessageBox.warning(self,"¡Error!","¡Error! Rango de fechas invalido")
            return
-        self.worker = Worker(Logica.ObtenerReportes,**{"access_token":self.session.access_token,"dateStart":dateStart,"dateEnd":dateEnd,"nivel":nivel})
+        self.worker = Worker(Logica.ObtenerReportes,Parent=self,**{"access_token":self.session.access_token,"dateStart":dateStart,"dateEnd":dateEnd,"nivel":nivel})
+        self.register_thread(self.worker)
         self.worker.signals.finished.connect(self.obtenerReportesAction)
         self.worker.start()
 

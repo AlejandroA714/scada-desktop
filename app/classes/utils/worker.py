@@ -15,9 +15,9 @@ class WorkerSignals(QObject): # Class to emit signals at execute a thread
 
 class Worker(QThread): # Class to execute a function inside a thread
 
-    def __init__(self,fn,*args,**kwargs): # fn:  Function to be executed
+    def __init__(self,fn,*args,Parent=None,**kwargs): # fn:  Function to be executed
 
-        super(Worker,self).__init__()
+        super().__init__(Parent)
         self.__running = False
         self.fn = fn
         self.args = args

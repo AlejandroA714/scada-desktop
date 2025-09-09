@@ -366,7 +366,8 @@ class UIUsuariosModal(modal):
     def obtenerUsuarios(self):
         self.UtilsFrame.show()
         self.updateState("Cargando...",QMovie(":/source/img/Cargando.gif"))
-        self.worker = Worker(Logica.ObtenerUsuarios,**{"access_token":self.session.access_token})
+        self.worker = Worker(Logica.ObtenerUsuarios,Parent=self,**{"access_token":self.session.access_token})
+        self.register_thread(self.worker)
         self.worker.signals.finished.connect(self.obtenerUsuariosAction)
         self.worker.start()
 
@@ -430,7 +431,8 @@ class UIUsuariosModal(modal):
 
     def eliminarUsuario(self,user:usuario):
         self.ContentBox.setEnabled(False)
-        self.worker = Worker(Logica.eliminarUsuario,**{"access_token":self.session.access_token,"id":user.id})
+        self.worker = Worker(Logica.eliminarUsuario,Parent=self,**{"access_token":self.session.access_token,"id":user.id})
+        self.register_thread(self.worker)
         self.worker.signals.finished.connect(partial(self.eliminarUsuarioAction,usr=user))
         self.worker.start()
 
@@ -451,13 +453,15 @@ class UIUsuariosModal(modal):
 
     def habilitarUsuario(self,usr:usuario):
         self.ContentBox.setEnabled(False)
-        self.worker = Worker(Logica.habilitarUsuario,**{"access_token":self.session.access_token,"id":usr.id})
+        self.worker = Worker(Logica.habilitarUsuario,Parent=self,**{"access_token":self.session.access_token,"id":usr.id})
+        self.register_thread(self.worker)
         self.worker.signals.finished.connect(partial(self.habilitarUsuarioAction,usr=usr))
         self.worker.start()
 
     def deshabilitarUsuario(self,usr:usuario):
         self.ContentBox.setEnabled(False)
-        self.worker = Worker(Logica.deshabilitarUsuario,**{"access_token":self.session.access_token,"id":usr.id})
+        self.worker = Worker(Logica.deshabilitarUsuario,Parent=self,**{"access_token":self.session.access_token,"id":usr.id})
+        self.register_thread(self.worker)
         self.worker.signals.finished.connect(partial(self.habilitarUsuarioAction,usr=usr))
         self.worker.start()
 

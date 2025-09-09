@@ -6,6 +6,8 @@ from classes import workSpace, timer, widget, device, deviceSignals, Worker, Log
 from . import UIAIVariable,UIAOVariable,UIDIVariable,UIDOVariable
 from resources import *
 from datetime import datetime
+from notificator import notificator
+from notificator.alingments import TopRight
 from functools import partial
 from base64 import b64decode,b64encode
 
@@ -286,7 +288,8 @@ class UIDispositivoWidget(widget):
         variablesList = list(self.variablesListToJSON(variablesList))
         self.updateState("Actualizando...",self.movie)
         self.deviceSignals.updating.emit()
-        self.worker = Worker(Logica.LeerSensor,**{"access_token":self.session.access_token,"ID":self.__dispostivo.id,"Token":self.__dispostivo.token,"data":variablesList})
+        self.worker = Worker(Logica.LeerSensor,Parent=self,**{"access_token":self.session.access_token,"ID":self.__dispostivo.id,"Token":self.__dispostivo.token,"data":variablesList})
+        self.register_thread(self.worker)
         self.worker.signals.finished.connect(self.actualizarVariables_Callback)
         self.worker.start()  
 
@@ -306,8 +309,10 @@ class UIDispositivoWidget(widget):
                     if not v.expresion is None:
                         v.value = Logica.evaluarExpresion(v.expresion,v.value)
                     if not v.notify is None: # If notify option is active
-                        if Logica.evaluarExpresion(v.notify.replace("-","").strip(),v.value): # evaluate if condition is true
-                           self.nuevoReporte(v)
+                        if Logica.evaluarExpresion(v.notify.replace("-","").strip(),v.value):
+                          noft = notificator()
+                          noft.info("¡Información!","Se muestra???",None,TopRight) # evaluate if condition is true
+                          self.nuevoReporte(v)
                     self.__variablesContainer[v.unicID].updateUI(v)
                     self.updateDeviceState("Conectado","green")
                     self.Last.setText(datetime.now().strftime("%d/%m/%Y %I:%M:%S %p"))
@@ -335,7 +340,8 @@ class UIDispositivoWidget(widget):
             "Condicion": "%s%s" % (v.value,v.notify.replace("-","")[1:]),
             "Nivel":v.nivel,
         })
-        self.worker = Worker(Logica.nuevoReporte,**{"access_token":self.session.access_token,"data":report.toJSON()})
+        self.worker = Worker(Logica.nuevoReporte,Parent=self,**{"access_token":self.session.access_token,"data":report.toJSON()})
+        self.register_thread(self.worker)
         self.worker.signals.finished.connect(self.nuevoReporteAction)
         self.worker.start()
     
@@ -354,7 +360,8 @@ class UIDispositivoWidget(widget):
         self.VariablesFrame.setEnabled(False)
         self.updateState("Actualizando...",self.movie)
         self.deviceSignals.updating.emit()
-        self.worker = Worker(Logica.ActualizarSensor, **{"access_token":self.session.access_token,"ID":self.__dispostivo.id,"Token":self.__dispostivo.token,"data":var.toJSON() })
+        self.worker = Worker(Logica.ActualizarSensor,Parent=self, **{"access_token":self.session.access_token,"ID":self.__dispostivo.id,"Token":self.__dispostivo.token,"data":var.toJSON() })
+        self.register_thread(self.worker)
         self.worker.signals.finished.connect(partial(self.actualizarVariable_Callback,var,current_time))
         self.worker.start()
 

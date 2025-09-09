@@ -326,9 +326,11 @@ class UIAgregarUsuarioModal(modal):
             self.Status.show()
             self.movie.start()
             if not self.isEdit:
-                self.worker = Worker(Logica.agregarUsuario,**{"access_token":self.session.access_token,"data":self.usuario.toJSON()})
+                self.worker = Worker(Logica.agregarUsuario,Parent=self,**{"access_token":self.session.access_token,"data":self.usuario.toJSON()})
+                self.register_thread(self.worker)
             else:
-                self.worker = Worker(Logica.editarUsuario,**{"access_token":self.session.access_token,"data":self.usuario.toJSON()})
+                self.worker = Worker(Logica.editarUsuario,Parent=self,**{"access_token":self.session.access_token,"data":self.usuario.toJSON()})
+                self.register_thread(self.worker)
             self.worker.signals.finished.connect(partial(self.validarUsuarioAction,user=self.usuario))
             self.worker.start()
     
