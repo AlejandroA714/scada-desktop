@@ -29,7 +29,7 @@ Ofrece una interfaz moderna, soporte de notificaciones en tiempo real y conectiv
 
 ## ✨ Funcionalidades principales
 
-### 📊 **Monitoreo en tiempo real**  
+- 📊 **Monitoreo en tiempo real**  
 Visualización de variables analógicas y digitales con actualización en vivo.
 <p align="center">
   <img src="./docs/sensors.gif" width="480" alt="Abrir app">
