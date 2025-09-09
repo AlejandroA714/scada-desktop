@@ -12,10 +12,10 @@ class Logica():
     __program_files = os.path.expanduser('~/.scada') #os.environ["ALLUSERSPROFILE"]
 
     settings = { 
-            "Host":"127.0.0.1",
-            "Port":8080,
+            "Host":"localhost:7948",
+            "Port":7948,
             "HTTP_PROTOCOL":"http",
-            "URI":"http://127.0.0.1:8080"
+            "URI":"http://127.0.0.1:5000"
     }
     
     @staticmethod

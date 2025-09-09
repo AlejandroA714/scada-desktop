@@ -270,10 +270,10 @@ class variable(object):
             self.pin = dict["PIN"]
             self.value = dict["Valor"]
             self.analogic = dict["Analogic"]
-            self.displayColor = dict["DisplayColor"]
-            self.expresion = dict["Expresion"]
-            self.notify = dict["Notificar"]
-            self.nivel = dict["Nivel"]
+            self.displayColor = dict.get("DisplayColor")   
+            self.expresion = dict.get("Expresion")        
+            self.notify = dict.get("Notificar")            
+            self.nivel = dict.get("Nivel") 
             self.output = dict["IsOutput"]
 
     @property
