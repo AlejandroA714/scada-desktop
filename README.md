@@ -110,7 +110,9 @@ Reciba su contrase;a por correo
 <p align="center">
   <img src="./docs/report.png" width="480" alt="Abrir app">
 </p>
+
 [📊 Ver reporte en Excel](./docs/report.xlsx)
+
 ---
 
 ## 🔧 Requisitos
