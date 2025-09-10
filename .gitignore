@@ -8,6 +8,8 @@ app/.vscode/
 # C extensions
 *.so
 
+resources.py
+
 # Distribution / packaging
 .Python
 build/
